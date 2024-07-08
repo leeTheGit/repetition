@@ -1,0 +1,184 @@
+name: 📑 Build and Deploy Next App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: sst-aws-frontend-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-next-staging:
+    outputs:
+      next_affected: ${{ steps.affected_projects.outputs.next_affected }}
+    environment:
+        name: sst-aws-frontend
+    steps:
+      # Upload source maps for staging but not for pull requests
+      - name: Set SENTRY_AUTH_TOKEN for main branch
+        if: github.ref == 'refs/heads/main'
+        run: echo "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install Dependencies
+        run: |
+          pnpm install
+
+      - name: Determine Affected Projects
+        id: affected_projects
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              base_ref="remotes/origin/main"
+          else
+              base_ref="HEAD~1"
+          fi
+
+          affected=$(pnpm nx show projects --affected --base=$base_ref --head=HEAD --target=build --plain | tr '\n' ',')
+          affected=${affected%,}
+          echo "affected_projects=$affected" >> $GITHUB_ENV
+
+          next_affected=$(echo $affected | grep -q 'next' && echo 'true' || echo 'false')
+          echo "next_affected=$next_affected" >> $GITHUB_ENV
+          echo "::set-output name=next_affected::$next_affected"
+          echo "next_affected=$next_affected" >> $GITHUB_STEP_SUMMARY
+
+      - name: Download and Install SST
+        if: env.next_affected == 'true'
+        run: |
+          curl -L -o sst-linux-x86_64.tar.gz https://github.com/sst/ion/releases/download/v0.0.168/sst-linux-x86_64.tar.gz
+          tar -xzf sst-linux-x86_64.tar.gz
+          sudo mv sst /usr/local/bin/sst
+
+      - name: Configure Staging AWS credentials
+        if: env.next_affected == 'true'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: 'arn:aws:iam::${{ secrets.STAGING_ACCOUNT_ID }}:role/github_actions'
+          role-duration-seconds: 900
+          aws-region: ${{ vars.STAGING_REGION }}
+
+      # This is presumably already set, but setting on each deploy allows us to
+      # change the secret via GH Actions. We don't set it for PRs because SST
+      # will use the placeholder value defined in sst.config.ts.
+      - name: Set SentryDSN secret for staging
+        if: env.next_affected == 'true' && github.ref == 'refs/heads/main'
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: sst secret set SentryDSN "$SENTRY_DSN" --stage=staging
+
+      # If the next app is affected, deploy it to staging or if it is a pull
+      # request, deploy it to the staging account as its own 'pr-' stage.
+      - name: Deploy Next App to PR stage or Staging
+        if: env.next_affected == 'true'
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_PR_NUMBER: ${{ github.event.number }}
+          GITHUB_REF: ${{ github.ref }}
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            STAGE="pr-$GITHUB_PR_NUMBER"
+          elif [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+            STAGE="staging"
+          else
+            STAGE="staging"
+          fi
+          sst deploy --stage=$STAGE
+
+  # If the Next app is affected and we are on the main branch, deploy it to prod
+  deploy-next-prod:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.deploy-next-staging.outputs.next_affected == 'true'
+    # Only run if staging was successful
+    needs: deploy-next-staging
+    environment:
+        name: sst-aws-frontend
+    steps:
+      # Upload source maps for prod
+      - name: Set SENTRY_AUTH_TOKEN
+        run: echo "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install Dependencies
+        run: |
+          pnpm install
+
+      - name: Download and Install SST
+        run: |
+          curl -L -o sst-linux-x86_64.tar.gz https://github.com/sst/ion/releases/download/v0.0.168/sst-linux-x86_64.tar.gz
+          tar -xzf sst-linux-x86_64.tar.gz
+          sudo mv sst /usr/local/bin/sst
+
+      - name: Configure Prod AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: 'arn:aws:iam::${{ secrets.PRODUCTION_ACCOUNT_ID }}:role/github_actions'
+          role-duration-seconds: 900
+          aws-region: ${{ vars.PRODUCTION_REGION }}
+
+      # This is presumably already set, but setting on each deploy allows us to
+      # change the secret via GH Actions.
+      - name: Set SentryDSN secret for production
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: sst secret set SentryDSN "$SENTRY_DSN" --stage=prod
+
+      - name: Deploy Next App to Prod
+        run: sst deploy --stage=prod

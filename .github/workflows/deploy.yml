@@ -1,0 +1,83 @@
+name: Deploy
+
+on:
+    push:
+        branches:
+            - deploy
+
+env:
+    AWS_REGION: ap-southeast-2
+
+concurrency:
+    group: ${{ github.ref }}
+    # cancel-in-progress: true
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        env:
+            DATABASE_URL: ${{ secrets.DATABASE_URL }}
+            PLATFORM_DOMAIN: ${{ secrets.PLATFORM_DOMAIN }}
+            # AWS_S3_UPLOAD_BUCKET: ${{ vars.AWS_S3_UPLOAD_BUCKET }}
+            # AWS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            # RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+            # STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+
+        # services:
+        #   postgres:
+        #     image: postgres:latest
+        #     env:
+        #       POSTGRES_USER: admin
+        #       POSTGRES_PASSWORD: cehub
+        #       POSTGRES_DB: cehub
+        #     ports:
+        #       - 5432:5432
+        #     options: >-
+        #       --health-cmd pg_isready
+        #       --health-interval 10s
+        #       --health-timeout 5s
+        #       --health-retries 5
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v2
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '20'
+
+            - name: Bucket name
+              run: echo "AWS_S3_UPLOAD_BUCKET=$AWS_S3_UPLOAD_BUCKET"
+
+            - name: Install SST
+              run: curl -fsSL https://ion.sst.dev/install | bash
+
+            - name: Install dependencies
+              run: |
+                  npm install -g pnpm
+                  pnpm install
+
+            - name: Migrate database
+              run: |
+                  pnpm migrate
+
+            # - name: Install dependencies
+            #   run: npm ci
+
+            - name: Deploy application
+              run: |
+                  sst install
+                  sst deploy --stage prod
+
+            # - name: Run Tests
+            #   run: |
+            #     pnpm sst bind vitest --stage staging
