@@ -14,7 +14,9 @@ export class ProblemEntity extends Entity<EntitySchema> {
     } = { }
 
     private metadata: {
-        submissionCount?: number
+        submissionCount?: number,
+        lastSubmitted?: string,
+        categoryName?: string
     } = {}
 
     private constructor(props: EntitySchema, id?: string) {
@@ -121,7 +123,11 @@ export class ProblemEntity extends Entity<EntitySchema> {
     }
 
     get categoryName() {
-        return this.relations.category?.name
+        return this.relations.category?.name || this.metadata.categoryName || ""
+    }
+
+    set categoryName(name: string) {
+        this.metadata.categoryName = name
     }
 
 
@@ -129,16 +135,11 @@ export class ProblemEntity extends Entity<EntitySchema> {
         this.relations.category = category
     }
 
-    get lastSubmitted() {
-        const submissions = this.relations.submissions;
-        if (submissions && submissions.length > 0) {
-            // console.log(submissions[0].createdAt)
-            return submissions[0].createdAt
-        }
-        
-        return null;
-        // return this.relations.submissions?[0].createdAt
-        // return this.relations.submissions?[0].name
+    get lastSubmitted(): string | null {
+        return this.metadata.lastSubmitted || null 
+    }
+    set lastSubmitted(date: string) {
+        this.metadata.lastSubmitted = date
     }
 
     set submissions(submissions: SubmissionEntity[]) {

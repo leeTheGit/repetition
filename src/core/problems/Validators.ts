@@ -36,7 +36,8 @@ export const fetchParams = z
         category: z.string().optional(),
         name: z.string().trim().optional(),
         course:z.string().uuid().optional(),
-        userId:z.string().uuid().optional(), 
+        userId:z.string().uuid().optional(),
+        sortColumn: z.string(), 
         withSubmissions:z
             .string()
             .toLowerCase()

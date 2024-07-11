@@ -5,13 +5,15 @@ import { CellAction } from './cell-action'
 import Link from 'next/link'
 import { Submit } from './submit'
 import {deltaToNow} from '@/lib/dates'
-
+import { ArrowUpDown } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export type ProblemColumn = {
     uuid: string
     name: string
     slug: string
-    lastSubmitted: string,
+    lastSubmitted: string
+    category: string
     status: number[]
     submissionCount: number
     difficulty: number
@@ -32,7 +34,27 @@ export const columns: ColumnDef<ProblemColumn>[] = [
             )
         },
     },
-     {
+    {
+        accessorKey: 'category',
+        header: ({ column }) => {
+            return (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                    column.toggleSorting(column.getIsSorted() === "asc")}
+                }
+              >
+                Category
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </Button>
+            )
+        },
+      
+        // header: () => <div className="text-left">Category</div>,
+        cell: ({ row }) => <div className="text-left">{row.original.category}</div>, 
+    },
+
+    {
         accessorKey: 'status',
         header: () => <div className="text-right">History</div>,
         cell: ({ row }) => {
@@ -44,13 +66,14 @@ export const columns: ColumnDef<ProblemColumn>[] = [
 
             return (
                 <div className="flex flex-row-reverse">
-                    {row.original.status.map(s => {
+
+                    {row.original.status.map((s, i) => {
                     
                         let color = "#009722"
                         if (s < 4) color = "#e6b502" 
                         if (s < 2) color = "#c90404" 
         
-                        return <div className={`bg-[${color}] h-[15px] w-[15px] mr-1`}>
+                        return <div key={i} className={`bg-[${color}] h-[15px] w-[15px] mr-1`}>
                             </div>
                     })}
                 </div>

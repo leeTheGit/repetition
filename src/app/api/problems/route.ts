@@ -17,7 +17,6 @@ async function get(
     ctx: any
 ) {
 
-    console.log('ceeeeeetcccc.data', ctx)
     try {
         let input = {
             ...ctx.data,

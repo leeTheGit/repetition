@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/button'
 
 import {
     ColumnDef,
+    SortingState,
     ColumnFiltersState,
     flexRender,
     ExpandedState,
     getCoreRowModel,
     getFilteredRowModel,
     getExpandedRowModel,
+    getSortedRowModel,
     getPaginationRowModel,
     useReactTable,
     getFacetedRowModel,
@@ -41,6 +43,10 @@ interface DataTableProps<TData, TValue> {
     setPagination?: React.Dispatch<
         React.SetStateAction<{ pageIndex: number; pageSize: number }>
     >
+    sorting?: {desc:boolean, id: string}[]
+    setSorting?: React.Dispatch<
+        React.SetStateAction<{ desc:boolean, id:string}[]>
+    >
     childElement?: React.ReactElement
     isPaginated?: boolean
     filterColumns?: {
@@ -64,6 +70,8 @@ export function DataTable<TData, TValue>({
     setColumnFilters,
     pagination = { pageIndex: 0, pageSize: 10 },
     setPagination,
+    sorting = [{desc:true, id:'category'}],
+    setSorting,
     isPaginated = true,
     toolbar = true,
 }: DataTableProps<TData, TValue>) {
@@ -76,9 +84,11 @@ export function DataTable<TData, TValue>({
         columns,
         onColumnFiltersChange: setColumnFilters || setColumnFiltersInternal,
         onPaginationChange: setPagination,
+        onSortingChange:setSorting,
         pageCount: -1,
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
+        // getSortedRowModel: getSortedRowModel(),
         // getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(), // manualFiltering belows negates this
         getFacetedRowModel: getFacetedRowModel(),
@@ -87,12 +97,13 @@ export function DataTable<TData, TValue>({
 
         manualFiltering: !!columnFilters || false, //turn off built-in client-side filtering
         manualPagination: true, //turn off built-in client-side pagination
-        // manualSorting: true, //turn off built-in client-side sorting
+        manualSorting: true, //turn off built-in client-side sorting
 
         state: {
             columnFilters: columnFilters || columnFiltersInternal,
             pagination,
             expanded,
+            sorting
         },
     })
 
@@ -134,7 +145,6 @@ export function DataTable<TData, TValue>({
                                 key={headerGroup.id}
                             >
                                 {headerGroup.headers.map((header) => {
-                                    console.log(header)
                                     return (
                                         <TableHead
                                             className="font-normal"

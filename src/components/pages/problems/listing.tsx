@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
-import { ColumnFiltersState, PaginationState } from '@tanstack/react-table'
+import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
 import { Plus } from 'lucide-react'
 import { columns } from './columns'
 
@@ -20,6 +20,13 @@ import { ProblemAPI } from '@/core/problems/response/ProblemDTO'
 // interface Props {
 //     userId: string
 // }
+export type Category = {
+    uuid: string
+    name: string
+    slug: string
+    createdAt: string
+}
+
 
 const endpoint = 'problems'
 
@@ -27,19 +34,24 @@ export const Listing = () => {
     const params = useParams()
     // delete modal
     const [open, setOpen] = useState(false)
-
+    const [sorting, setSorting] = useState<SortingState>([{desc:true, id:'category'}])
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
         pageSize: 20,
     })
+    
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+    const categories = useFetchQuery<Category[]>('categories', )
+
     const entities = useFetchQuery<ProblemAPI[]>(
         endpoint,
         {
             pagination,
             columnFilters: useDebounce(columnFilters, 500),
             queryParams: {
-                order: 'asc',
+                sortColumn: sorting[0].id,
+                order: sorting[0].desc === true ? "desc" : "asc",
                 withSubmissions: true,
             }
         }
@@ -52,12 +64,20 @@ export const Listing = () => {
                 uuid: entity.uuid,
                 name: entity.name,
                 slug: entity.slug,
-                status: entity.history,
+                category: entity.category,
+                status: entity.history || [],
                 submissionCount: entity.submissionCount || 0,
                 lastSubmitted: entity.lastSubmitted || '',
                 difficulty: entity.difficulty,
             }
         })
+   
+    const categoryOptions = categories.data?.data.map((category) => {
+        return {
+            value: category.slug,
+            label: category.name,
+        }
+    })
 
     return (
         <>
@@ -90,17 +110,19 @@ export const Listing = () => {
                                 emptyMessage={
                                     entities.isPending
                                         ? 'Loading...'
-                                        : 'No billboards found'
+                                        : 'No questions found'
                                 }
                                 setColumnFilters={setColumnFilters}
                                 data={entityColumns || []}
                                 searchKey="name"
                                 pagination={pagination}
                                 setPagination={setPagination}
-                                // filterColumns={[{
-                                //     name: "billboard",
-                                //     data: () => categoryOptions ? categoryOptions : []
-                                // }]}
+                                sorting={sorting}
+                                setSorting={setSorting}
+                                filterColumns={[{
+                                    name: "category",
+                                    data: () => categoryOptions ? categoryOptions : []
+                                }]}
                             />
                 </div>
             </div>

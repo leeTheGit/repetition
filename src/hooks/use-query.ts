@@ -35,6 +35,7 @@ export const useFetchQuery = <T>(
             filters.push(`limit=${pagination.pageSize}`)
         }
         for (const [key, value] of Object.entries(queryParams)) {
+            if (!value) continue;
             filters.push(`${key}=${value}`)
         }
 
@@ -48,7 +49,7 @@ export const useFetchQuery = <T>(
         const data = await res.json()
         return data
     }
-    let qKey = [resource, pagination, columnFilters]
+    let qKey = [resource, pagination, columnFilters, queryParams]
     if (queryKey.length > 0) {
         qKey = queryKey
     }
