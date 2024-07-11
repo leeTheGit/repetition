@@ -39,7 +39,7 @@ export const UserProfileButton = () => {
                 >
                     <Link
                         className="hover:dark:text-gray-400"
-                        href={`/users/${userId}`}
+                        href={`/profile`}
                     >
                         Profile
                     </Link>

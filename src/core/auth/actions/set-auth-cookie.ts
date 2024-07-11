@@ -1,7 +1,7 @@
 'use server'
 import { cookies } from 'next/headers'
 import { lucia } from '@/lib/auth/auth'
-import { getSignupAuth } from '@/lib/auth/utils'
+import { getUserAuth } from '@/lib/auth/utils'
 
 import { revalidatePath } from 'next/cache'
 
@@ -9,7 +9,7 @@ import { revalidatePath } from 'next/cache'
 
 export async function setAuthCookie() {
     
-    const user = await getSignupAuth()
+    const user = await getUserAuth()
     if (!user.session?.user.id) {
         return {
             error: 'Unauthorized',

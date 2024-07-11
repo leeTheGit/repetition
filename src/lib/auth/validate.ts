@@ -2,7 +2,7 @@ import { cache } from 'react'
 import { cookies, headers } from 'next/headers'
 import type { Session, User } from 'lucia'
 import type { TokenSession } from '@/lib/auth/utils'
-import { lucia, signupLucia } from './auth'
+import { lucia } from './auth'
 import AuthTokenRepository from '@/core/auth/Repository'
 import { isError } from '@/core/types'
 import { logger } from '@/lib/logger'
@@ -46,45 +46,6 @@ const validReq = async (): Promise<
     return result
 }
 
-
-const validSignupReq = async (): Promise<
-    { user: User; session: Session } | { user: null; session: null }
-> => {
-    const sessionId = cookies().get(signupLucia.sessionCookieName)?.value ?? null
-    if (!sessionId) {
-        
-        return {
-            user: null,
-            session: null,
-        }
-    }
-    const result = await signupLucia.validateSession(sessionId)
-    
-    // next.js throws when you attempt to set cookie when rendering page
-    try {
-        if (result.session && result.session.fresh) {
-
-            const sessionCookie = signupLucia.createSessionCookie(result.session.id)
-            cookies().set(
-                sessionCookie.name,
-                sessionCookie.value,
-                sessionCookie.attributes
-            )
-        }
-        if (!result.session) {
-            const sessionCookie = signupLucia.createBlankSessionCookie()
-            cookies().set(
-                sessionCookie.name,
-                sessionCookie.value,
-                sessionCookie.attributes
-            )
-        }
-    } catch(e:any) {
-        console.log('error setting cookie')
-        console.log(e)
-    }
-    return result
-}
 
 
 
@@ -130,7 +91,7 @@ const validToken = async (
 }
 
 export const validateRequest = cache(validReq)
-export const validateSignup = validSignupReq;
+
 // export const validateRequest = validReq;
 
 export const validateToken = cache(validToken)

@@ -1,10 +1,10 @@
 'use server'
 
 import { cookies } from 'next/headers'
-import { getSignupAuth } from '@/lib/auth/utils'
+import { getUserAuth } from '@/lib/auth/utils'
 
 export async function setAuthIntentCookie(intent: string, domain: string) {
-    const user = await getSignupAuth()
+    const user = await getUserAuth()
     if (user.session?.user.id) {
         return {
             error: 'Current signed in',
@@ -19,6 +19,6 @@ export async function setAuthIntentCookie(intent: string, domain: string) {
     })
 }
 
-// export async function deleteAuthIntentCookie() {
-//     cookies().delete('auth-intent')
-// }
+export async function deleteAuthIntentCookie() {
+    cookies().delete('auth-intent')
+}

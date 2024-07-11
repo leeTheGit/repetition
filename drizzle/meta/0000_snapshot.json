@@ -1,5 +1,5 @@
 {
-  "id": "df87ffd4-57a2-4164-9eef-98c4635bfc69",
+  "id": "cda46aa1-455c-4fcb-ab72-64f9dafb6fc0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -603,6 +603,200 @@
       },
       "indexes": {},
       "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.course": {
+      "name": "course",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "organisation_uuid": {
+          "name": "organisation_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'draft'"
+        },
+        "is_deleted": {
+          "name": "is_deleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "image_uuid": {
+          "name": "image_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_seeded": {
+          "name": "is_seeded",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "course_slug_idx": {
+          "name": "course_slug_idx",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "fk_course_organisation_idx": {
+          "name": "fk_course_organisation_idx",
+          "columns": [
+            {
+              "expression": "organisation_uuid",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "fk_course_user_idx": {
+          "name": "fk_course_user_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "fk_course_image_idx": {
+          "name": "fk_course_image_idx",
+          "columns": [
+            {
+              "expression": "image_uuid",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "course_organisation_uuid_organisation_uuid_fk": {
+          "name": "course_organisation_uuid_organisation_uuid_fk",
+          "tableFrom": "course",
+          "tableTo": "organisation",
+          "columnsFrom": [
+            "organisation_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "course_user_id_user_uuid_fk": {
+          "name": "course_user_id_user_uuid_fk",
+          "tableFrom": "course",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "course_image_uuid_media_uuid_fk": {
+          "name": "course_image_uuid_media_uuid_fk",
+          "tableFrom": "course",
+          "tableTo": "media",
+          "columnsFrom": [
+            "image_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -1549,6 +1743,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "course_id": {
+          "name": "course_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
         "name": {
           "name": "name",
           "type": "text",
@@ -1583,7 +1783,7 @@
           "name": "difficulty",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "link": {
           "name": "link",
@@ -1686,6 +1886,19 @@
           "tableTo": "category",
           "columnsFrom": [
             "category_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "problem_course_id_course_uuid_fk": {
+          "name": "problem_course_id_course_uuid_fk",
+          "tableFrom": "problem",
+          "tableTo": "course",
+          "columnsFrom": [
+            "course_id"
           ],
           "columnsTo": [
             "uuid"
@@ -2019,8 +2232,50 @@
       },
       "uniqueConstraints": {}
     },
-    "public.schedule": {
-      "name": "schedule",
+    "public.session": {
+      "name": "session",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "session_user_id_user_uuid_fk": {
+          "name": "session_user_id_user_uuid_fk",
+          "tableFrom": "session",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.submissions": {
+      "name": "submissions",
       "schema": "",
       "columns": {
         "id": {
@@ -2048,9 +2303,21 @@
           "primaryKey": false,
           "notNull": true
         },
-        "submitted_code": {
-          "name": "submitted_code",
+        "solution": {
+          "name": "solution",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "grade": {
+          "name": "grade",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -2060,9 +2327,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "grade": {
-          "name": "grade",
-          "type": "integer",
+        "next_review_at": {
+          "name": "next_review_at",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
@@ -2128,9 +2395,9 @@
         }
       },
       "foreignKeys": {
-        "schedule_user_uuid_user_uuid_fk": {
-          "name": "schedule_user_uuid_user_uuid_fk",
-          "tableFrom": "schedule",
+        "submissions_user_uuid_user_uuid_fk": {
+          "name": "submissions_user_uuid_user_uuid_fk",
+          "tableFrom": "submissions",
           "tableTo": "user",
           "columnsFrom": [
             "user_uuid"
@@ -2141,9 +2408,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "schedule_problem_uuid_problem_uuid_fk": {
-          "name": "schedule_problem_uuid_problem_uuid_fk",
-          "tableFrom": "schedule",
+        "submissions_problem_uuid_problem_uuid_fk": {
+          "name": "submissions_problem_uuid_problem_uuid_fk",
+          "tableFrom": "submissions",
           "tableTo": "problem",
           "columnsFrom": [
             "problem_uuid"
@@ -2152,48 +2419,6 @@
             "uuid"
           ],
           "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.session": {
-      "name": "session",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "session_user_id_user_uuid_fk": {
-          "name": "session_user_id_user_uuid_fk",
-          "tableFrom": "session",
-          "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "uuid"
-          ],
-          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -2320,6 +2545,18 @@
         "note": {
           "name": "note",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "solution": {
+          "name": "solution",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "next_review_at": {
+          "name": "next_review_at",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },

@@ -1,35 +1,25 @@
 import { NodePgDatabase, drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
+import {Slugify} from '@/lib/utils'
 import {
     users,
-    store,
-    product,
+    problem,
     media,
     emails,
+    course,
     collection,
     emailTemplate,
     roles,
     category,
-    billboards,
-    order,
-    orderItem,
     organisation,
-    integration,
     authTokens,
-    menu,
-    menuItem,
-    countries,
+   countries,
 } from './schema/schema'
 import * as dotenv from 'dotenv'
 import Users from './seedData/users'
 import Organisations from './seedData/organisations'
-import Stores from './seedData/stores'
-import Billboards from './seedData/billboards'
 import Categories from './seedData/categories'
-import Products from './seedData/products'
-import Integrations from './seedData/integrations'
-import { Orders, OrderItems } from './seedData/orders'
-import { Menus, MenuItems } from './seedData/menus'
+import Problems from './seedData/problems'
 import { eq } from 'drizzle-orm'
 import { createUuid } from '.././utils'
 import countryData from './seedData/countries.json'
@@ -43,7 +33,7 @@ export const seed = async () => {
 
     const dsn = process.env.DATABASE_URL
 
-    if (!dsn) throw new Error('DATABASE_DSN not found on .env.development')
+    if (!dsn) throw new Error('DATABASE_DSN not found on .env')
 
     const client = new Pool({
         connectionString: dsn,
@@ -91,96 +81,62 @@ export const seed = async () => {
             .where(eq(users.uuid, usr.uuid))
         orgCount++
     }
+    console.log(newOrganisations)
+    const [newCourse] = await db
+        .insert(course)
+        .values({
+            name: "Algorithms",
+            organisationUuid: newOrganisations[0].uuid,
+            slug: Slugify("Algorithms")
+        })
+        .returning({ uuid: course.uuid })
+    
+    console.log("NEW COURSE", newCourse)
+    // await db
+    //     .insert(authTokens)
+    //     .values({
+    //         organisationUuid: store.organisationUuid,
+    //         storeUuid: store.uuid,
+    //         type: 'organisation',
+    //         identifier: 'admin',
+    //         name: 'Default',
+    //         description: 'Default organisation api token',
+    //         token:
+    //             store.slug === 'borderland'
+    //                 ? '14399d64-8718-46f8-ad15-15e7afe5d995'
+    //                 : createUuid(),
+    //         status: true,
+    //     })
+    //     .returning()
 
-    console.log('adding store')
-    const newStore = await db
-        .insert(store)
-        .values(Stores(usrs, newOrganisations))
+    console.log('adding categories')
+    const categories = await db
+        .insert(category)
+        .values(Categories())
         .returning()
 
-    for (let store of newStore) {
-        await db
-            .insert(authTokens)
-            .values({
-                organisationUuid: store.organisationUuid,
-                storeUuid: store.uuid,
-                type: 'organisation',
-                identifier: 'admin',
-                name: 'Default',
-                description: 'Default organisation api token',
-                token:
-                    store.slug === 'borderland'
-                        ? '14399d64-8718-46f8-ad15-15e7afe5d995'
-                        : createUuid(),
-                status: true,
-            })
-            .returning()
-
-        console.log('THE STORE', store)
-        console.log('adding billboards')
-        const newBillboards = await db
-            .insert(billboards)
-            .values(Billboards(store.uuid))
-            .returning()
-
-        console.log('adding categories')
-        const categories = await db
-            .insert(category)
-            .values(Categories(store.uuid, newBillboards))
-            .returning()
-
-        console.log('adding categories')
-        const integrations = await db
-            .insert(integration)
-            .values(Integrations(store.uuid, store.organisationUuid))
-            .returning()
-
-        console.log('adding products')
-        const newProducts = await db
-            .insert(product)
-            .values(Products(store.uuid, categories))
-            .returning()
-
-        console.log('adding orders')
-        const newOrders = await db
-            .insert(order)
-            .values(Orders(store.uuid, store.organisationUuid))
-            .returning()
-
-        for (let orderr of newOrders) {
-            //@ts-ignore  newProducts type issue with variants column
-            const items = OrderItems(orderr.uuid, newProducts)
-            try {
-                const newOrderItems = await db
-                    .insert(orderItem)
-                    .values(items)
-                    .returning()
-            } catch (e) {
-                console.log('Error adding order items', e)
-            }
-            const updateOrders = await db
-                .update(order)
-                .set({ itemCount: items.length })
-                .where(eq(order.uuid, orderr.uuid))
-        }
-
-        console.log('adding menus')
-        let newMenus = await db.insert(menu).values(Menus(store)).returning()
-
-        for (let menu of newMenus) {
-            const m = MenuItems(menu.uuid, categories, newProducts)
-            const newMenuItems = await db.insert(menuItem).values(m).returning()
-        }
+    let categoryObj:{[key: string]: string} = {}
+    for (let category of categories) {
+        categoryObj[category.slug] = category.uuid
     }
+
+    console.log(categoryObj)
+    console.log(newCourse)
+    // console.log(Problems(categoryObj, newCourse.uuid))
+    // console.log('adding products')
+    const newProblems = await db
+        .insert(problem)
+        .values(Problems(categoryObj, newCourse.uuid))
+        .returning()
+
 
     client.end()
 }
 
 const truncate = async (db: NodePgDatabase<Record<string, never>>) => {
     await db.delete(countries)
-    await db.delete(order)
-    await db.delete(billboards)
-    await db.delete(product)
+    await db.delete(problem)
+    await db.delete(course)
     await db.delete(collection)
     await db.delete(category)
     await db.delete(media)
@@ -188,15 +144,11 @@ const truncate = async (db: NodePgDatabase<Record<string, never>>) => {
     await db.delete(emailTemplate)
     
 
-    await db.delete(integration)
     await db.delete(authTokens)
-    await db.delete(store)
     await db.delete(roles)
 
 
     await db.delete(users)
-    await db.delete(menuItem)
-    await db.delete(menu)
     await db.delete(organisation)
 }
 

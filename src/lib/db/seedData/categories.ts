@@ -1,31 +1,51 @@
-const Categories = (store: string, billboards: { uuid: string }[]) => {
+import {Slugify} from '@/lib/utils'
+
+
+const Categories = () => {
     return [
         {
-            storeUuid: store,
-            billboardUuid: billboards[0].uuid,
-            name: 'Puzzles',
-            slug: 'puzzles',
+            name: 'Arrays and Hashing',
+            slug: Slugify('Arrays and Hashing'),
             isSeeded: true,
         },
         {
-            storeUuid: store,
-            billboardUuid: billboards[1].uuid,
-            name: 'Board Games',
-            slug: 'board-games',
+            name: 'Two Pointers',
+            slug: Slugify('Two Pointers'),
             isSeeded: true,
         },
         {
-            storeUuid: store,
-            billboardUuid: billboards[2].uuid,
-            name: 'Robots',
-            slug: 'robots',
+            name: 'Sliding Window',
+            slug: Slugify('Sliding Window'),
             isSeeded: true,
         },
         {
-            storeUuid: store,
-            billboardUuid: billboards[3].uuid,
-            name: 'Educational',
-            slug: 'educational',
+            name: 'Stack',
+            slug: Slugify('Stack'),
+            isSeeded: true,
+        },
+        {
+            name: 'Binary Search',
+            slug: Slugify('Binary Search'),
+            isSeeded: true,
+        },
+        {
+            name: 'Linked List',
+            slug: Slugify('Linked List'),
+            isSeeded: true,
+        },
+        {
+            name: 'Trees',
+            slug: Slugify('Trees'),
+            isSeeded: true,
+        },
+        {
+            name: 'Heap / Priority Queue',
+            slug: Slugify('Heap / Priority Queue'),
+            isSeeded: true,
+        },
+        {
+            name: 'Graphs',
+            slug: Slugify('Graphs'),
             isSeeded: true,
         },
     ]

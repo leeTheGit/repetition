@@ -77,7 +77,7 @@ export async function signin(
     )
 
     if (existingUser.organisationUuid === null) {
-        return redirect(`http://${process.env.PLATFORM_DOMAIN}/account`)
+        return redirect(`http://${process.env.PLATFORM_DOMAIN}/problems`)
     }
 
     return redirect('/')

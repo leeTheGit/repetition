@@ -67,14 +67,7 @@ function apiHandler(handler: any, options?: Options) {
         // **********************************************************************
         //        Make sure the user has access to the store being queried
         // **********************************************************************
-        let store = null
-        if (checkStore) {
-            if (!user || !('organisationUuid' in user)) {
-                return new NextResponse('No store found for this user', {
-                    status: 400,
-                })
-            }
-        }
+
 
         try {
             let statusCode = 200
@@ -86,7 +79,6 @@ function apiHandler(handler: any, options?: Options) {
             const response = await handler(req, params, {
                 data: input.data,
                 user,
-                store,
             })
             let headers = {}
             if (

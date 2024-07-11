@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 
 import { type Cookie } from 'lucia'
 
-import { validateRequest, validateToken, validateSignup } from './validate'
+import { validateRequest, validateToken } from './validate'
 import { UsernameAndPassword, authenticationSchema } from './authSchema'
 import { SIGNUP_SESSION_NAME } from './auth'
 
@@ -45,21 +45,6 @@ export const getUserAuth = async (): Promise<AuthSession> => {
     }
 }
 
-export const getSignupAuth = async (): Promise<AuthSession> => {
-    const { session, user } = await validateSignup()
-    if (!session) return { session: null }
-    return {
-        session: {
-            id: session.id,
-            user: {
-                id: user.id,
-                email: user.email,
-                username: user.username,
-                organisationUuid: user.organisationUuid,
-            },
-        },
-    }
-}
 
 
 export const getTokenAuth = async (domain: string): Promise<TokenSession> => {

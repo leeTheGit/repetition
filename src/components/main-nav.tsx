@@ -37,21 +37,32 @@ const MainNav = ({
                 {
                     label: 'Problems',
                     description: 'View problems',
-                    href: `/${params.storeId}/problems`,
-                    active: pathname.includes(`/${params.storeId}/problems`),
+                    href: `/problems`,
+                    active: pathname.includes(`/problems`),
+                },
+                {
+                    label: 'Courses',
+                    description: 'Manage courses',
+                    href: `/courses`,
+                    active: pathname.includes(`/courses`),
+                },
+                {
+                    label: 'Topics',
+                    description: 'Divide your course into different topics',
+                    href: `/topics`,
+                    active: pathname.includes(`/topics`),
                 },
                 {
                     label: 'Collections',
                     description: 'Add your content to feeds you curate',
-                    href: `/${params.storeId}/collections`,
-                    active: pathname.includes(`/${params.storeId}/collections`),
+                    href: `/collections`,
+                    active: pathname.includes(`/collections`),
                 },
-
                 {
                     label: 'Categories',
                     description: 'Group problems into categories',
-                    href: `/${params.storeId}/categories`,
-                    active: pathname.includes(`/${params.storeId}/categories`),
+                    href: `/categories`,
+                    active: pathname.includes(`/categories`),
                 },
             ],
             active: !!pathname.match(
@@ -60,22 +71,24 @@ const MainNav = ({
             // active: pathname.includes(`/content`),
         },
         {
-            label: 'Users',
+            label: 'Profile',
+            href: `/profile`,
+            active: pathname.includes(`/profile`),
+
             // href: `/${params.storeId}/users`,
-            children: [
-                {
-                    label: 'Users',
-                    description: 'Manage your users.',
-                    href: `/${params.storeId}/users`,
-                },
-                {
-                    label: 'Roles and permissions',
-                    description:
-                        'Create and manage user roles and permissions for admin',
-                    href: `/${params.storeId}/users/roles`,
-                },
-            ],
-            active: pathname.includes(`/user`),
+            // children: [
+            //     {
+            //         label: 'Profile',
+            //         description: 'Manage your profile.',
+            //         href: `/${params.storeId}/users`,
+            //     },
+            //     {
+            //         label: 'Roles and permissions',
+            //         description:
+            //             'Create and manage user roles and permissions for admin',
+            //         href: `/${params.storeId}/users/roles`,
+            //     },
+            // ],
         },
         {
             // href: `/${params.storeId}/settings`,
@@ -85,7 +98,7 @@ const MainNav = ({
                 {
                     label: 'Organisation settings',
                     description: 'Account settings',
-                    href: `/${params.storeId}/settings/account`,
+                    href: `/settings/account`,
                 },
             ],
         },

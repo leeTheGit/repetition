@@ -3,6 +3,7 @@ import { apiHandler } from "@/lib/apiHandler"
 import {
     getZodErrors,
     mapResult, 
+    randomNumbers,
     uuidRegex, 
 } from "@/lib/utils"
 
@@ -12,5 +13,6 @@ export {
     apiHandler,
     getZodErrors,
     mapResult,
+    randomNumbers,
     uuidRegex,
 }

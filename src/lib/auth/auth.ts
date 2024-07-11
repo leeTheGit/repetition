@@ -61,25 +61,6 @@ export const lucia = new Lucia(adapter, {
     },
 })
 
-export const signupLucia = new Lucia(adapter, {
-    sessionCookie: {
-        name: SIGNUP_SESSION_NAME,
-        attributes: {
-            sameSite: 'lax',
-            // secure: true
-            secure: process.env.NODE_ENV === 'production',
-        },
-    },
-    getUserAttributes: (attributes) => {
-        return {
-            username: attributes.username,
-            email: attributes.email,
-            githubId: attributes.github_id,
-            organisationUuid: attributes.organisationUuid,
-            avatar: '',
-        }
-    },
-})
  
 export const github = new GitHub(
     process.env.GITHUB_CLIENT_ID!,

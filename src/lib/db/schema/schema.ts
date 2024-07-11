@@ -160,8 +160,8 @@ export const category = pgTable(
     })
 )
 
-export const schedule = pgTable(
-    'schedule',
+export const submission = pgTable(
+    'submission',
     {
         id: serial('id').notNull(),
         uuid: uuid('uuid')
@@ -175,9 +175,11 @@ export const schedule = pgTable(
         problemUuid: uuid('problem_uuid')
             .notNull()
             .references(() => problem.uuid),
-        submittedCode: text('submitted_code'),
+        solution: text('solution'),
+        note: text('note'),
+        grade: integer('grade').notNull(),
         submittedAt: timestamp('submitted_at', { mode: 'date' }),
-        grade: integer('grade'),
+        nextReviewAt: timestamp('next_review_at', { mode: 'date'}),
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
@@ -188,6 +190,40 @@ export const schedule = pgTable(
         problemIndex: index('fk_problem_schedule_idx').on(table.problemUuid),
         submittedAt: index('fk_submitted_schedule_idx').on(table.submittedAt),
 
+    })
+)
+
+export const course = pgTable(
+    'course',
+    {
+        id: serial('id').notNull(),
+        uuid: uuid('uuid')
+            .default(sql`uuid_generate_v4()`)
+            .primaryKey()
+            .notNull(),
+        organisationUuid: uuid('organisation_uuid')
+            .notNull()
+            .references(() => organisation.uuid, { onDelete: 'cascade' }),
+        userId: uuid('user_id').references(() => users.uuid, { onDelete: 'cascade' }),
+        name: text('name').notNull(),
+        slug: text('slug').notNull(),
+        description: text('description'),
+        status: varchar('status', { length: 50 }).notNull().default('draft'),
+        isDeleted: boolean('is_deleted').default(false),
+        imageUuid: uuid('image_uuid').references(() => media.uuid),
+        isSeeded: boolean('is_seeded').default(false).notNull(),
+        createdAt: timestamp('created_at', { mode: 'date' })
+            .notNull()
+            .defaultNow(),
+        updatedAt: timestamp('updated_at', { mode: 'date' }),
+    },
+    (table) => ({
+        slugIndex: uniqueIndex('course_slug_idx').on(
+            table.slug,
+        ),
+        organisationUuid: index('fk_course_organisation_idx').on(table.organisationUuid),
+        userId: index('fk_course_user_idx').on(table.userId),
+        imageIndex: index('fk_course_image_idx').on(table.imageUuid),
     })
 )
 
@@ -203,12 +239,13 @@ export const problem = pgTable(
         categoryUuid: uuid('category_uuid')
             .notNull()
             .references(() => category.uuid),
+        courseId: uuid('course_id').notNull().references(()=> course.uuid),
         name: text('name').notNull(),
         slug: text('slug').notNull(),
         description: text('description'),
         starterCode: text('starter_code'),
         answerCode: text('answer_code'),
-        difficulty: integer('difficulty'),
+        difficulty: integer('difficulty').notNull(),
         link: text('link'),
         status: varchar('status', { length: 50 }).notNull().default('draft'),
         isDeleted: boolean('is_deleted').default(false),
@@ -246,6 +283,7 @@ export const userProblem = pgTable(
             .references(() => problem.uuid, { onDelete: 'cascade' }),
         grade: integer('grade'),
         note: text('note'),
+        solution: text('solution'),
         nextReviewAt: timestamp('next_review_at', { mode: 'date'}),
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
@@ -730,3 +768,6 @@ export const usersRoles = pgTable(
 //                         RELATIONS
 // ************************************************************
 
+export const problemRelations = relations(problem, ({ many }) => ({
+    submissions: many(submission),
+}))

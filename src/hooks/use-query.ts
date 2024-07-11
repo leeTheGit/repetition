@@ -10,7 +10,7 @@ type Options = {
 
 export const useFetchQuery = <T>(
     resource: string,
-    storeId: string,
+
     {
         enabled = true,
         pagination,
@@ -19,7 +19,7 @@ export const useFetchQuery = <T>(
         queryKey = [],
     }: Options = {}
 ) => {
-    async function get(storeId: string): Promise<{ success: string; data: T }> {
+    async function get(): Promise<{ success: string; data: T }> {
         const filters = []
         if (columnFilters && columnFilters.length > 0) {
             filters.push(
@@ -40,7 +40,7 @@ export const useFetchQuery = <T>(
 
         let filterString = '?' + filters.join('&')
 
-        const res = await fetch(`/api/${storeId}/${resource}${filterString}`)
+        const res = await fetch(`/api/${resource}${filterString}`)
         if (!res.ok) {
             throw new Error(`Failed to get ${resource}`)
         }
@@ -48,13 +48,14 @@ export const useFetchQuery = <T>(
         const data = await res.json()
         return data
     }
-    let qKey = [resource, storeId, pagination, columnFilters]
+    let qKey = [resource, pagination, columnFilters]
     if (queryKey.length > 0) {
         qKey = queryKey
     }
+    
     return useQuery<{ data: T }>({
         queryKey: qKey,
-        queryFn: () => get(storeId as string),
+        queryFn: () => get(),
         enabled,
     })
 }

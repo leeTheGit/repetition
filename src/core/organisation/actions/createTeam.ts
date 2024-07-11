@@ -6,7 +6,7 @@ import AuthTokenRepository from '@/core/auth/Repository'
 import { insertSchema } from '@/core/organisation/Validators'
 import UserRepository from '@/core/user/Repository'
 import { isError } from '@/core/types'
-import { getUserAuth, getSignupAuth } from '@/lib/auth/utils'
+import { getUserAuth } from '@/lib/auth/utils'
 import { logger } from '@/lib/logger'
 import { Slugify } from '@/lib/utils'
 import { cookies } from 'next/headers'
@@ -24,7 +24,7 @@ export async function createTeam(
     _: any,
     formData: FormData
 ): Promise<ActionResult> {
-    const user = await getSignupAuth()
+    const user = await getUserAuth()
 
     if (!user.session?.user.id) {
         return {

@@ -1,12 +1,9 @@
 import { db } from '@/lib/db'
-import { category, billboards } from '@/lib/db/schema/schema'
+import { category } from '@/lib/db/schema/schema'
 import { eq, desc, asc, ne, or, and, like, ilike } from 'drizzle-orm'
 import { FetchParams } from '@/core/category/Validators'
 import { ModelError, isError } from '@/core/types'
 import { CategoryEntity as ModelEntity } from '@/core/category/Entity'
-import BillboardRepository, {
-    TableType as BillboardTable,
-} from '@/core/billboard/Repository'
 import { PgColumn, PgSelect } from 'drizzle-orm/pg-core'
 import { mapResult } from '@/lib'
 import BaseRepository from '@/core/baseRepository'
@@ -37,10 +34,7 @@ class CategoryRepository extends BaseRepository<
         }
 
         const filters: any = []
-        if (params?.storeId) {
-            filters.push(eq(self.table.storeUuid, params.storeId))
-        }
-        if (params?.name) {
+         if (params?.name) {
             filters.push(ilike(this.table.name, `%${params.name}%`))
         }
 
@@ -48,22 +42,14 @@ class CategoryRepository extends BaseRepository<
             .select({
                 id: self.table.id,
                 uuid: self.table.uuid,
-                storeUuid: self.table.storeUuid,
-                billboardUuid: self.table.billboardUuid,
-                parentId: self.table.parentId,
                 name: self.table.name,
                 slug: self.table.slug,
                 description: self.table.description,
-                metaTitle: self.table.metaTitle,
-                metaDescription: self.table.metaDescription,
-                metaKeywords: self.table.metaKeywords,
                 isSeeded: self.table.isSeeded,
                 createdAt: self.table.createdAt,
                 updatedAt: self.table.updatedAt,
-                billboards,
             })
             .from(this.table)
-            .leftJoin(billboards, eq(this.table.billboardUuid, billboards.uuid))
             .where(and(...filters))
             .limit(params?.limit || DEFAULT_LIMIT)
             .offset(params?.offset || DEFAULT_OFFSET)
@@ -84,27 +70,9 @@ class CategoryRepository extends BaseRepository<
         params: FetchParams = {}
     ) {
         const filters: any = []
-        if (params?.storeId) {
-            filters.push(eq(this.table.storeUuid, params.storeId))
-        }
 
         const query = db.query['category'].findFirst({
             where: and(eq(this.table[col] as PgColumn, id), ...filters),
-            with: {
-                billboard: {
-                    columns: {
-                        id: true,
-                        uuid: true,
-                        label: true,
-                        link: true,
-                        storeUuid: true,
-                        imageUuid: true,
-                    },
-                    with: {
-                        image: true,
-                    },
-                },
-            },
         })
         return query
     }
@@ -138,9 +106,7 @@ class CategoryRepository extends BaseRepository<
     async fetchFirstByStoreUuid(
         storeUuid: string
     ): Promise<ModelEntity | ModelError> {
-        const data = await db.query.category.findFirst({
-            where: eq(this.table.storeUuid, storeUuid),
-        })
+        const data = await db.query.category.findFirst()
 
         if (!data) {
             return {
@@ -154,9 +120,7 @@ class CategoryRepository extends BaseRepository<
     async fetchByUserUuid(
         userUuid: string
     ): Promise<ModelEntity[] | ModelError> {
-        const data = await db.query.category.findMany({
-            where: eq(this.table.storeUuid, userUuid),
-        })
+        const data = await db.query.category.findMany()
 
         if (!data) {
             return {
@@ -191,15 +155,6 @@ class CategoryRepository extends BaseRepository<
             return Entity
         }
 
-        if ('billboards' in item && item.billboards !== null) {
-            const billboardRepository = new BillboardRepository()
-            const billboard = billboardRepository.mapToEntity(
-                item.billboards as BillboardTable
-            )
-            if (!isError(billboard)) {
-                Entity.billboard = billboard
-            }
-        }
         return Entity
     }
 }

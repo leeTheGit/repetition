@@ -38,6 +38,18 @@ export const uuidRegex =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 
+export function randomNumbers(length: number = 10) {
+    let result = "";
+    const characters = "0123456789";
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
+
 export function createUuid() {
   return uuidv4();
 }
