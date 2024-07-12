@@ -8,7 +8,6 @@ import { sessionTable, users } from '@/lib/db/schema/schema'
 import { pgTable, text } from 'drizzle-orm/pg-core'
 import { Resource } from "sst";
 
-export const SIGNUP_SESSION_NAME = 'signup_session'
 
 const mediaTable = pgTable('media', {
     uuid: text('uuid').primaryKey(),

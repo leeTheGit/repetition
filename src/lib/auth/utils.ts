@@ -5,7 +5,6 @@ import { type Cookie } from 'lucia'
 
 import { validateRequest, validateToken } from './validate'
 import { UsernameAndPassword, authenticationSchema } from './authSchema'
-import { SIGNUP_SESSION_NAME } from './auth'
 
 
 export type AuthSession = {

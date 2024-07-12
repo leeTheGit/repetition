@@ -228,6 +228,37 @@ export const course = pgTable(
 )
 
 
+export const topic = pgTable(
+    'topic',
+    {
+        id: serial('id').notNull(),
+        uuid: uuid('uuid')
+            .default(sql`uuid_generate_v4()`)
+            .primaryKey()
+            .notNull(),
+        
+        courseId: uuid('course_id').notNull().references(()=> course.uuid),
+        name: text('name').notNull(),
+        slug: text('slug').notNull(),
+        description: text('description'),
+        status: varchar('status', { length: 50 }).notNull().default('draft'),
+        isDeleted: boolean('is_deleted').default(false),
+        imageUuid: uuid('image_uuid').references(() => media.uuid),
+        isSeeded: boolean('is_seeded').default(false).notNull(),
+        createdAt: timestamp('created_at', { mode: 'date' })
+            .notNull()
+            .defaultNow(),
+        updatedAt: timestamp('updated_at', { mode: 'date' }),
+    },
+    (table) => ({
+        slugIndex: uniqueIndex('topic_slug_idx').on(
+            table.slug,
+        ),
+        imageIndex: index('fk_topic_image_idx').on(table.imageUuid),
+    })
+)
+
+
 export const problem = pgTable(
     'problem',
     {
@@ -240,6 +271,7 @@ export const problem = pgTable(
             .notNull()
             .references(() => category.uuid),
         courseId: uuid('course_id').notNull().references(()=> course.uuid),
+        topicId: uuid('topic_id').references(()=> topic.uuid),
         name: text('name').notNull(),
         slug: text('slug').notNull(),
         description: text('description'),
@@ -261,6 +293,7 @@ export const problem = pgTable(
             table.slug,
         ),
         categoryIndex: index('fk_problem_category_idx').on(table.categoryUuid),
+        topicIndex: index('fk_problem_topic_idx').on(table.topicId),
         imageIndex: index('fk_problem_image_idx').on(table.imageUuid),
     })
 )

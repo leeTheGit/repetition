@@ -9,6 +9,7 @@ import {
     inArray,
     sql,
     ilike,
+    SQL,
 } from 'drizzle-orm'
 import { FetchParams } from '@/core/problems/Validators'
 import { ModelError, isError } from '@/core/types'
@@ -84,22 +85,35 @@ class Repository extends BaseRepository<
     }
 
     async fetchAll(params: FetchParams): Promise<ModelEntity[]> {
-        var self = this
+        let sortColumn = "created_at"
+        if (params.sortColumn) {
+            if (params.sortColumn === "last_practiced") {
+                sortColumn = '"query"."lastSubmitted"'
+            }
+            if (params.sortColumn === "grade") {
+                sortColumn = '"query"."lastGrade"'
+            }
+            if (params.sortColumn === "category") {
+                sortColumn = '"query"."category"'
+            }
 
-        // const filters = this.getFilters(params)
-        // function withOrder<T extends PgSelect>(qb: T, order: string) {
-        //     if (order === 'asc') {
-        //         return qb.orderBy(asc(qb.id))
-        //     } else {
-        //         return qb.orderBy(desc(qb.id))
-        //     }
-        // }
+        }
 
-        const query = sql`
+        let search = ''
+        if (params.name) {
+            search = '%' + params.name.toLowerCase() + '%'
+        }
+
+        // this value is validated by Zod but should be validated again
+        const order = params.order || "asc"
+
+        const sqlChunks: SQL[] = [];
+        sqlChunks.push(sql`
             SELECT
                 "id",
                 "uuid",
                 "category_uuid",
+                "topic_id",
                 "name",
                 "slug",
                 "description",
@@ -115,12 +129,14 @@ class Repository extends BaseRepository<
                 "updated_at",
                 "is_seeded",
                 "lastSubmitted",
+                "lastGrade",
                 "category"
             FROM (
                 SELECT
                     "problem"."id" AS "id",
                     "problem"."uuid",
                     "problem"."category_uuid",
+                    "problem"."topic_id",
                     "problem"."name",
                     "problem"."slug",
                     "problem"."description",
@@ -137,26 +153,91 @@ class Repository extends BaseRepository<
                     "problem"."is_seeded",
                     "category"."name" AS "category",
                     ROW_NUMBER() OVER (PARTITION BY problem.uuid ORDER BY submission.created_at DESC) AS "rowNumber",
-                    "submission"."created_at" AS "lastSubmitted"
+                    ROW_NUMBER() OVER (PARTITION BY problem.uuid ORDER BY submission.grade ASC) AS "grade",
+                    "submission"."created_at" AS "lastSubmitted",
+                    "submission"."grade" as "lastGrade"
                 FROM
                     "problem"
                 LEFT JOIN "category" ON "problem"."category_uuid" = "category"."uuid"
                 LEFT JOIN "media" ON "problem"."image_uuid" = "media"."uuid"
-                LEFT JOIN "submission" ON "problem"."uuid" = "submission"."problem_uuid"
+                LEFT JOIN "submission" ON "problem"."uuid" = "submission"."problem_uuid" and "submission"."user_uuid" = ${params.userId}
             GROUP BY
                 "problem"."uuid",
                 "category"."uuid",
                 "media"."uuid",
-                "submission"."created_at") "query"
-            WHERE
-                "rowNumber" = 1
-            ORDER BY
-                ${sql.raw(params.sortColumn)} ${sql.raw(params.order || 'asc')}
+                "submission"."created_at",
+                "submission"."grade"
+            ) "query"
+        `);
+
+        sqlChunks.push(sql`WHERE "rowNumber" = 1`)
+        if (search) {
+            sqlChunks.push(sql`AND "name" ilike LOWER(${search})`)
+        }
+
+
+        sqlChunks.push(sql`ORDER BY
+            ${sql.raw(sortColumn)} ${sql.raw(order || 'asc')} NULLS LAST
+        `)
+
+        sqlChunks.push(sql`
             OFFSET ${params.offset || DEFAULT_OFFSET}
-            LIMIT ${params?.limit || DEFAULT_LIMIT}`
+            LIMIT ${params?.limit || DEFAULT_LIMIT}
+        `)
+
+        const query: SQL = sql.join(sqlChunks, sql.raw(' '));
+
         // const pgDialect = new PgDialect()
         // const string = pgDialect.sqlToQuery(query)
         // console.log(string)
+
+        // ${search ? 'AND "name" like ' + search + ' ' : ''}
+
+
+        // console.log(query.toSQL())
+        // try {
+        const result = await db.execute(query)
+            // console.log("SQL RESULT", result)
+
+        // } catch (e) {
+        //     console.log(e)
+        // }
+
+
+
+
+        if (params?.withSubmissions && params.userId) {
+            const submissionRepository = new SubmissionRepository()
+
+            for (let res of result.rows) {
+                const items = await submissionRepository.fetchAll({
+                    userId: params.userId,
+                    problemId: res.uuid as string,
+                    limit: 5
+                })
+                
+                //@ts-ignore
+                res.submissions = items
+                //@ts-ignore
+                res.submissionCount = await submissionRepository.fetchCount({
+                    userId: params.userId,
+                    problemId: res.uuid as string,
+                })
+
+            }
+        }
+
+        // logger.info("SALLARY GALLERY", result);
+        // // logger.info("SQL QUERY", query.toSQL());
+        return mapResult<ModelEntity, any>(result.rows, this.mapToEntity)
+
+
+
+
+
+
+
+
         // const query = db
         //     .select({
         //         id: sql`${this.table.id}`.as('id'),
@@ -237,38 +318,6 @@ class Repository extends BaseRepository<
         // }
 
 
-        // console.log(query.toSQL())
-        const result = await db.execute(query)
-        // console.log("SQL RESULT", result)
-
-
-
-
-        if (params?.withSubmissions && params.userId) {
-            const submissionRepository = new SubmissionRepository()
-
-            for (let res of result.rows) {
-                const items = await submissionRepository.fetchAll({
-                    userId: params.userId,
-                    problemId: res.uuid as string,
-                    limit: 5
-                })
-                
-                //@ts-ignore
-                res.submissions = items
-                //@ts-ignore
-                res.submissionCount = await submissionRepository.fetchCount({
-                    userId: params.userId,
-                    problemId: res.uuid as string,
-                })
-
-            }
-        }
-        // console.log(result)
-
-        // logger.info("SALLARY GALLERY", result);
-        // // logger.info("SQL QUERY", query.toSQL());
-        return mapResult<ModelEntity, any>(result.rows, this.mapToEntity)
 
         // return {
         //     total: result.length > 0 ? result[0].total : 0,
@@ -407,6 +456,7 @@ function convertCase(obj: any) {
     const result: Record<string, string> = {}
     const camelCaseColumns: Record<string, string> = {
         category_uuid :'categoryUuid',
+        topic_id :'topicId',
         course_id : 'courseId',
         starter_code:'starterCode',
         answer_code:'answerCode', 

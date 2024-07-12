@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
-import Repository from '@/core/problems/Repository'
+import Repository from '@/core/course/Repository'
 import { isError } from '@/core/types'
 import { apiInsertSchema, fetchParams } from '@/core/problems/Validators'
-import { fetchResponse } from '@/core/problems/response/ProblemDTO'
+import { fetchResponse } from '@/core/course/response/CourseDTO'
 import { HttpResponse, apiHandler } from '@/lib'
 import { logger } from '@/lib/logger'
 
@@ -23,14 +23,16 @@ async function get(
             isArchived: false,
         }
         if (ctx.data.withSubmissions) {
-            input['withSubmissions'] = true
             input['userId'] = ctx.user.id
         }
-        const Product = await repository.fetchAll(input)
-        if (isError(Product)) {
-            return Product
+
+        console.log('course api ', input)
+
+        const Course = await repository.fetchAll(input)
+        if (isError(Course)) {
+            return Course
         }
-        return HttpResponse(Product, fetchResponse)
+        return HttpResponse(Course, fetchResponse)
     } catch (error) {
         return {
             error: 'Internal error',
@@ -46,6 +48,7 @@ async function post(
     try {
         const productValues = {
             ...ctx.data,
+            storeUuid: ctx.store.uuid,
         }
 
         const newProduct = await repository.create(productValues)

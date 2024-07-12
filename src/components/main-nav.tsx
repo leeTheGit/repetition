@@ -27,7 +27,7 @@ const MainNav = ({
     const pathname = usePathname()
     const routes = [
         {
-            href: `/${params.storeId}`,
+            href: `/dashboard`,
             label: 'Overview',
             active: pathname === `/${params.storeId}`,
         },

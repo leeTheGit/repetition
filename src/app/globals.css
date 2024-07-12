@@ -1,6 +1,13 @@
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind components;
+@tailwind utilities;
+
+
+  html,
+  body,
+  :root {
+      height: 100%;
+  }
 
   @layer base {
     :root {
@@ -74,3 +81,53 @@
       @apply bg-background text-foreground;
     }
   }
+
+
+  .blend-normal {
+    mix-blend-mode: normal;
+}
+.blend-multiply {
+    mix-blend-mode: multiply;
+}
+.blend-screen {
+    mix-blend-mode: screen;
+}
+.blend-overlay {
+    mix-blend-mode: overlay;
+}
+.blend-darken {
+    mix-blend-mode: darken;
+}
+.blend-lighten {
+    mix-blend-mode: lighten;
+}
+.blend-colordodge {
+    mix-blend-mode: color-dodge;
+}
+.blend-colorburn {
+    mix-blend-mode: color-burn;
+}
+.blend-hardlight {
+    mix-blend-mode: hard-light;
+}
+.blend-softlight {
+    mix-blend-mode: soft-light;
+}
+.blend-difference {
+    mix-blend-mode: difference;
+}
+.blend-exclusion {
+    mix-blend-mode: exclusion;
+}
+.blend-hue {
+    mix-blend-mode: hue;
+}
+.blend-saturation {
+    mix-blend-mode: saturation;
+}
+.blend-color {
+    mix-blend-mode: color;
+}
+.blend-luminosity {
+    mix-blend-mode: luminosity;
+}

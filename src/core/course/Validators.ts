@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { Slugify } from '@/lib/utils'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { problem } from '@/lib/db/schema/schema'
+import { course } from '@/lib/db/schema/schema'
 
 function transformer(problem: any, action?: string) {
     const result: any = {}
@@ -32,18 +32,9 @@ export const fetchParams = z
             .optional(),
         offset: z.coerce.number().gte(1).optional(),
         order: z.enum(['asc', 'desc']).optional(),
-        categoryUuid: z.string().uuid().optional(),
-        category: z.string().optional(),
         name: z.string().trim().optional(),
-        course:z.string().uuid().optional(),
         userId:z.string().uuid().optional(),
-        sortColumn: z.enum(["category", "last_practiced", "grade"]).optional(),
-        withSubmissions:z
-            .string()
-            .toLowerCase()
-            .transform((x) => x === 'true')
-            .pipe(z.boolean())
-            .optional(),
+        // sortColumn: z.enum([]).optional(),
         isFeatured: z
             .string()
             .toLowerCase()
@@ -70,12 +61,12 @@ export const fetchProductUuid = z.object({
 
 
 
-export const entitySchema = createSelectSchema(problem)
+export const entitySchema = createSelectSchema(course)
 
 export type EntitySchema = z.infer<typeof entitySchema>
 
 // Columns that the database adds automatically are omitted
-export const insertSchema = createInsertSchema(problem).omit({
+export const insertSchema = createInsertSchema(course).omit({
     id: true,
     uuid: true,
     createdAt: true,
@@ -90,14 +81,6 @@ export const baseApiInsertSchema = insertSchema
     })
     .merge(
         z.object({
-            collectionIds: z.preprocess((items: any) => {
-                return items.map((item: { label: string; value: string }) => {
-                    // in the form this will be an object but on the server this will be a string
-                    if (typeof item !== 'string') return item.value
-                    return item
-                })
-            }, z.array(z.string().uuid().optional())),
-
             name: z.preprocess(
                 (name) => {
                     if (!name || typeof name !== 'string') {
@@ -107,9 +90,9 @@ export const baseApiInsertSchema = insertSchema
                 },
                 z
                     .string({
-                        invalid_type_error: 'Problem must include a name',
+                        invalid_type_error: 'Course must include a name',
                     })
-                    .min(3, 'Problem must include a name')
+                    .min(3, 'Course must include a name')
                     .max(100)
             ),
         })

@@ -14,7 +14,7 @@ export type ProblemColumn = {
     slug: string
     lastSubmitted: string
     category: string
-    status: number[]
+    grade: number[]
     submissionCount: number
     difficulty: number
 }
@@ -49,14 +49,24 @@ export const columns: ColumnDef<ProblemColumn>[] = [
               </Button>
             )
         },
-      
-        // header: () => <div className="text-left">Category</div>,
         cell: ({ row }) => <div className="text-left">{row.original.category}</div>, 
     },
 
     {
-        accessorKey: 'status',
-        header: () => <div className="text-right">History</div>,
+        accessorKey: 'grade',
+        header: ({ column }) => {
+            return (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                    column.toggleSorting(column.getIsSorted() === "asc")}
+                }
+              >
+                Grade
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </Button>
+            )
+        },
         cell: ({ row }) => {
             // Do not delete the below commented colors. required for 
             // tailwind to work with interpolated strings
@@ -67,13 +77,13 @@ export const columns: ColumnDef<ProblemColumn>[] = [
             return (
                 <div className="flex flex-row-reverse">
 
-                    {row.original.status.map((s, i) => {
+                    {row.original.grade.map((s, i) => {
                     
                         let color = "#009722"
                         if (s < 4) color = "#e6b502" 
                         if (s < 2) color = "#c90404" 
         
-                        return <div key={i} className={`bg-[${color}] h-[15px] w-[15px] mr-1`}>
+                        return <div key={i} className={`bg-[${color}] h-[15px] w-[15px] mr-1 shadow-[0_35px_60px_-15px_rgb(255, 255, 255)]`}>
                             </div>
                     })}
                 </div>
@@ -84,7 +94,19 @@ export const columns: ColumnDef<ProblemColumn>[] = [
     {
         id: "last_practiced",
         accessorKey: "lastSubmitted",
-        header: () => <div className="text-center">Last practiced</div>,
+        header: ({ column }) => {
+            return (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                    column.toggleSorting(column.getIsSorted() === "asc")}
+                }
+              >
+                Last practiced
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </Button>
+            )
+        },
         cell: ({ row }) => <div className="text-center">{deltaToNow(row.original.lastSubmitted)}</div>, 
         // cell: ({ row }) => <div className="text-center">{deltaToNow("2024-07-11T02:08:33")}</div>, 
         // cell: ({ row }) => <div className="text-center">{deltaToNow(new Date())}</div>, 
@@ -93,7 +115,7 @@ export const columns: ColumnDef<ProblemColumn>[] = [
     {
         accessorKey: 'submissionCount',
         header: () => <div className="text-center">Practice count</div>,
-        cell: ({ row }) => <div className="text-center">{row.original.submissionCount}</div>, 
+        cell: ({ row }) => <div className="text-center">{row.original.submissionCount || ''}</div>, 
     },
     {
         accessorKey: 'difficulty',

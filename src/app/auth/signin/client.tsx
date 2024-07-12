@@ -188,7 +188,16 @@ export default function SignInClient({domain, subdomain}: {domain: string, subdo
                     Logging in with Github...</div>
                 }
             </div>
-
+            
+            <div className="mt-4 text-muted-foreground text-center text-sm">
+                        Don&apos;t have an account?{' '}
+                        <Link
+                            href="/auth/signup"
+                            className="text-white text-secondary-foreground underline"
+                        >
+                            Sign up
+                        </Link>
+                    </div>
             {/* <div className="mt-4 text-sm text-center text-muted-foreground">
                 Don&apos;t have an account yet?{' '}
                 <Link

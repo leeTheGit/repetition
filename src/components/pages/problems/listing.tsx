@@ -65,7 +65,7 @@ export const Listing = () => {
                 name: entity.name,
                 slug: entity.slug,
                 category: entity.category,
-                status: entity.history || [],
+                grade: entity.history || [],
                 submissionCount: entity.submissionCount || 0,
                 lastSubmitted: entity.lastSubmitted || '',
                 difficulty: entity.difficulty,

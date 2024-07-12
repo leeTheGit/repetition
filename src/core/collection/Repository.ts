@@ -43,10 +43,6 @@ class Repository extends BaseRepository<
         }
 
         const filters: any = []
-        if (params?.storeId) {
-            filters.push(eq(self.table.storeUuid, params.storeId))
-        }
-
         const query = db
             .select()
             .from(this.table)

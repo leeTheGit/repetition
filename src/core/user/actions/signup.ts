@@ -9,7 +9,6 @@ import { isError } from '@/core/types'
 import { userValidator } from '@/lib/db/schema/schema'
 import { getZodErrors } from '@/lib/utils'
 import { logger } from '@/lib/logger'
-import { SIGNUP_SESSION_NAME } from '@/lib/auth/auth'
 
 
 interface ActionResult {
@@ -96,9 +95,9 @@ export async function signup(
     sessionCookie.attributes.domain = `.${platformDomain}`
     sessionCookie.attributes.maxAge = 60 * 60
     cookies().set(
-        SIGNUP_SESSION_NAME,
+        sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes
     )
-    return redirect('/account')
+    return redirect('/dashboard')
 }
