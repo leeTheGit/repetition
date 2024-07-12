@@ -10,9 +10,7 @@ export default {
     dialect: 'postgresql',
     schema: './src/lib/db/schema/schema.ts',
     out: './drizzle',
-    // driver: 'pg',
     dbCredentials: {
-        // connectionString: "postgresql://admin:cehub@localhost:5432/cehub?schema=public",
         //@ts-ignore
         url: process.env.DATABASE_URL,
     },
