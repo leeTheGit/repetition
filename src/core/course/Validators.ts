@@ -15,10 +15,6 @@ function transformer(problem: any, action?: string) {
         delete problem.category_uuid
     }
 
-    if (typeof problem.is_archived !== 'undefined') {
-        result['isArchived'] = problem.is_archived
-        delete problem.is_archived
-    }
 
     return { ...problem, ...result }
 }
@@ -35,26 +31,14 @@ export const fetchParams = z
         name: z.string().trim().optional(),
         userId:z.string().uuid().optional(),
         // sortColumn: z.enum([]).optional(),
-        isFeatured: z
-            .string()
-            .toLowerCase()
-            .transform((x) => x === 'true')
-            .pipe(z.boolean())
-            .optional(),
-        isArchived: z
-            .string()
-            .toLowerCase()
-            .transform((x) => x === 'true')
-            .pipe(z.boolean())
-            .optional(),
-    })
+   })
     .optional()
     .transform((problem) => transformer(problem, 'get'))
 
 export type FetchParams = z.infer<typeof fetchParams>
 
 export const fetchProductUuid = z.object({
-    productId: z.string().uuid().or(z.string().min(3).max(100)),
+    entityId: z.string().uuid().or(z.string().min(3).max(100)),
 })
 
 
@@ -69,6 +53,7 @@ export type EntitySchema = z.infer<typeof entitySchema>
 export const insertSchema = createInsertSchema(course).omit({
     id: true,
     uuid: true,
+    organisationUuid: true,
     createdAt: true,
     updatedAt: true,
 })

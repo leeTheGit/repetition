@@ -92,7 +92,7 @@ export default function SignInClient({domain, subdomain}: {domain: string, subdo
             )}
 
             {!first && (
-                <h1 className={`text-2xl font-bold text-center mb-10 ${ghLogin ? 'blur-[2px]' : ''}`}>
+                <h1 data-test="happy" className={`text-2xl font-bold text-center mb-10 ${ghLogin ? 'blur-[2px]' : ''}`}>
                     Sign in to your account{' '}
                 </h1>
             )}
@@ -100,24 +100,23 @@ export default function SignInClient({domain, subdomain}: {domain: string, subdo
             {error && !ghLogin &&
                 <Alert className="my-6 border-red-400 text-red-500">
                     <Terminal className="h-4 w-4" />
-                    <AlertTitle>Error signing in</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertTitle data-test="signin_error">Error signing in</AlertTitle>
+                    <AlertDescription id="one" data-test="signing_error_message">{error}</AlertDescription>
                 </Alert>
             }
 
 
-
             <AuthFormError state={state} />
             <form action={formAction} className={`${ghLogin ? 'blur-[2px]' : ''}`}>
-                <Label htmlFor="email" className="text-muted-foreground">
+                <Label htmlFor="email" className="text-muted-foreground" >
                     Email
                 </Label>
-                <Input name="email" id="email" type="email" required />
+                <Input name="email" id="email" type="email" required data-test="email" />
                 <br />
                 <Label htmlFor="password" className="text-muted-foreground">
                     Password
                 </Label>
-                <Input type="password" name="password" id="password" required />
+                <Input type="password" name="password" id="password" required data-test="password" />
                 <br />
                 <SubmitButton />
             </form>
@@ -215,7 +214,7 @@ export default function SignInClient({domain, subdomain}: {domain: string, subdo
 const SubmitButton = () => {
     const { pending } = useFormStatus()
     return (
-        <Button className="w-full" type="submit" disabled={pending}>
+        <Button className="w-full" type="submit" disabled={pending} data-test="login_button">
             Sign{pending ? 'ing' : ''} in with email
         </Button>
     )

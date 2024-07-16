@@ -2,13 +2,13 @@ import path from 'path'
 
 export default {
   test: {
-    globals: true,
+    // globals: true,
     setupFiles: ['dotenv/config'],
-    // environment: 'jsdom',
+    environment: 'node',
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './')
+      '@': path.resolve(__dirname, './src')
     },
   },
 }

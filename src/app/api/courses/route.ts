@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import Repository from '@/core/course/Repository'
 import { isError } from '@/core/types'
-import { apiInsertSchema, fetchParams } from '@/core/problems/Validators'
+import { apiInsertSchema, fetchParams } from '@/core/course/Validators'
 import { fetchResponse } from '@/core/course/response/CourseDTO'
 import { HttpResponse, apiHandler } from '@/lib'
 import { logger } from '@/lib/logger'
@@ -20,13 +20,10 @@ async function get(
     try {
         let input = {
             ...ctx.data,
-            isArchived: false,
         }
         if (ctx.data.withSubmissions) {
             input['userId'] = ctx.user.id
         }
-
-        console.log('course api ', input)
 
         const Course = await repository.fetchAll(input)
         if (isError(Course)) {
@@ -46,17 +43,16 @@ async function post(
     ctx: any
 ) {
     try {
-        const productValues = {
+        const values = {
             ...ctx.data,
-            storeUuid: ctx.store.uuid,
+            organisationUuid: ctx.user.organisationUuid
+        }
+        const newEntity = await repository.create(values)
+        if (isError(newEntity)) {
+            return newEntity
         }
 
-        const newProduct = await repository.create(productValues)
-        if (isError(newProduct)) {
-            return newProduct
-        }
-
-        return newProduct.toObject()
+        return newEntity.toObject()
     } catch (error) {
         logger.info('[PRODUCT_POST]', error)
         return {

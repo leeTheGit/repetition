@@ -106,7 +106,7 @@ export const ProblemForm: React.FC<Props> = ({
             const method = initialData ? 'PATCH' : 'POST'
             const catId = initialData ? initialData.uuid : ''
 
-            return create(data, method, `course/${courseId}/${endpoint}/${catId}`)
+            return create(data, method, `courses/${courseId}/${endpoint}/${catId}`)
         },
         onSuccess: (response) => {
             toast(toastMessage)

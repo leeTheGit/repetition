@@ -5,7 +5,7 @@ export default function AuthFormError({ state }: { state: { error: string } }) {
       return (
         <Alert className="mb-6 border-red-600 text-red-600" >
           <Terminal className="h-4 w-4" />
-          <AlertTitle>{state.error}</AlertTitle>
+          <AlertTitle data-test="form_error">{state.error}</AlertTitle>
           {/* <AlertDescription>{state.error}</AlertDescription> */}
         </Alert>
 
