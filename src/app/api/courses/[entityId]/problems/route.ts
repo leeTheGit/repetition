@@ -13,13 +13,13 @@ export const POST = apiHandler(post, { validator: apiInsertSchema })
 
 async function get(
     req: NextRequest,
-    { params }: { params: { course_id: string } },
+    { params }: { params: { entityId: string } },
     ctx: any
 ) {
     try {
         let input = {
             ...ctx.data,
-            courseId: params.course_id,
+            courseId: params.entityId,
             isArchived: false,
         }
 
@@ -37,15 +37,14 @@ async function get(
 
 async function post(
     req: Request,
-    { params }: { params: { storeId: string } },
+    { params }: { params: { entityId: string } },
     ctx: any
 ) {
     try {
         const productValues = {
             ...ctx.data,
-            storeUuid: ctx.store.uuid,
         }
-
+        console.log(productValues);
         const newProduct = await repository.create(productValues)
         if (isError(newProduct)) {
             return newProduct

@@ -249,12 +249,15 @@ class Repository extends BaseRepository<
             filters = [eq(this.table.uuid, identifier)]
         }
 
+        if ('course' in params) {
+            filters.push(eq(this.table.courseId, params.course))
+        }
 
         const query = db.query['problem'].findFirst({
             where: and(...filters),
         })
 
-
+        console.log(query.toSQL())
         const data = await query
         if (!data) {
             return {

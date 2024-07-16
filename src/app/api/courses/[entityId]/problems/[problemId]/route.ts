@@ -24,7 +24,7 @@ async function get(
         if (!params.entityId) {
             return { error: `${name} id is required`, status: 400 }
         }
-        logger.info('in the problem get route', params.entityId)
+        logger.info('in the problem get route', params.problemId)
         let uuid = false
         if (params.entityId.match(uuidRegex)) {
             uuid = true
@@ -42,10 +42,12 @@ async function get(
             }
         }
 
-        var Entity = await repository.fetchByUuid(params.entityId, {
+        console.log('getting problem right now')
+        var Entity = await repository.fetchByUuid(params.problemId, {
+            course: params.entityId,
             organisationUuid: ctx.user.organisationUuid,
         })
- 
+        console.log(Entity)
         if (isError(Entity)) {
             return Entity
         }
@@ -66,6 +68,7 @@ async function update(
 ) {
     try {
         console.log('editing the porobelm in th api')
+        console.log(ctx.data)
         const Entity = await repository.update(params.problemId, ctx.data)
 
         if (isError(Entity)) {

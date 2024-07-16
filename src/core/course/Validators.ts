@@ -37,7 +37,7 @@ export const fetchParams = z
 
 export type FetchParams = z.infer<typeof fetchParams>
 
-export const fetchProductUuid = z.object({
+export const fetchCourseUuid = z.object({
     entityId: z.string().uuid().or(z.string().min(3).max(100)),
 })
 

@@ -21,9 +21,6 @@ async function get(
         let input = {
             ...ctx.data,
         }
-        if (ctx.data.withSubmissions) {
-            input['userId'] = ctx.user.id
-        }
 
         const Course = await repository.fetchAll(input)
         if (isError(Course)) {

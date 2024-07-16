@@ -20,7 +20,7 @@ services:
         volumes:
             - repetition_test:/var/lib/postgresql/data:delegated
         ports:
-            - "5432:5432"
+            - "5431:5432"
         environment:
           - POSTGRES_DB=rep_test
           - POSTGRES_USER=admin

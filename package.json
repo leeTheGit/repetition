@@ -12,8 +12,9 @@
     "migration:generate": "drizzle-kit generate --dialect=postgresql --schema=./src/lib/db/schema/schema.ts",
     "migration:introspect": "drizzle-kit introspect --config=drizzle.config.ts",
     "migration:push": "node -r esbuild-register src/lib/db/migrate.ts",
-    "test": "vitest run",
-    "cypress:open": "cypress open"
+    "test": "tsx src/lib/db/removeTestData.ts && tsx src/lib/db/testseed.ts && vitest run",
+    "cypress:open": "cypress open",
+    "db:removetest": "tsx src/lib/db/removeTestData.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
