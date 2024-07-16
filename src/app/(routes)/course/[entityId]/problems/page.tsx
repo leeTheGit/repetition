@@ -1,15 +1,17 @@
-import React from 'react'
+import React from "react";
+import { Listing } from "@/components/pages/problems/listing";
 import { Suspense } from "react";
 import { getUserAuth } from "@/lib/auth/utils";
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";
 
-const Page = async ({ params }: { params: { storeId: string } }) => {
+const Page = async ({ params }: { params: { entityId: string } }) => {
   const auth = await getUserAuth();
-  
   if (!auth.session) {
     return null;
   }
+
+
 
   return (
     <div className="flex-col">
@@ -26,8 +28,7 @@ const Page = async ({ params }: { params: { storeId: string } }) => {
             </div>
           }
         >
-            <div>on the problem bpage</div>
-
+          <Listing courseId={params.entityId} />
         </Suspense>
       </div>
     </div>
@@ -35,5 +36,3 @@ const Page = async ({ params }: { params: { storeId: string } }) => {
 };
 
 export default Page;
-
-

@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import { problem, category, media, submission } from '@/lib/db/schema/schema'
+import { problem, category, media } from '@/lib/db/schema/schema'
 import {
     eq,
     desc,
@@ -102,6 +102,7 @@ class Repository extends BaseRepository<
         let search = ''
         if (params.name) {
             search = '%' + params.name.toLowerCase() + '%'
+            delete params.offset
         }
 
         // this value is validated by Zod but should be validated again
@@ -191,20 +192,7 @@ class Repository extends BaseRepository<
         // const string = pgDialect.sqlToQuery(query)
         // console.log(string)
 
-        // ${search ? 'AND "name" like ' + search + ' ' : ''}
-
-
-        // console.log(query.toSQL())
-        // try {
         const result = await db.execute(query)
-            // console.log("SQL RESULT", result)
-
-        // } catch (e) {
-        //     console.log(e)
-        // }
-
-
-
 
         if (params?.withSubmissions && params.userId) {
             const submissionRepository = new SubmissionRepository()
@@ -227,102 +215,8 @@ class Repository extends BaseRepository<
             }
         }
 
-        // logger.info("SALLARY GALLERY", result);
-        // // logger.info("SQL QUERY", query.toSQL());
         return mapResult<ModelEntity, any>(result.rows, this.mapToEntity)
 
-
-
-
-
-
-
-
-        // const query = db
-        //     .select({
-        //         id: sql`${this.table.id}`.as('id'),
-        //         uuid: this.table.uuid,
-        //         categoryUuid: this.table.categoryUuid,
-        //         name: this.table.name,
-        //         slug: this.table.slug,
-        //         description: this.table.description,
-        //         starterCode: this.table.starterCode,
-        //         answerCode: this.table.answerCode,
-        //         difficulty: this.table.difficulty,
-        //         courseId: this.table.courseId,
-        //         link: this.table.link,
-        //         imageUuid: this.table.imageUuid,
-        //         status: this.table.status,
-        //         isDeleted: this.table.isDeleted,
-        //         createdAt: this.table.createdAt,
-        //         updatedAt: this.table.updatedAt,
-        //         isSeeded: this.table.isSeeded,
-        //         category: sql`${category.name}`.as('category'),
-        //         rowNumber: sql`ROW_NUMBER() OVER(PARTITION BY problem.uuid ORDER BY submission.created_at DESC)`.as('rowNumber'),
-        //         lastSubmission: sql`${submission.createdAt}`.as('lastSubmitted')
-        //         // total: sql`(SELECT count(uuid)
-        //         //         FROM ${this.table}
-        //         //         WHERE store_uuid = ${params.storeId}
-        //         //         AND is_archived = false)`.mapWith(Number),
-        //     })
-        //     .from(this.table)
-        //     .leftJoin(category, eq(this.table.categoryUuid, category.uuid))
-        //     .leftJoin(media, eq(this.table.imageUuid, media.uuid))
-        //     .leftJoin(submission, eq(this.table.uuid, submission.problemUuid))
-        //     // .orderBy(asc(query.id))
-        //     // .limit(params?.limit || DEFAULT_LIMIT)
-        //     .offset(params?.offset || DEFAULT_OFFSET)
-        //     .groupBy(this.table.uuid, category.uuid, media.uuid, submission.createdAt)
-        //     .where(and(...filters))
-        //     .$dynamic()
-        //     .as('query')
-
-
-
-        // // console.log(query.toSQL())
-        // // const sq = db.$with('sq').as(query);
-        // console.log('creating final query')
-
-        // const finalQuery = db.select({
-        //     id: query.id,
-        //     uuid: query.uuid,
-        //     categoryUuid: query.categoryUuid,
-        //     name: query.name,
-        //     slug: query.slug,
-        //     description: query.description,
-        //     starterCode: query.starterCode,
-        //     answerCode: query.answerCode,
-        //     difficulty: query.difficulty,
-        //     courseId: query.courseId,
-        //     link: query.link,
-        //     imageUuid: query.imageUuid,
-        //     status: query.status,
-        //     isDeleted: query.isDeleted,
-        //     createdAt: query.createdAt,
-        //     updatedAt: query.updatedAt,
-        //     isSeeded: query.isSeeded,
-        //     lastSubmission: query.lastSubmission,
-        //     category: query.category
-
-            
-        // }).from(query).where(eq(query.rowNumber, 1) )
-        // .orderBy(
-        //     sql`category`
-        // )
-        // .limit(params?.limit || DEFAULT_LIMIT)
-        // .$dynamic()
-
-        // // asc(query[params.sortColumn] || query.id)
-        // if (params?.order) {
-        //     withOrder(finalQuery, params.order)
-        // }
-
-
-
-        // return {
-        //     total: result.length > 0 ? result[0].total : 0,
-        //     data: mapResult<ModelEntity, any>(result, this.mapToEntity)
-        // };
     }
 
     async fetchCount(params: FetchParams): Promise<number> {
@@ -360,7 +254,6 @@ class Repository extends BaseRepository<
             where: and(...filters),
         })
 
-        // console.log("SQL QUERY", query.toSQL());
 
         const data = await query
         if (!data) {
@@ -368,7 +261,6 @@ class Repository extends BaseRepository<
                 error: `${this.tableName} not found`,
             }
         }
-        // console.log('repos', data)
         const entity = this.mapToEntity(data)
         if (isError(entity)) {
             return entity
@@ -389,12 +281,6 @@ class Repository extends BaseRepository<
             entity.uniqueSlug()
             return this.save(entity)
         }
-
-        // if (e.constraint === "order_item_product_uuid_product_uuid_fk") {
-        //   return {
-        //     error: "Cannon delete product as it has associated orders",
-        //   };
-        // }
     }
 
 

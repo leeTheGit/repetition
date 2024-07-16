@@ -40,12 +40,14 @@ async function get(
 
 async function post(
     req: Request,
-    { params }: { params: { storeId: string } },
+    {  }: {  },
     ctx: any
 ) {
     try {
+        console.log('posting ndw problem')
         const productValues = {
             ...ctx.data,
+
         }
 
         const newProduct = await repository.create(productValues)

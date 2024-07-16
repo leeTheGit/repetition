@@ -63,11 +63,17 @@ export const fetchParams = z
 export type FetchParams = z.infer<typeof fetchParams>
 
 export const fetchProductUuid = z.object({
-    productId: z.string().uuid().or(z.string().min(3).max(100)),
+    entityId: z.string().uuid().or(z.string().min(3).max(100)),
 })
 
 
+// export const fetchByUuid = z.object({
+//     entityId: z.string().uuid(),
+// })
 
+// export const fetchBySlug = z.object({
+//     entityId: z.string().min(3).max(100),
+// })
 
 
 export const entitySchema = createSelectSchema(problem)
@@ -90,13 +96,13 @@ export const baseApiInsertSchema = insertSchema
     })
     .merge(
         z.object({
-            collectionIds: z.preprocess((items: any) => {
-                return items.map((item: { label: string; value: string }) => {
-                    // in the form this will be an object but on the server this will be a string
-                    if (typeof item !== 'string') return item.value
-                    return item
-                })
-            }, z.array(z.string().uuid().optional())),
+            // collectionIds: z.preprocess((items: any) => {
+            //     return items.map((item: { label: string; value: string }) => {
+            //         // in the form this will be an object but on the server this will be a string
+            //         if (typeof item !== 'string') return item.value
+            //         return item
+            //     })
+            // }, z.array(z.string().uuid().optional())),
 
             name: z.preprocess(
                 (name) => {

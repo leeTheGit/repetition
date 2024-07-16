@@ -27,10 +27,14 @@ export type Category = {
     createdAt: string
 }
 
+interface Props {
+    courseId: string
+}
+
 
 const endpoint = 'problems'
 
-export const Listing = () => {
+export const Listing = ({courseId} : Props) => {
     const params = useParams()
     // delete modal
     const [open, setOpen] = useState(false)
@@ -105,7 +109,7 @@ export const Listing = () => {
                             )}
 
                             <DataTable
-                                columns={columns}
+                                columns={columns(courseId)}
                                 columnFilters={columnFilters}
                                 emptyMessage={
                                     entities.isPending

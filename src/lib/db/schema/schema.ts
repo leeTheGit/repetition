@@ -144,6 +144,7 @@ export const category = pgTable(
             .default(sql`uuid_generate_v4()`)
             .primaryKey()
             .notNull(),
+        courseId: uuid('course_id').references(()=> course.uuid),
         name: text('name').notNull(),
         slug: varchar('slug', { length: 256 }).notNull(),
         description: text('description'),
@@ -154,6 +155,7 @@ export const category = pgTable(
         updatedAt: timestamp('updated_at', { mode: 'date' }),
     },
     (table) => ({
+        courseUuid: index('fk_course_category_idx').on(table.courseId),
         slugIndex: uniqueIndex('category_slug_idx').on(
             table.slug,
         ),
@@ -251,6 +253,7 @@ export const topic = pgTable(
         updatedAt: timestamp('updated_at', { mode: 'date' }),
     },
     (table) => ({
+        courseUuid: index('fk_course_topic_idx').on(table.courseId),
         slugIndex: uniqueIndex('topic_slug_idx').on(
             table.slug,
         ),
@@ -268,7 +271,6 @@ export const problem = pgTable(
             .primaryKey()
             .notNull(),
         categoryUuid: uuid('category_uuid')
-            .notNull()
             .references(() => category.uuid),
         courseId: uuid('course_id').notNull().references(()=> course.uuid),
         topicId: uuid('topic_id').references(()=> topic.uuid),
