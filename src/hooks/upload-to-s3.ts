@@ -35,7 +35,6 @@ function resize(img: HTMLImageElement, width: number, height: number) {
 
 function useUploadToS3() {
     const uploadAsset = async (
-        storeId: string,
         file: File,
         data: AssetData
     ) => {
@@ -61,7 +60,7 @@ function useUploadToS3() {
             }
             reader.readAsDataURL(file)
 
-            const fetchUrl = `/api/${storeId}/assets/signedurl?name=${name}&type=${type}`
+            const fetchUrl = `/api/assets/signedurl?name=${name}&type=${type}`
             let response = null
             try {
                 const signedUrl = await fetch(fetchUrl)
@@ -109,7 +108,6 @@ function useUploadToS3() {
                     filetype: type,
                     width,
                     height,
-                    storeId: storeId,
                 }
                 const saved = await fetch(`/api/asset`, {
                     method: 'POST',

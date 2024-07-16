@@ -93,7 +93,7 @@ class Repository extends BaseRepository<
         uuid: string,
         params: FetchParams = {}
     ): Promise<ModelEntity | ModelError> {
-        const data = await db.query['users'].findFirst({
+        const data = await db.query.users.findFirst({
             where: eq(this.table.uuid, uuid),
             with: {
                 profileImage: true,

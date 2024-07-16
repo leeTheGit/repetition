@@ -806,3 +806,10 @@ export const usersRoles = pgTable(
 export const problemRelations = relations(problem, ({ many }) => ({
     submissions: many(submission),
 }))
+
+export const userRelations = relations(users, ({ one }) => ({
+    profileImage: one(media, {
+        fields: [users.profileImageId],
+        references: [media.uuid],
+    }),
+}))

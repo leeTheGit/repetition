@@ -8,7 +8,6 @@ import { isError } from '@/core/types'
 
 type deleteFunction = () => Promise<ModelError | { success: boolean }>
 interface Props {
-    storeId: string
     assetId: string
     resource: string
     resourceId: string
@@ -34,7 +33,6 @@ export const deleteMedia = async (
             }
 
             const removeFromLog = await logRepository.deleteByPrimary(
-                params.storeId,
                 params.assetId,
                 params.resource,
                 params.resourceId

@@ -5,14 +5,11 @@ import { deleteMedia } from '@/core/asset/actions/deleteMedia'
 const repository = new Repository()
 
 interface Props {
-    storeId: string
     entityId: string
 }
 
 export const imageDelete = async (params: Props) => {
-    const entity = await repository.fetchByUuid(params.entityId, {
-        storeId: params.storeId,
-    })
+    const entity = await repository.fetchByUuid(params.entityId, { })
     if (isError(entity)) {
         return entity
     }
@@ -39,7 +36,6 @@ export const imageDelete = async (params: Props) => {
     }
 
     const imageDelete = deleteMedia(del, {
-        storeId: params.storeId,
         assetId: entity.profileImageId,
         resourceId: params.entityId,
         resource: 'user',

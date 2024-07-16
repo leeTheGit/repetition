@@ -22,9 +22,6 @@ class AssetLogRepository {
 
     async fetchAll(params: FetchParams = {}): Promise<ModelEntity[]> {
         const filters: any = []
-        if (params?.storeId) {
-            filters.push(eq(this.table.storeUuid, params.storeId))
-        }
         if (params?.organisationId) {
             filters.push(eq(this.table.organisationUuid, params.organisationId))
         }
@@ -51,9 +48,6 @@ class AssetLogRepository {
         params: FetchParams = {}
     ): Promise<ModelEntity | ModelError> {
         const filters: any = []
-        if (params?.storeId) {
-            filters.push(eq(this.table.storeUuid, params.storeId))
-        }
         if (params?.organisationId) {
             filters.push(eq(this.table.organisationUuid, params.organisationId))
         }
@@ -79,12 +73,6 @@ class AssetLogRepository {
         let count = 0
 
         const filters: any = []
-        if (params?.storeId) {
-            filters.push(eq(this.table.storeUuid, params.storeId))
-        }
-        if (params?.organisationId) {
-            filters.push(eq(this.table.storeUuid, params.organisationId))
-        }
 
         const query = db
             .select({
@@ -196,7 +184,6 @@ class AssetLogRepository {
                 .where(
                     and(
                         eq(this.table.uuid, id),
-                        eq(this.table.storeUuid, storeId)
                     )
                 )
 
@@ -221,7 +208,6 @@ class AssetLogRepository {
     }
 
     async deleteByPrimary(
-        storeId: string,
         mediaId: string,
         resource: string,
         resourceId: string
@@ -232,7 +218,6 @@ class AssetLogRepository {
                 .where(
                     and(
                         eq(this.table.mediaUuid, mediaId),
-                        eq(this.table.storeUuid, storeId),
                         eq(this.table.resource, resource),
                         eq(this.table.resourceUuid, resourceId)
                     )
