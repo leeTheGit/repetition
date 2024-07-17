@@ -1,9 +1,10 @@
 import { NextRequest } from 'next/server'
 import Repository from '@/core/problems/Repository'
-import { isError } from '@/core/types'
+import CourseRepository from '@/core/course/Repository'
+import { isError, not } from '@/core/types'
 import { apiInsertSchema, fetchParams } from '@/core/problems/Validators'
 import { fetchResponse } from '@/core/problems/response/ProblemDTO'
-import { HttpResponse, apiHandler } from '@/lib'
+import { HttpResponse, apiHandler, uuidRegex } from '@/lib'
 import { logger } from '@/lib/logger'
 
 const repository = new Repository()
@@ -17,16 +18,35 @@ async function get(
     ctx: any
 ) {
     try {
+
+        let courseId = params.entityId
+
+        if ( !( params.entityId.match(uuidRegex) )) {
+            const courseRepository = new CourseRepository()
+            const ok = await courseRepository.fetchByUuid(params.entityId)
+            if (not(ok)) {
+                return {
+                    error: "Course not found"
+                }
+            }
+            courseId = ok.uuid
+        }
+
+
         let input = {
             ...ctx.data,
-            courseId: params.entityId,
+            courseId: courseId,
+            userId: ctx.user.id,
             isArchived: false,
         }
+
+       
 
         const Product = await repository.fetchAll(input)
         if (isError(Product)) {
             return Product
         }
+        
         return HttpResponse(Product, fetchResponse)
     } catch (error) {
         return {

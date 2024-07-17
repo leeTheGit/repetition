@@ -150,6 +150,7 @@ class CategoryRepository extends BaseRepository<
     }
 
     mapToEntity(item: SelectTableType): ModelEntity | ModelError {
+        if (!item) return {error: "Category is empty when mapping"}
         const Entity = ModelEntity.fromValues(item, item.uuid)
         if (isError(Entity)) {
             return Entity

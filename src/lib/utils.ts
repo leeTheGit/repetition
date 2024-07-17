@@ -23,10 +23,13 @@ export function mapResult<Entity, M extends (item: any) => Entity>(
 ): Entity[] {
   const Entities: Entity[] = [];
   for (let res of result) {
-    const entity = mapToEntity(res);
-    Entities.push(entity);
+    try {
+      const entity = mapToEntity(res);
+      Entities.push(entity);
+    } catch(e) {
+      console.log(e)
+    }
   }
-
   return Entities;
 }
 

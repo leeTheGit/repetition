@@ -162,6 +162,7 @@ class Repository extends BaseRepository<
                 LEFT JOIN "category" ON "problem"."category_uuid" = "category"."uuid"
                 LEFT JOIN "media" ON "problem"."image_uuid" = "media"."uuid"
                 LEFT JOIN "submission" ON "problem"."uuid" = "submission"."problem_uuid" and "submission"."user_uuid" = ${params.userId}
+            
             GROUP BY
                 "problem"."uuid",
                 "category"."uuid",
@@ -171,7 +172,7 @@ class Repository extends BaseRepository<
             ) "query"
         `);
 
-        sqlChunks.push(sql`WHERE "rowNumber" = 1`)
+        sqlChunks.push(sql`WHERE "rowNumber" = 1 AND "query"."course_id" = ${params.courseId}`)
         if (search) {
             sqlChunks.push(sql`AND "name" ilike LOWER(${search})`)
         }
@@ -214,9 +215,7 @@ class Repository extends BaseRepository<
 
             }
         }
-
         return mapResult<ModelEntity, any>(result.rows, this.mapToEntity)
-
     }
 
     async fetchCount(params: FetchParams): Promise<number> {
@@ -257,7 +256,7 @@ class Repository extends BaseRepository<
             where: and(...filters),
         })
 
-        console.log(query.toSQL())
+        // console.log(query.toSQL())
         const data = await query
         if (!data) {
             return {
@@ -296,12 +295,10 @@ class Repository extends BaseRepository<
             itemData.updatedAt = new Date(itemData.updatedAt)
         }
         const Entity = ModelEntity.fromValues(itemData, item.uuid)
-
         if (isError(Entity)) {
             return Entity
         }
-
-        if ('category' in itemData) {
+        if ('category' in itemData && itemData.category) {
             const categoryRepository = new CategoryRepository()
             const category = categoryRepository.mapToEntity(
                 itemData.category as CategoryTable

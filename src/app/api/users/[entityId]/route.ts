@@ -71,8 +71,6 @@ async function update(
     ctx: any
 ) {
     try {
-        console.log('updating the user')
-        console.log(ctx)
         // remove the image from the billboard and the asset_log table
         if ('profileImageId' in ctx.data && ctx.data.profileImageId === null) {
             return await imageDelete({
@@ -81,7 +79,6 @@ async function update(
         }
 
         const Entity = await repository.update(params.entityId, ctx.data)
-        console.log(Entity)
         if (isError(Entity)) {
             return Entity
         }

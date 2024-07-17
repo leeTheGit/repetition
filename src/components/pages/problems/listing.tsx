@@ -32,10 +32,9 @@ interface Props {
 }
 
 
-const endpoint = 'problems'
 
 export const Listing = ({courseId} : Props) => {
-    const params = useParams()
+    const endpoint = `courses/${courseId}/problems`
     // delete modal
     const [open, setOpen] = useState(false)
     const [sorting, setSorting] = useState<SortingState>([{desc:true, id:'category'}])
