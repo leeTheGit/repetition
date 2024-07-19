@@ -16,7 +16,7 @@ import {
 import { FetchParams } from '@/core/problems/Validators'
 import { ModelError, isError } from '@/core/types'
 import { ProblemEntity as ModelEntity } from '@/core/problems/Entity'
-// import { PgDialect, PgSelect } from 'drizzle-orm/pg-core'
+import { PgDialect, PgSelect } from 'drizzle-orm/pg-core'
 import { SubmissionEntity } from '@/core/submission/Entity'
 import CategoryRepository, {
     SelectTableType as CategoryTable,
@@ -117,6 +117,12 @@ class Repository extends BaseRepository<
             delete params.offset
         }
 
+        let category
+        if (params.category) {
+            category = params.category
+            delete params.offset
+        }
+
         // this value is validated by Zod but should be validated again
         const order = params.order || "asc"
 
@@ -188,6 +194,18 @@ class Repository extends BaseRepository<
         sqlChunks.push(sql`WHERE "rowNumber" = 1 AND "query"."course_id" = ${params.courseId}`)
         if (search) {
             sqlChunks.push(sql`AND "name" ilike LOWER(${search})`)
+        }
+        if (category) {
+            let catArr = category.split(',')
+            
+            for (let i=0; i<catArr.length; i++) {
+                if (i === 0) {
+                    sqlChunks.push(sql`AND "query"."category_uuid" = ${catArr[i]}`)
+                    continue
+                } else {
+                    sqlChunks.push(sql`OR "query"."category_uuid" = ${catArr[i]}`)
+                } 
+            }
         }
 
 

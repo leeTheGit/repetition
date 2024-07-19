@@ -5,7 +5,8 @@ import { useParams, useRouter } from 'next/navigation'
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
 import { Plus } from 'lucide-react'
 import { columns } from './columns'
-
+import { DataTableToolbar } from '@/components/ui/data-table-internal-toolbar'
+import { DataTableFacetedFilter } from '@/components/ui/data-table-faceted-filter'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/heading'
 import { Separator } from '@/components/ui/separator'
@@ -79,7 +80,7 @@ export const Listing = ({courseId} : Props) => {
    
     const categoryOptions = categories.data?.data.map((category) => {
         return {
-            value: category.slug,
+            value: category.uuid,
             label: category.name,
         }
     })
