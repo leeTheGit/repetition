@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server'
-import Repository from '@/core/problems/Repository'
+import Repository from '@/core/category/Repository'
 import CourseRepository from '@/core/course/Repository'
 import { isError, not } from '@/core/types'
-import { apiInsertSchema, fetchParams } from '@/core/problems/Validators'
-import { fetchResponse } from '@/core/problems/response/ProblemDTO'
+import { apiInsertSchema, fetchParams } from '@/core/category/Validators'
+import { fetchResponse } from '@/core/category/response/CategoryDTO'
 import { HttpResponse, apiHandler, uuidRegex } from '@/lib'
 import { logger } from '@/lib/logger'
 
@@ -65,25 +65,26 @@ async function post(
             ...ctx.data,
         }
 
-        
+        console.log(Values)
+
         // If we use the course slug instead of the uuid we'll fetch it here
         if (!( "courseId" in Values) && "courseSlug" in Values) {
             const courseRepository = new CourseRepository()
             const course = await courseRepository.fetchByUuid(Values.courseSlug)
             if (not(course)) {
                 return {
-                    error: "Problem must belong to a course"
+                    error: "Category must belong to a course"
                 }
             }
             Values.courseId = course.uuid
         }
 
-        const newProduct = await repository.create(Values)
-        if (isError(newProduct)) {
-            return newProduct
+        const newEntity = await repository.create(Values)
+        if (isError(newEntity)) {
+            return newEntity
         }
 
-        return newProduct.toObject()
+        return newEntity.toObject()
     } catch (error) {
         logger.info('[PRODUCT_POST]', error)
         return {

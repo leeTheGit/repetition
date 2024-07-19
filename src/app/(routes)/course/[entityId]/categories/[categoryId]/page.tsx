@@ -1,18 +1,16 @@
 import React from 'react'
-import Repository from '@/core/problems/Repository'
+import Repository from '@/core/category/Repository'
 import CourseRepository from '@/core/course/Repository'
 import { getUserAuth } from "@/lib/auth/utils";
-import { ProblemForm as Form } from '@/components/pages/problems/form'
-import CategoryRepository from '@/core/category/Repository'
+import { CategoryForm as Form } from '@/components/pages/categories/category-form'
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";
 import { isError } from '@/core/types';
 
 const repository = new Repository()
 const courseRepository = new CourseRepository()
-const categoryRepository = new CategoryRepository()
 
-const Page = async ({ params }: { params: { entityId: string, problemId:string } }) => {
+const Page = async ({ params }: { params: { entityId: string, categoryId:string } }) => {
     const auth = await getUserAuth();
 
     if (!auth.session) {
@@ -24,12 +22,12 @@ const Page = async ({ params }: { params: { entityId: string, problemId:string }
     let isNew = false
     let entity = null
 
-    if (params.problemId === 'new') {
+    if (params.categoryId === 'new') {
         isNew = true
     }
 
     if (!isNew) {
-        entity = await repository.fetchByUuid(params.problemId)
+        entity = await repository.fetchByUuid(params.categoryId)
         if (isError(entity)) {
             return <div>This page does not exist</div>
         }
@@ -46,9 +44,6 @@ const Page = async ({ params }: { params: { entityId: string, problemId:string }
     }
 
 
-    let categories = await categoryRepository.fetchAll({
-        courseId: courseId,
-    })
     // console.log(categories)
 
     return (
@@ -58,7 +53,6 @@ const Page = async ({ params }: { params: { entityId: string, problemId:string }
                     initialData={entity ? entity.toObject() : null} 
                     courseSlug={params.entityId}
                     courseId={courseId}
-                    categories={categories.map(category => category.toObject())}
                 />
             </div>
         </div>

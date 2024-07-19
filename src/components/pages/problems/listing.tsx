@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
 import { Plus } from 'lucide-react'
 import { columns } from './columns'
@@ -36,6 +36,8 @@ interface Props {
 export const Listing = ({courseId} : Props) => {
     const endpoint = `courses/${courseId}/problems`
     // delete modal
+
+    const router = useRouter()
     const [open, setOpen] = useState(false)
     const [sorting, setSorting] = useState<SortingState>([{desc:true, id:'category'}])
     const [pagination, setPagination] = useState<PaginationState>({
@@ -92,7 +94,9 @@ export const Listing = ({courseId} : Props) => {
                     />
                 </div>
 
-                <Button onClick={() => setOpen(true)}>
+                <Button 
+                    onClick={() => router.push(`/course/${courseId}/problems/new`)}
+                >
                     <Plus className="mr-2 h-4 w-4" />
                     Add New
                 </Button>

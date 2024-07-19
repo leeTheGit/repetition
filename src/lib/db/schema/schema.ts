@@ -222,6 +222,7 @@ export const course = pgTable(
     (table) => ({
         slugIndex: uniqueIndex('course_slug_idx').on(
             table.slug,
+            table.userId
         ),
         organisationUuid: index('fk_course_organisation_idx').on(table.organisationUuid),
         userId: index('fk_course_user_idx').on(table.userId),

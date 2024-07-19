@@ -57,7 +57,9 @@ export class ProblemEntity extends Entity<EntitySchema> {
         return this.props.uuid
     }
 
-
+    get courseId() {
+        return this.props.courseId
+    }
     get categoryUuid() {
         return this.props.categoryUuid
     }

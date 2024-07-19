@@ -5,7 +5,7 @@ import { FetchParams } from '@/core/category/Validators'
 import { ModelError, isError } from '@/core/types'
 import { CategoryEntity as ModelEntity } from '@/core/category/Entity'
 import { PgColumn, PgSelect } from 'drizzle-orm/pg-core'
-import { mapResult } from '@/lib'
+import { mapResult, uuidRegex } from '@/lib'
 import BaseRepository from '@/core/baseRepository'
 
 export type SelectTableType = typeof category.$inferSelect
@@ -37,12 +37,16 @@ class CategoryRepository extends BaseRepository<
          if (params?.name) {
             filters.push(ilike(this.table.name, `%${params.name}%`))
         }
+        if (params?.courseId) {
+            filters.push( [eq(this.table.courseId, params.courseId)])
+        }
 
         const query = db
             .select({
                 id: self.table.id,
                 uuid: self.table.uuid,
                 name: self.table.name,
+                courseId: self.table.courseId,
                 slug: self.table.slug,
                 description: self.table.description,
                 isSeeded: self.table.isSeeded,
@@ -132,15 +136,15 @@ class CategoryRepository extends BaseRepository<
     }
 
     handleConstraints(e: any, entity?: ModelEntity) {
-        if (e.constraint === 'product_category_uuid_category_uuid_fk') {
-            return {
-                error: 'Cannot delete category as it has associated products',
-            }
-        }
-        if (e.constraint === 'category_slug_idx' && entity) {
-            entity.uniqueSlug()
-            return this.save(entity)
-        }
+        // if (e.constraint === 'product_category_uuid_category_uuid_fk') {
+        //     return {
+        //         error: 'Cannot delete category as it has associated products',
+        //     }
+        // }
+        // if (e.constraint === 'category_slug_idx' && entity) {
+        //     entity.uniqueSlug()
+        //     return this.save(entity)
+        // }
 
         // if (e.constraint === "order_item_product_uuid_product_uuid_fk") {
         //   return {

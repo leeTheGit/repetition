@@ -96,6 +96,10 @@ export const baseApiInsertSchema = insertSchema
     })
     .merge(
         z.object({
+            courseId: z.string().uuid().optional(),
+            courseSlug: z.string().optional(),
+            difficulty: z.coerce.number(),
+        
             // collectionIds: z.preprocess((items: any) => {
             //     return items.map((item: { label: string; value: string }) => {
             //         // in the form this will be an object but on the server this will be a string
@@ -122,9 +126,17 @@ export const baseApiInsertSchema = insertSchema
     )
 export const apiInsertSchema = baseApiInsertSchema
      .transform((schema) => transformer(schema, 'post'))
+
+     
 export type ApiInsertSchema = z.infer<typeof apiInsertSchema>
 // export type FormSchema = WithoutNullableKeys<InsertSchema>
-export type FormSchema = InsertSchema
+export const formSchema = insertSchema.merge(z.object({
+    courseId: z.string().uuid().optional(),
+    courseSlug: z.string().optional(),
+    difficulty: z.coerce.number()
+}))
+// export type InsertSchema = z.infer<typeof insertSchema>
+export type FormSchema = ApiInsertSchema
 
 // export const patchSchema = createInsertSchema(product).partial()
 export const patchSchema = baseApiInsertSchema.partial()

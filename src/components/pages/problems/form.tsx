@@ -2,17 +2,19 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import { EntitySchema as CategoryEntitySchema } from '@/core/category/Validators'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
     EntitySchema,
+    formSchema,
     apiInsertSchema,
     FormSchema,
 } from '@/core/problems/Validators'
 import Editor from '@monaco-editor/react'
-
-import { HelpCircle, Trash } from 'lucide-react'
+import { FormModal } from '@/components/pages/categories/form-modal'
+import { HelpCircle, PlusCircle, Trash } from 'lucide-react'
 import { toast } from 'sonner'
 import { Heading } from '@/components/heading'
 import { Button } from '@/components/ui/button'
@@ -47,12 +49,16 @@ import { Input } from '@/components/ui/input'
 import { AlertModal } from '@/components/modals/alert-modal'
 import { BreadCrumb } from '@/components/breadCrumb'
 import { Delete, create } from '@/hooks/queries'
+import Link from 'next/link'
 
 interface Props {
     initialData: EntitySchema | null
+    courseSlug: string
     courseId: string
+    // courseId: string
     onClose?: () => void
     modal?: boolean
+    categories: CategoryEntitySchema[]
 }
 
 const endpoint = 'problems'
@@ -60,6 +66,8 @@ const name = 'Problem'
 
 export const ProblemForm: React.FC<Props> = ({
     initialData,
+    categories,
+    courseSlug,
     courseId,
     onClose,
     modal = false,
@@ -72,9 +80,7 @@ export const ProblemForm: React.FC<Props> = ({
     // Delete modal
     const [open, setOpen] = useState(false)
     const [editorChoice, setEditorChoice] = useState('text')
-    const { storeId } = useParams<{
-        storeId: string
-    }>()
+    const [categoryForm, showCategoryForm] = useState(false)
 
     const title = initialData ? `Edit ${name}` : `New ${name}`
     const toastMessage = initialData ? `${name} updated` : `${name} created`
@@ -82,15 +88,18 @@ export const ProblemForm: React.FC<Props> = ({
 
     const mapToForm = (initialData: EntitySchema | null) => {
         console.log(initialData)
-        return {
+        const data = {
             name: initialData?.name || '',
-            courseId:initialData?.courseId || '', 
+            categoryUuid: initialData?.categoryUuid || '',
+            // courseId:initialData?.courseId || courseId, 
+            courseSlug: initialData?.slug || courseSlug,
             description: initialData?.description || '',
             starterCode: initialData?.starterCode || '',
             answercode: initialData?.answerCode || '', 
             difficulty: initialData?.difficulty || 0, 
             status: initialData?.status || 'true',
         }
+        return data
     }
 
     const form = useForm<FormSchema>({
@@ -106,12 +115,12 @@ export const ProblemForm: React.FC<Props> = ({
             const method = initialData ? 'PATCH' : 'POST'
             const catId = initialData ? initialData.uuid : ''
 
-            return create(data, method, `courses/${courseId}/${endpoint}/${catId}`)
+            return create(data, method, `courses/${courseSlug}/${endpoint}/${catId}`)
         },
         onSuccess: (response) => {
             toast(toastMessage)
             if (!initialData && !modal) {
-                router.push(`/${storeId}/${endpoint}/${response.data.uuid}`)
+                router.push(`/course/${courseSlug}/${endpoint}/${response.data.slug}`)
             }
             queryClient.invalidateQueries({ queryKey: [endpoint] })
         },
@@ -130,7 +139,7 @@ export const ProblemForm: React.FC<Props> = ({
         onSuccess: () => {
             if (!modal) {
                 router.refresh()
-                router.push(`/${storeId}/${endpoint}`)
+                router.push(`/course/${courseSlug}/${endpoint}`)
             }
             onClose && onClose()
             queryClient.invalidateQueries({ queryKey: [endpoint] })
@@ -168,11 +177,22 @@ export const ProblemForm: React.FC<Props> = ({
                 message={`Are you sure you want to delete this ${name.toLowerCase()}?`}
                 onConfirm={() =>
                     deleteQuery.mutate(
-                        `${storeId}/${endpoint}/${initialData?.uuid}`
+                        `courses/${courseId}/${endpoint}/${initialData?.uuid}`
                     )
                 }
                 loading={deleteQuery.isPending}
             />
+
+            <FormModal
+                isOpen={categoryForm}
+                entityId={null}
+                courseId={courseId}
+                onClose={() => showCategoryForm(false)}
+                onConfirm={() => {
+                    showCategoryForm(false)
+                }}
+            />
+
 
             <div className="flex flex-col px-8 justify-between">
                 <div className="flex">
@@ -184,8 +204,8 @@ export const ProblemForm: React.FC<Props> = ({
                                 className="mt-2"
                                 links={[
                                     {
-                                        label: 'Pages',
-                                        href: `/${storeId}/${endpoint}`,
+                                        label: 'Problems',
+                                        href: `/${endpoint}`,
                                     },
                                     { label: initialData?.name || 'New' },
                                 ]}
@@ -217,12 +237,12 @@ export const ProblemForm: React.FC<Props> = ({
                             onSubmit={form.handleSubmit(onSubmit)}
                             className=" bg-gradient-to-t from-[#f1f5f9] dark:from-[#161f33] pt-10"
                         >
-                            <div className="max-w-[1000px] m-auto grid grid-cols-12 gap-8">
+                            <div className="max-w-[1200px] m-auto grid grid-cols-12 gap-8">
                                 <FormField
                                     control={form.control}
                                     name="name"
                                     render={({ field }) => (
-                                        <FormItem className="col-span-6">
+                                        <FormItem className="col-span-5">
                                             <FormLabel className="flex">
                                                 Name
                                             </FormLabel>
@@ -234,6 +254,72 @@ export const ProblemForm: React.FC<Props> = ({
                                     )}
                                 />
 
+                                <FormField
+                                    control={form.control}
+                                    name="categoryUuid"
+                                    render={({ field }) => (
+                                        <FormItem className="col-span-3">
+                                            <div className="flex items-center">
+                                                <FormLabel className="flex items-center">
+                                                    Category{' '}
+                                                </FormLabel>
+                                                <p className="ml-2 hover:cursor-pointer">
+                                                    <PlusCircle
+                                                        onClick={() =>
+                                                            showCategoryForm(
+                                                                true
+                                                            )
+                                                        }
+                                                        height="15"
+                                                        width="15"
+                                                        className="text-gray-600 hover:text-gray-200"
+                                                    />
+                                                </p>
+                                                <Link
+                                                    target="_blank"
+                                                    className="ml-auto text-xs hover:underline"
+                                                    href={`/${courseId}/categories/${field.value}`}
+                                                >
+                                                    Edit
+                                                </Link>
+                                            </div>
+                                            <Select
+                                                // disabled={loading}
+                                                onValueChange={field.onChange}
+                                                value={field.value}
+                                                defaultValue={field.value}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue
+                                                            defaultValue={
+                                                                field.value
+                                                            }
+                                                            placeholder="Select a category"
+                                                        />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {categories.map(
+                                                        (category) => (
+                                                            <SelectItem
+                                                                key={
+                                                                    category.uuid
+                                                                }
+                                                                value={
+                                                                    category.uuid
+                                                                }
+                                                            >
+                                                                {category.name}
+                                                            </SelectItem>
+                                                        )
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField
                                     control={form.control}
                                     name="difficulty"
@@ -305,7 +391,7 @@ export const ProblemForm: React.FC<Props> = ({
                                     name="status"
                                     
                                     render={({ field }) => (
-                                        <FormItem className="flex flex-col items-end justify-end col-span-3">
+                                        <FormItem className="flex flex-col items-end justify-end col-span-1">
                                             <FormLabel>Active</FormLabel>
                                             <div className="h-10 flex items-center">
                                                 <Switch
@@ -321,45 +407,43 @@ export const ProblemForm: React.FC<Props> = ({
                                 />
                             </div>
 
-                                <div className="max-w-[1000px] m-auto mt-10">
-                                    
+                            <div className="max-w-[1200px] m-auto mt-10 grid grid-cols-12 gap-2">
+                                
 
-                                    <div className="mt-10  flex flex-col">
-                                        <div className="mt-2">
-                                            <TinyEditor
-                                                reference={EditorRef}
-                                                content={
-                                                    form.formState.defaultValues
-                                                        ?.description || ''
-                                                }
-                                            // changeHandler={(text) => formik.setFieldValue('marketing_content', text)}
-                                        />
-                                        </div>
-
-                                        <div className="mt-2">
-                                            <Editor
-                                                value={
-                                                    form.formState
-                                                        .defaultValues
-                                                        ?.starterCode || ''
-                                                }
-                                                onMount={(editor, monaco) =>
-                                                    (CodeEditorRef.current =
-                                                        editor)
-                                                }
-                                                theme="vs-dark"
-                                                height="90vh"
-                                                defaultLanguage="javascript"
-                                                defaultValue="// some comment"
-                                            />
-                                        </div>
-
-
-
-                                    </div>
+                                <div className=" col-span-6">
+                                    <TinyEditor
+                                        reference={EditorRef}
+                                        content={
+                                            form.formState.defaultValues
+                                                ?.description || ''
+                                        }
+                                    // changeHandler={(text) => formik.setFieldValue('marketing_content', text)}
+                                />
                                 </div>
 
-                            <div className="max-w-[1000px] m-auto flex mt-10">
+                                <div className="mt-2 col-span-6">
+                                    <Editor
+                                        value={
+                                            form.formState
+                                                .defaultValues
+                                                ?.starterCode || ''
+                                        }
+                                        onMount={(editor, monaco) =>
+                                            (CodeEditorRef.current =
+                                                editor)
+                                        }
+                                        theme="vs-dark"
+                                        height="90vh"
+                                        defaultLanguage="javascript"
+                                        defaultValue="// some comment"
+                                    />
+                                </div>
+
+
+
+                            </div>
+
+                            <div className="max-w-[1200px] m-auto flex mt-10">
                                 <Button className="ml-auto" type="submit">
                                     {action}
                                 </Button>

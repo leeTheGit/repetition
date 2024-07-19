@@ -1,13 +1,13 @@
-import Repository from '@/core/problems/Repository'
+import Repository from '@/core/category/Repository'
 import { isError } from '@/core/types'
-import { patchSchema, fetchProductUuid } from '@/core/problems/Validators'
+import { patchSchema, fetchByUuid } from '@/core/category/Validators'
 import { HttpResponse, apiHandler, getZodErrors } from '@/lib'
-import { fetchResponse } from '@/core/problems/response/ProblemDTO'
+import { fetchResponse } from '@/core/category/response/CategoryDTO'
 import { uuidRegex } from '@/lib'
 import { logger } from '@/lib/logger'
 
 const repository = new Repository()
-const name = 'Problem'
+const name = 'Category'
 
 export const GET = apiHandler(get)
 export const PATCH = apiHandler(update, { validator: patchSchema })
@@ -15,7 +15,7 @@ export const DELETE = apiHandler(Delete)
 
 async function get(
     req: Request,
-    { params }: { params: { entityId: string, problemId: string } },
+    { params }: { params: { entityId: string, categoryId: string } },
     ctx: any
 ) {
     let input
@@ -23,13 +23,13 @@ async function get(
         if (!params.entityId) {
             return { error: `${name} id is required`, status: 400 }
         }
-        logger.info('in the problem get route', params.problemId)
+        logger.info('in the problem get route', params.categoryId)
         let uuid = false
         if (params.entityId.match(uuidRegex)) {
             uuid = true
         }
 
-        input = fetchProductUuid.safeParse(params)
+        input = fetchByUuid.safeParse(params)
 
 
         if (!input.success) {
@@ -39,8 +39,8 @@ async function get(
             }
         }
 
-        var Entity = await repository.fetchByUuid(params.problemId, {
-            course: params.entityId,
+        var Entity = await repository.fetchByUuid(params.categoryId, {
+            courseId: params.entityId,
             organisationUuid: ctx.user.organisationUuid,
         })
         if (isError(Entity)) {
@@ -58,11 +58,11 @@ async function get(
 
 async function update(
     req: Request,
-    { params }: { params: { entityId: string, problemId: string} },
+    { params }: { params: { entityId: string, categoryId: string} },
     ctx: any
 ) {
     try {
-        const Entity = await repository.update(params.problemId, ctx.data)
+        const Entity = await repository.update(params.categoryId, ctx.data)
 
         if (isError(Entity)) {
             return Entity
@@ -79,10 +79,12 @@ async function update(
 
 async function Delete(
     req: Request,
-    { params }: { params: { entityId: string; problemId: string } }
+    { params }: { params: { entityId: string; categoryId: string } }
 ) {
     try {
-        const del = await repository.delete(params.entityId, params.problemId)
+        console.log('!!!!!!!!!!!!! deleting!!!!!!!!!!!!!!')
+        console.log(params.entityId, params.categoryId)
+        const del = await repository.delete(params.entityId, params.categoryId)
 
         if (isError(del)) {
             logger.info(`[ERROR] [${name.toUpperCase()}_DELETE]`, del)

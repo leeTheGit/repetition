@@ -1,11 +1,10 @@
 import { Entity } from "@/core/baseEntity";
 import { entitySchema, EntitySchema } from "./Validators";
-import { BillboardEntity } from "@/core/billboard/Entity";
 import { getZodErrors, randomNumbers } from "@/lib/utils";
 import { ModelError } from "../types";
 
 export class CategoryEntity extends Entity<EntitySchema> {
-  private relations: { billboard?: BillboardEntity } = {};
+  private relations: { } = {};
 
   constructor(props: EntitySchema, id?: string) {
     super(props, id);
@@ -40,16 +39,6 @@ export class CategoryEntity extends Entity<EntitySchema> {
     return this.props.uuid;
   }
 
-  get parentId() {
-    return this.props.parentId;
-  }
-  get storeUuid() {
-    return this.props.storeUuid;
-  }
-
-  get billboardUuid() {
-    return this.props.billboardUuid;
-  }
 
   get name() {
     return this.props.name;
@@ -57,6 +46,10 @@ export class CategoryEntity extends Entity<EntitySchema> {
 
   get slug() {
     return this.props.slug;
+  }
+
+  get courseId () {
+    return this.props.courseId
   }
 
   /**
@@ -71,15 +64,4 @@ export class CategoryEntity extends Entity<EntitySchema> {
     return this.props.createdAt;
   }
 
-  get billboardLabel() {
-    return this.relations.billboard?.label || "";
-  }
-
-  get billboard(): BillboardEntity | null {
-    return this.relations.billboard || null;
-  }
-
-  set billboard(billboard: BillboardEntity) {
-    this.relations.billboard = billboard;
-  }
 }

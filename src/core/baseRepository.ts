@@ -104,7 +104,6 @@ abstract class BaseRepository<
         error: `Table does not have an Id column`,
       };
     }
-
     var updated = await db
       .update(this.table)
       .set({ ...data, updatedAt: new Date() })
@@ -119,24 +118,26 @@ abstract class BaseRepository<
     return `${this.tableName} updated`;
   }
 
-  async delete(storeId: string, id: string): Promise<string | ModelError> {
+  async delete(courseId: string, id: string): Promise<string | ModelError> {
     if (!("uuid" in this.table)) {
       return {
         error: `Table does not have an Id column`,
       };
     }
-
     try {
-      let del = await db
+      let delQuery = db
         .delete(this.table)
-        .where(and(eq(this.table.uuid, id), eq(this.table.storeUuid, storeId)));
+        .where(and(eq(this.table.uuid, id), eq(this.table.courseId, courseId)));
 
+      // console.log(delQuery.toSQL())
+      let del = await delQuery
       if (del.rowCount === 0) {
         return {
           error: `${this.tableName} not deleted`,
         };
       }
     } catch (e: any) {
+      console.log(e)
       return this.handleConstraints(e);
 
       return {
