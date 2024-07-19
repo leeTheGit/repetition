@@ -5,6 +5,7 @@ import { apiInsertSchema, fetchParams } from '@/core/problems/Validators'
 import { fetchResponse } from '@/core/problems/response/ProblemDTO'
 import { HttpResponse, apiHandler } from '@/lib'
 import { logger } from '@/lib/logger'
+import { DynamoMapper } from '@/core/problems/mappers/dynamoMapper'
 
 const repository = new Repository()
 
@@ -26,6 +27,8 @@ async function get(
             input['withSubmissions'] = true
             input['userId'] = ctx.user.id
         }
+
+        repository.mapper = DynamoMapper
         const Product = await repository.fetchAll(input)
         if (isError(Product)) {
             return Product
@@ -44,7 +47,6 @@ async function post(
     ctx: any
 ) {
     try {
-        console.log('posting ndw problem')
         const productValues = {
             ...ctx.data,
 

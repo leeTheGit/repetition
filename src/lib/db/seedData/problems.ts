@@ -8,8 +8,14 @@ import {Slugify} from '@/lib/utils'
 // trees: 'cdc9e085-102e-49d7-8132-b37b008d9eb8',
 // 'heap-priority-queue': '0a072743-7081-45ec-a915-d448b370abdc',
 // graphs: '8f5ef0cc-f17a-483c-ade6-c1bd395b6f24'
+// submission: [
+//     submitted_at: "2024-07-16 01:17:21.58",
+//     grade: 5
+// ]
 
-const Problems = (categories: { [key: string]: string }, course: string) => {
+type CatType = { [key: string]: string  }
+
+const Problems = (categories: CatType, course: string) => {
     return [
         {
             name: "Two Sum",
@@ -20,6 +26,12 @@ const Problems = (categories: { [key: string]: string }, course: string) => {
             starterCode: "",
             difficulty: 1,
             link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-16 01:36:56.928",
+                    grade: 4
+                }
+            ]
         },
         {
             name: "Valid Anagram",
@@ -30,6 +42,12 @@ const Problems = (categories: { [key: string]: string }, course: string) => {
             starterCode: "",
             difficulty: 1,
             link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-16 01:17:21.58",
+                    grade: 5
+                }
+            ]
         },
         {
             name: "Contains Duplicate",
@@ -40,6 +58,12 @@ const Problems = (categories: { [key: string]: string }, course: string) => {
             starterCode: "",
             difficulty: 1,
             link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-16 01:36:40.135",
+                    grade: 4
+                }
+            ]
         },
         {
             name: "Group Anagrams",
@@ -50,6 +74,13 @@ const Problems = (categories: { [key: string]: string }, course: string) => {
             starterCode: "",
             difficulty: 2,
             link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-14 01:22:45.184",
+                    grade: 5
+                }
+            ]
+
         },
         {
             name: "Top K Frequent Elemements",
@@ -60,6 +91,13 @@ const Problems = (categories: { [key: string]: string }, course: string) => {
             starterCode: "",
             difficulty: 2,
             link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-14 01:16:08.765",
+                    grade: 5
+                }
+            ]
+
         },
         {
             name: "Valid Soduoku",
@@ -80,6 +118,19 @@ const Problems = (categories: { [key: string]: string }, course: string) => {
             starterCode: "",
             difficulty: 2,
             link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-16 03:41:25.025",
+                    grade: 1
+                },
+                {
+                    submitted_at: "2024-07-17 01:05:18.781",
+                    grade: 5
+                }
+
+            ]
+
+
         },
         {
             name: "Longest Consecutive Sequence",
@@ -232,6 +283,13 @@ const Problems = (categories: { [key: string]: string }, course: string) => {
             starterCode: "",
             difficulty: 1,
             link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-14 01:31:00.038",
+                    grade: 5
+                }
+            ]
+
         },
         {
             name: "Merge Two Sorted Linked Lists",
@@ -507,7 +565,85 @@ const Problems = (categories: { [key: string]: string }, course: string) => {
             difficulty: 2,
             link: '',
         },
+        {
+            name: "Sum Values",
+            courseId: course,
+            categoryUuid: categories['linked-list'],
+            slug: Slugify('Sum Values'),
+            description: '',
+            starterCode: "",
+            difficulty: 2,
+            link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-16 01:01:43.184",
+                    grade: 5
+                }
+            ]
 
+        },
+        {
+            name: "Get Value at Index",
+            courseId: course,
+            categoryUuid: categories['linked-list'],
+            slug: Slugify('Get Value at Index'),
+            description: '',
+            starterCode: "",
+            difficulty: 2,
+            link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-14 07:16:04.119",
+                    grade: 5
+                }
+            ]
+        },
+        {
+            name: "Has Path",
+            courseId: course,
+            categoryUuid: categories['graphs'],
+            slug: Slugify('Has Path'),
+            description: '',
+            starterCode: "",
+            difficulty: 2,
+            link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-17 01:28:29.898",
+                    grade: 5
+                }
+            ]
+
+        },
+        {
+            name: "Shortest Path",
+            courseId: course,
+            categoryUuid: categories['graphs'],
+            slug: Slugify('Shortest Path'),
+            description: '',
+            starterCode: "",
+            difficulty: 2,
+            link: '',
+            submission: [
+                {
+                    submitted_at: "2024-07-17 01:39:11.171",
+                    grade: 5
+                }
+            ]
+
+        },
+        {
+            name: "String Encode and Decode",
+            courseId: course,
+            categoryUuid: categories['arrays-and-hashing'],
+            slug: Slugify('String Encode and Decode'),
+            description: '',
+            starterCode: "",
+            difficulty: 2,
+            link: '',
+
+            
+        },
     ]
 }
 

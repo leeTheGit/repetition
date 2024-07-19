@@ -64,7 +64,6 @@ async function post(
         const productValues = {
             ...ctx.data,
         }
-        console.log(productValues);
         const newProduct = await repository.create(productValues)
         if (isError(newProduct)) {
             return newProduct

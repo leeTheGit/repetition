@@ -19,17 +19,14 @@ async function get(
     ctx: any
 ) {
     let input
-    console.log(params)
     try {
         if (!params.entityId) {
-            console.log(params.entityId)
             return { error: `${name} id is required`, status: 400 }
         }
         let uuid = false
         if (params.entityId.match(uuidRegex)) {
             uuid = true
         }
-        console.log(ctx)
 
         input = fetchCourseUuid.safeParse(params)
 
@@ -64,7 +61,6 @@ async function update(
     ctx: any
 ) {
     try {
-        console.log('editing the porobelm in th api')
         const Entity = await repository.update(params.problemId, ctx.data)
 
         if (isError(Entity)) {

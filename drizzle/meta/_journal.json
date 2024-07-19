@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1720597662961,
-      "tag": "0000_grey_snowbird",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1720610283988,
-      "tag": "0001_robust_thor",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1720755835523,
-      "tag": "0002_curly_loki",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1720958524006,
-      "tag": "0003_warm_skaar",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1720958588439,
-      "tag": "0004_rare_lady_mastermind",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1721178762007,
-      "tag": "0005_true_franklin_richards",
+      "when": 1721356564531,
+      "tag": "0000_overconfident_nextwave",
       "breakpoints": true
     }
   ]

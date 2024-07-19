@@ -4,6 +4,7 @@ import {Slugify} from '@/lib/utils'
 import {
     users,
     problem,
+    submission,
     media,
     emails,
     course,
@@ -112,7 +113,7 @@ export const seed = async () => {
     console.log('adding categories')
     const categories = await db
         .insert(category)
-        .values(Categories())
+        .values(Categories(newCourse.uuid))
         .returning()
 
     let categoryObj:{[key: string]: string} = {}
@@ -120,8 +121,8 @@ export const seed = async () => {
         categoryObj[category.slug] = category.uuid
     }
 
-    console.log(categoryObj)
-    console.log(newCourse)
+    // console.log(categoryObj)
+    // console.log(newCourse)
     // console.log(Problems(categoryObj, newCourse.uuid))
     // console.log('adding products')
     const newProblems = await db
@@ -129,16 +130,34 @@ export const seed = async () => {
         .values(Problems(categoryObj, newCourse.uuid))
         .returning()
 
+    for (let prob of Problems(categoryObj, newCourse.uuid)) {
+        if ("submission" in prob && prob.submission) {
+            for (let sub of prob.submission) {
+                const probl = await db.select().from(problem).where(eq(problem.slug, prob.slug))
+                for (let p of probl) {
+                    const data = {
+                        userUuid: newuser.uuid,
+                        problemUuid: p.uuid,
+                        grade: sub.grade,
+                        submittedAt: new Date(sub.submitted_at),
+                    }
+                    const ins = await db.insert(submission).values(data)
+
+                }
+            }
+        }
+    }
 
     client.end()
 }
 
 const truncate = async (db: NodePgDatabase<Record<string, never>>) => {
     await db.delete(countries)
+    await db.delete(submission)
     await db.delete(problem)
-    await db.delete(course)
     await db.delete(collection)
     await db.delete(category)
+    await db.delete(course)
     await db.delete(media)
     await db.delete(emails)
     await db.delete(emailTemplate)

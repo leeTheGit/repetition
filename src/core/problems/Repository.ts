@@ -1,5 +1,7 @@
 import { db } from '@/lib/db'
 import { problem, category, media } from '@/lib/db/schema/schema'
+import { PostgresMapper } from '@/core/problems/mappers/postgresMapper'
+
 import {
     eq,
     desc,
@@ -14,7 +16,7 @@ import {
 import { FetchParams } from '@/core/problems/Validators'
 import { ModelError, isError } from '@/core/types'
 import { ProblemEntity as ModelEntity } from '@/core/problems/Entity'
-import { PgDialect, PgSelect } from 'drizzle-orm/pg-core'
+// import { PgDialect, PgSelect } from 'drizzle-orm/pg-core'
 import { SubmissionEntity } from '@/core/submission/Entity'
 import CategoryRepository, {
     SelectTableType as CategoryTable,
@@ -23,11 +25,11 @@ import SubmissionRepository, {
     TableType as SubmissionTable,
 } from '@/core/submission/Repository'
 import BaseRepository from '@/core/baseRepository'
-import AssetRepository, {
-    TableType as AssetTable,
-} from '@/core/asset/AssetRepository'
+// import AssetRepository, {
+//     TableType as AssetTable,
+// } from '@/core/asset/AssetRepository'
 import { uuidRegex, mapResult } from '@/lib'
-import { logger } from '@/lib/logger'
+// import { logger } from '@/lib/logger'
 
 export type TableType = typeof problem.$inferSelect & {
     image?: {
@@ -49,9 +51,19 @@ class Repository extends BaseRepository<
     ModelEntity,
     TableType
 > {
+
+    private mapToEntity = PostgresMapper
+
     constructor() {
         super(problem, 'Problem')
     }
+
+
+    set mapper(mapper: (item: TableType ) => ModelEntity | ModelError ) {
+        console.log('setting mapper to duynamo')
+        this.mapToEntity = mapper
+    }
+
     getFilters(params: FetchParams) {
         const filters: any = []
 
@@ -155,7 +167,7 @@ class Repository extends BaseRepository<
                     "category"."name" AS "category",
                     ROW_NUMBER() OVER (PARTITION BY problem.uuid ORDER BY submission.created_at DESC) AS "rowNumber",
                     ROW_NUMBER() OVER (PARTITION BY problem.uuid ORDER BY submission.grade ASC) AS "grade",
-                    "submission"."created_at" AS "lastSubmitted",
+                    "submission"."submitted_at" AS "lastSubmitted",
                     "submission"."grade" as "lastGrade"
                 FROM
                     "problem"
@@ -168,6 +180,7 @@ class Repository extends BaseRepository<
                 "category"."uuid",
                 "media"."uuid",
                 "submission"."created_at",
+                "submission"."submitted_at",
                 "submission"."grade"
             ) "query"
         `);
@@ -286,83 +299,85 @@ class Repository extends BaseRepository<
     }
 
 
-    mapToEntity(item: TableType) {
-        const itemData = convertCase(item)
-        if (itemData.createdAt) {
-            itemData.createdAt = new Date(itemData.createdAt)
-        }
-        if (itemData.updatedAt) {
-            itemData.updatedAt = new Date(itemData.updatedAt)
-        }
-        const Entity = ModelEntity.fromValues(itemData, item.uuid)
-        if (isError(Entity)) {
-            return Entity
-        }
-        if ('category' in itemData && itemData.category) {
-            const categoryRepository = new CategoryRepository()
-            const category = categoryRepository.mapToEntity(
-                itemData.category as CategoryTable
-            )
-            if (!isError(category)) {
-                Entity.category = category
-            }
-        }
+    // mapToEntity(item: TableType) {
+        // console.log("logging it", this.EntityMapper)
+        // return this.EntityMapper(item)
+    //     const itemData = convertCase(item)
+    //     if (itemData.createdAt) {
+    //         itemData.createdAt = new Date(itemData.createdAt)
+    //     }
+    //     if (itemData.updatedAt) {
+    //         itemData.updatedAt = new Date(itemData.updatedAt)
+    //     }
+    //     const Entity = ModelEntity.fromValues(itemData, item.uuid)
+    //     if (isError(Entity)) {
+    //         return Entity
+    //     }
+    //     if ('category' in itemData && itemData.category) {
+    //         const categoryRepository = new CategoryRepository()
+    //         const category = categoryRepository.mapToEntity(
+    //             itemData.category as CategoryTable
+    //         )
+    //         if (!isError(category)) {
+    //             Entity.category = category
+    //         }
+    //     }
 
-        // if ('media' in item) {
-        //     const assetRepository = new AssetRepository()
-        //     const galleryItem = assetRepository.mapToEntity(
-        //         item.media as AssetTable
-        //     )
-        //     if (!isError(galleryItem)) {
-        //         Entity.image = galleryItem
-        //     }
-        // }
-        if ('submissions' in item && typeof item.submissions !== 'undefined') {
-            Entity.submissions = item.submissions
-        }
-        if ('submissionCount' in item && typeof item.submissionCount !== 'undefined') {
-            Entity.submissionCount = item.submissionCount
-        }
-        if ('lastSubmitted' in item && typeof item.lastSubmitted !== 'undefined' && item.lastSubmitted) {
-            Entity.lastSubmitted = item.lastSubmitted.toString()
-        }
-        if ('category' in item && typeof item.category !== 'undefined' && item.category) {
-            Entity.categoryName = item.category.toString()
-        }
+    //     // if ('media' in item) {
+    //     //     const assetRepository = new AssetRepository()
+    //     //     const galleryItem = assetRepository.mapToEntity(
+    //     //         item.media as AssetTable
+    //     //     )
+    //     //     if (!isError(galleryItem)) {
+    //     //         Entity.image = galleryItem
+    //     //     }
+    //     // }
+    //     if ('submissions' in item && typeof item.submissions !== 'undefined') {
+    //         Entity.submissions = item.submissions
+    //     }
+    //     if ('submissionCount' in item && typeof item.submissionCount !== 'undefined') {
+    //         Entity.submissionCount = item.submissionCount
+    //     }
+    //     if ('lastSubmitted' in item && typeof item.lastSubmitted !== 'undefined' && item.lastSubmitted) {
+    //         Entity.lastSubmitted = item.lastSubmitted.toString()
+    //     }
+    //     if ('category' in item && typeof item.category !== 'undefined' && item.category) {
+    //         Entity.categoryName = item.category.toString()
+    //     }
 
-        return Entity
-    }
+    //     return Entity
+    // }
 
 
 
 }
 
 
-function convertCase(obj: any) {
-    const result: Record<string, string> = {}
-    const camelCaseColumns: Record<string, string> = {
-        category_uuid :'categoryUuid',
-        topic_id :'topicId',
-        course_id : 'courseId',
-        starter_code:'starterCode',
-        answer_code:'answerCode', 
-        is_deleted: 'isDeleted',
-        image_uuid: 'imageUuid', 
-        is_seeded: 'isSeeded', 
-        created_at: 'createdAt',
-        updated_at: 'updatedAt',
-        // submission_count: 'submissionCount',
-        last_submission: 'lastSubmission'
-    }
+// function convertCase(obj: any) {
+//     const result: Record<string, string> = {}
+//     const camelCaseColumns: Record<string, string> = {
+//         category_uuid :'categoryUuid',
+//         topic_id :'topicId',
+//         course_id : 'courseId',
+//         starter_code:'starterCode',
+//         answer_code:'answerCode', 
+//         is_deleted: 'isDeleted',
+//         image_uuid: 'imageUuid', 
+//         is_seeded: 'isSeeded', 
+//         created_at: 'createdAt',
+//         updated_at: 'updatedAt',
+//         // submission_count: 'submissionCount',
+//         last_submission: 'lastSubmission'
+//     }
 
-    for (let [key, value] of Object.entries(camelCaseColumns)) {
-        if (typeof obj[key] !== 'undefined') {
-            result[value] = obj[key]
-            delete obj[key]
-        }
-    }
-    return { ...obj, ...result }
-}
+//     for (let [key, value] of Object.entries(camelCaseColumns)) {
+//         if (typeof obj[key] !== 'undefined') {
+//             result[value] = obj[key]
+//             delete obj[key]
+//         }
+//     }
+//     return { ...obj, ...result }
+// }
 
 
 export default Repository

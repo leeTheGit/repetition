@@ -147,7 +147,7 @@ abstract class BaseRepository<
     return "Deleted";
   }
 
-  abstract mapToEntity(data: SelectTableType): ModelEntity | ModelError;
+  // abstract mapToEntity(data: SelectTableType): ModelEntity | ModelError;
   abstract handleConstraints(e: any, entity?: ModelEntity): unknown;
 }
 

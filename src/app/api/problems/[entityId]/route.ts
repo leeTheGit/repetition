@@ -19,7 +19,6 @@ async function get(
     ctx: any
 ) {
     let input
-    console.log(params)
     try {
         if (!params.entityId) {
             return { error: `${name} id is required`, status: 400 }
@@ -29,13 +28,11 @@ async function get(
         if (params.entityId.match(uuidRegex)) {
             uuid = true
         }
-        console.log(ctx)
 
         input = fetchProductUuid.safeParse(params)
 
 
         if (!input.success) {
-            console.log(getZodErrors(input))
             return {
                 error: JSON.stringify({ error: getZodErrors(input) }),
                 status: 400,
@@ -65,7 +62,6 @@ async function update(
     ctx: any
 ) {
     try {
-        console.log('editing the porobelm in th api')
         const Entity = await repository.update(params.entityId, ctx.data)
 
         if (isError(Entity)) {

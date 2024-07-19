@@ -119,7 +119,7 @@ it("Fetch a course by slug", async () => {
 
 
 it("Fetch a problem by id", async () => {
-    console.log(`${ApiUrl}/courses/${courses[0].uuid}/problems/${problems[0].uuid}`)
+    // console.log(`${ApiUrl}/courses/${courses[0].uuid}/problems/${problems[0].uuid}`)
     const req = await fetch(`${ApiUrl}/courses/${courses[0].uuid}/problems/${problems[0].uuid}`, {
         method: 'GET',
         headers,

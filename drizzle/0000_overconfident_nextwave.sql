@@ -1,6 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 --> statement-breakpoint
 
+
 DO $$ BEGIN
  CREATE TYPE "public"."email_type" AS ENUM('html', 'markdown', 'text');
 EXCEPTION
@@ -51,6 +52,7 @@ CREATE TABLE IF NOT EXISTS "auth_token" (
 CREATE TABLE IF NOT EXISTS "category" (
 	"id" serial NOT NULL,
 	"uuid" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+	"course_id" uuid,
 	"name" text NOT NULL,
 	"slug" varchar(256) NOT NULL,
 	"description" text,
@@ -221,8 +223,9 @@ CREATE TABLE IF NOT EXISTS "plans" (
 CREATE TABLE IF NOT EXISTS "problem" (
 	"id" serial NOT NULL,
 	"uuid" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
-	"category_uuid" uuid NOT NULL,
+	"category_uuid" uuid,
 	"course_id" uuid NOT NULL,
+	"topic_id" uuid,
 	"name" text NOT NULL,
 	"slug" text NOT NULL,
 	"description" text,
@@ -271,16 +274,31 @@ CREATE TABLE IF NOT EXISTS "session" (
 	"expires_at" timestamp with time zone NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "submissions" (
+CREATE TABLE IF NOT EXISTS "submission" (
 	"id" serial NOT NULL,
 	"uuid" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
 	"user_uuid" uuid NOT NULL,
 	"problem_uuid" uuid NOT NULL,
 	"solution" text,
 	"note" text,
-	"grade" integer,
+	"grade" integer NOT NULL,
 	"submitted_at" timestamp,
 	"next_review_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "topic" (
+	"id" serial NOT NULL,
+	"uuid" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+	"course_id" uuid NOT NULL,
+	"name" text NOT NULL,
+	"slug" text NOT NULL,
+	"description" text,
+	"status" varchar(50) DEFAULT 'draft' NOT NULL,
+	"is_deleted" boolean DEFAULT false,
+	"image_uuid" uuid,
+	"is_seeded" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp
 );
@@ -362,6 +380,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "auth_token" ADD CONSTRAINT "auth_token_organisation_uuid_organisation_uuid_fk" FOREIGN KEY ("organisation_uuid") REFERENCES "public"."organisation"("uuid") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "category" ADD CONSTRAINT "category_course_id_course_uuid_fk" FOREIGN KEY ("course_id") REFERENCES "public"."course"("uuid") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -457,6 +481,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "problem" ADD CONSTRAINT "problem_topic_id_topic_uuid_fk" FOREIGN KEY ("topic_id") REFERENCES "public"."topic"("uuid") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "problem" ADD CONSTRAINT "problem_image_uuid_media_uuid_fk" FOREIGN KEY ("image_uuid") REFERENCES "public"."media"("uuid") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -505,13 +535,25 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "submissions" ADD CONSTRAINT "submissions_user_uuid_user_uuid_fk" FOREIGN KEY ("user_uuid") REFERENCES "public"."user"("uuid") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "submission" ADD CONSTRAINT "submission_user_uuid_user_uuid_fk" FOREIGN KEY ("user_uuid") REFERENCES "public"."user"("uuid") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "submissions" ADD CONSTRAINT "submissions_problem_uuid_problem_uuid_fk" FOREIGN KEY ("problem_uuid") REFERENCES "public"."problem"("uuid") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "submission" ADD CONSTRAINT "submission_problem_uuid_problem_uuid_fk" FOREIGN KEY ("problem_uuid") REFERENCES "public"."problem"("uuid") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "topic" ADD CONSTRAINT "topic_course_id_course_uuid_fk" FOREIGN KEY ("course_id") REFERENCES "public"."course"("uuid") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "topic" ADD CONSTRAINT "topic_image_uuid_media_uuid_fk" FOREIGN KEY ("image_uuid") REFERENCES "public"."media"("uuid") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -587,6 +629,7 @@ CREATE INDEX IF NOT EXISTS "fk_asset_log_organisation_idx" ON "asset_log" USING 
 CREATE INDEX IF NOT EXISTS "fk_asset_log_created_at_idx" ON "asset_log" USING btree ("created_at");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_asset_log_media_idx" ON "asset_log" USING btree ("media_uuid");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_authtoken_token_idx" ON "auth_token" USING btree ("token");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fk_course_category_idx" ON "category" USING btree ("course_id");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "category_slug_idx" ON "category" USING btree ("slug");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "collection_slug_idx" ON "collection" USING btree ("slug");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_collection_organisation_idx" ON "collection" USING btree ("organisation_uuid");--> statement-breakpoint
@@ -603,15 +646,19 @@ CREATE UNIQUE INDEX IF NOT EXISTS "permissions_slug_idx" ON "permissions" USING 
 CREATE INDEX IF NOT EXISTS "fk_permission_organisation_idx" ON "permissions" USING btree ("organisation_id");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "product_slug_idx" ON "problem" USING btree ("slug");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_problem_category_idx" ON "problem" USING btree ("category_uuid");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fk_problem_topic_idx" ON "problem" USING btree ("topic_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_problem_image_idx" ON "problem" USING btree ("image_uuid");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_problem_collection_organisation_idx" ON "problem_collection" USING btree ("organisation_uuid");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_problem_collection_collection_idx" ON "problem_collection" USING btree ("collection_uuid");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_problemc_ollection_problem_idx" ON "problem_collection" USING btree ("problem_uuid");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "roles_slug_idx" ON "roles" USING btree ("slug","organisation_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_roles_organisation_idx" ON "roles" USING btree ("organisation_id");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "fk_user_schedule_idx" ON "submissions" USING btree ("user_uuid");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "fk_problem_schedule_idx" ON "submissions" USING btree ("problem_uuid");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "fk_submitted_schedule_idx" ON "submissions" USING btree ("submitted_at");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fk_user_schedule_idx" ON "submission" USING btree ("user_uuid");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fk_problem_schedule_idx" ON "submission" USING btree ("problem_uuid");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fk_submitted_schedule_idx" ON "submission" USING btree ("submitted_at");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fk_course_topic_idx" ON "topic" USING btree ("course_id");--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "topic_slug_idx" ON "topic" USING btree ("slug");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fk_topic_image_idx" ON "topic" USING btree ("image_uuid");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_problemcollection_organisation_idx" ON "user_problem" USING btree ("organisation_uuid");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_user_problem_idx" ON "user_problem" USING btree ("user_uuid");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "fk_problem_idx" ON "user_problem" USING btree ("problem_uuid");--> statement-breakpoint
