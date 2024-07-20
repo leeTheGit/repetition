@@ -82,8 +82,6 @@ async function Delete(
     { params }: { params: { entityId: string; categoryId: string } }
 ) {
     try {
-        console.log('!!!!!!!!!!!!! deleting!!!!!!!!!!!!!!')
-        console.log(params.entityId, params.categoryId)
         const del = await repository.delete(params.entityId, params.categoryId)
 
         if (isError(del)) {

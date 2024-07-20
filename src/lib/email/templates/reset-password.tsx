@@ -19,9 +19,6 @@ const applicationName = 'Elcyen';
 export const BASE_URL = process.env.PLATFORM_DOMAIN || 'http://test-org.localtest.me:3000'
 export function ResetPasswordEmail({ token, domain }: { token: string, domain:string }) {
 
-  console.log('email template')
-  console.log(BASE_URL)
-  console.log(token)
   return (
     <Html>
       <Head />

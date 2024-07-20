@@ -65,7 +65,6 @@ async function post(
             ...ctx.data,
         }
 
-        console.log(Values)
 
         // If we use the course slug instead of the uuid we'll fetch it here
         if (!( "courseId" in Values) && "courseSlug" in Values) {

@@ -23,8 +23,8 @@ interface Props {
   data: ProblemColumn;
 }
 
-const endpoint = "problems";
-const name = "Problem";
+const endpoint = "courses";
+const name = "Course";
 
 export const CellAction: React.FC<Props> = ({ data }) => {
   const router = useRouter();
@@ -35,7 +35,7 @@ export const CellAction: React.FC<Props> = ({ data }) => {
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success("Billboard Id copied to clipboard.");
+    toast.success("Course Id copied to clipboard.");
   };
 
 
@@ -59,7 +59,7 @@ export const CellAction: React.FC<Props> = ({ data }) => {
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={() =>
-          deleteQuery.mutate(`/courses/${params.courseId}/${endpoint}/${data.uuid}`)
+          deleteQuery.mutate(`${params.storeId}/${endpoint}/${data.uuid}`)
         }
         loading={deleteQuery.isPending}
       />
@@ -83,7 +83,7 @@ export const CellAction: React.FC<Props> = ({ data }) => {
           <DropdownMenuItem className="py-0">            
             <Link
               className="flex items-center"
-              href={`/course/${params.courseId}/${endpoint}/${data.uuid}`}
+              href={`/${params.storeId}/${endpoint}/${data.uuid}`}
             >
               <Edit className="mr-2 h-4 w-4" />
               Full Edit

@@ -28,7 +28,7 @@ export const columns = (courseId: string) => {
             cell: ({ row }) => {
                 return (
                     <Link
-                        href={`/course/${courseId}/problems/${row.original.slug}`}
+                        href={`/courses/${courseId}/problems/${row.original.slug}`}
                         className="text-base hover:underline"
                     >
                         {row.original.name}

@@ -54,7 +54,7 @@ export function ImageQuickEdit({ image, storeId, linkToEdit = false }: Props) {
             }
             const response = await save.json()
         } catch (e) {
-            console.log('error saving asset')
+            // console.log('error saving asset')
         } finally {
             setLoading(false)
         }

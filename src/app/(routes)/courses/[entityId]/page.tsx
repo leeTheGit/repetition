@@ -1,16 +1,14 @@
 import React from 'react'
-import Repository from '@/core/category/Repository'
-import CourseRepository from '@/core/course/Repository'
+import Repository from '@/core/course/Repository'
 import { getUserAuth } from "@/lib/auth/utils";
-import { CategoryForm as Form } from '@/components/pages/categories/category-form'
+import { CourseForm as Form } from '@/components/pages/courses/form'
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";
 import { isError } from '@/core/types';
 
 const repository = new Repository()
-const courseRepository = new CourseRepository()
 
-const Page = async ({ params }: { params: { entityId: string, categoryId:string } }) => {
+const Page = async ({ params }: { params: { entityId: string } }) => {
     const auth = await getUserAuth();
 
     if (!auth.session) {
@@ -18,33 +16,25 @@ const Page = async ({ params }: { params: { entityId: string, categoryId:string 
     }
 
 
-    let courseId = undefined
+    let courseId = "new"
     let isNew = false
     let entity = null
 
-    if (params.categoryId === 'new') {
+    if (params.entityId === 'new') {
         isNew = true
     }
 
     if (!isNew) {
-        entity = await repository.fetchByUuid(params.categoryId)
+        entity = await repository.fetchByUuid(params.entityId)
         if (isError(entity)) {
             return <div>This page does not exist</div>
         }
-        courseId = entity.courseId
+        courseId = entity.uuid
     }
 
 
-    if (!courseId) {
-        const course = await courseRepository.fetchByUuid(params.entityId)
-        if (isError(course)) {
-            return <div>This page does not exist</div>
-        }
-        courseId = course.uuid
-    }
 
 
-    // console.log(categories)
 
     return (
         <div className="flex-col">

@@ -84,7 +84,6 @@ export const CategoryForm: React.FC<Props> = ({
     // Create or update a category
     const postQuery = useMutation({
         mutationFn: (data: FormSchema) => {
-            console.log('the data', data)
             const method = initialData ? 'PATCH' : 'POST'
             const catId = initialData ? initialData.uuid : ''
 

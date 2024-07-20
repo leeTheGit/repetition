@@ -19,8 +19,7 @@ export class CourseEntity extends Entity<EntitySchema> {
     data(): EntitySchema {
         return this.props
     }
-    toObject(): EntitySchema & {
-    } {
+    toObject(): EntitySchema {
         return {
             ...this.props,
         }

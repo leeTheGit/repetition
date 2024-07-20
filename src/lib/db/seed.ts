@@ -92,7 +92,6 @@ export const seed = async () => {
         })
         .returning({ uuid: course.uuid })
     
-    console.log("NEW COURSE", newCourse)
     // await db
     //     .insert(authTokens)
     //     .values({
@@ -121,10 +120,6 @@ export const seed = async () => {
         categoryObj[category.slug] = category.uuid
     }
 
-    // console.log(categoryObj)
-    // console.log(newCourse)
-    // console.log(Problems(categoryObj, newCourse.uuid))
-    // console.log('adding products')
     const newProblems = await db
         .insert(problem)
         .values(Problems(categoryObj, newCourse.uuid))

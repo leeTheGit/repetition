@@ -4,24 +4,23 @@ import { ColumnDef } from '@tanstack/react-table'
 import { CellAction } from './cell-action'
 import Link from 'next/link'
 
-export type CategoryColumn = {
+export type ProblemColumn = {
     uuid: string
-    courseId: string
-    courseSlug: string
     name: string
-    createdAt: string
+    description: string
+    slug: string
 }
 
-export const columns: ColumnDef<CategoryColumn>[] = [
+
+export const columns: ColumnDef<ProblemColumn>[] = [
     {
         accessorKey: 'name',
-        header: 'Name',
-        size: 40,
+        header: () => <div className="text-left">Name</div>,
         cell: ({ row }) => {
             return (
                 <Link
-                    href={`/course/${row.original.courseSlug}/categories/${row.original.uuid}`}
-                    className="text-base"
+                    href={`/courses/${row.original.slug}`}
+                    className="text-base hover:underline"
                 >
                     {row.original.name}
                 </Link>
@@ -29,11 +28,15 @@ export const columns: ColumnDef<CategoryColumn>[] = [
         },
     },
     {
-        accessorKey: 'createdAt',
-        header: 'Date',
+        accessorKey: 'description',
+        header: () => <div className="text-left">Description</div>,
+        cell: ({ row }) => {
+            return <p>{row.original.description}</p>
+        }
     },
     {
         id: 'actions',
         cell: ({ row }) => <CellAction data={row.original} />,
     },
-]
+];
+

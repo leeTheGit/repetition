@@ -11,7 +11,6 @@ const _ = async ({
     params: { entityId: string; storeId: string }
 }) => {
     const auth = await getUserAuth()
-    console.log(auth)
     if (!auth.session) {
         return null
     }
@@ -30,7 +29,6 @@ const _ = async ({
         }
     }
 
-    console.log(entity)
     return (
         <div className="flex-col">
             <div className="flex-1 space-y-4 p-8 pt-6">

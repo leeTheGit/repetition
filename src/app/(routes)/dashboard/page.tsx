@@ -7,22 +7,10 @@ import { getUserAuth } from "@/lib/auth/utils";
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";
 import { Button } from "@/components/ui/button";
-import Image from 'next/image'
 import { Heading } from "@/components/heading";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card'
-import Link from "next/link";
-import {buttonVariants} from '@/components/ui/button'
-import { cn } from "@/lib/utils";
-
+import { CourseCard } from './course-card'
 
 const courseRepository = new CourseRepository()
 
@@ -78,29 +66,7 @@ const Page = async ({ params }: { params: { storeId: string } }) => {
                         <div className="!mt-8 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
                             {courses.map( courseEntity => { 
                                 const course = courseEntity.toObject()
-                                return <Card className="bg-muted dark:bg-[#161f33]">
-                                    <CardHeader>
-                                        <CardTitle>{course.name}</CardTitle>
-                                        <CardDescription>{course.description}</CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <Image
-                                            src="https://elcyen-prod-storeuploads-tezkaofv.s3.ap-southeast-2.amazonaws.com/platform/google-recaptcha.png"
-                                            alt="ReCAPTCHA logo"
-                                            className="invert"
-                                            height={550}
-                                            width={550}
-                                        />
-                                    </CardContent>
-                                    <CardFooter>
-                                        <Link className={cn(
-                                            buttonVariants({
-                                                variant: "default",
-                                            }),
-                                            "w-full"
-                                        )} href={`/course/${course.slug}/problems`}>Go</Link>
-                                    </CardFooter>
-                                </Card>
+                                return <CourseCard course={course}/>
 
                             })}
                         </div>

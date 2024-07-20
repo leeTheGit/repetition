@@ -49,7 +49,6 @@ const Page = async ({ params }: { params: { entityId: string, problemId:string }
     let categories = await categoryRepository.fetchAll({
         courseId: courseId,
     })
-    // console.log(categories)
 
     return (
         <div className="flex-col">

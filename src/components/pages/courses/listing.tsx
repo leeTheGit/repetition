@@ -16,27 +16,23 @@ import { DataTable } from '@/components/ui/data-table'
 
 import { useFetchQuery } from '@/hooks/use-query'
 import { useDebounce } from '@/hooks/use-debounce'
-import { ProblemAPI } from '@/core/problems/response/ProblemDTO'
+import { CourseAPI } from '@/core/course/response/CourseDTO'
 import { BreadCrumb } from '@/components/breadCrumb'
 
 // interface Props {
 //     userId: string
 // }
-export type Category = {
-    uuid: string
-    name: string
-    slug: string
-    createdAt: string
-}
-
-interface Props {
-    courseId: string
-}
+// export type Category = {
+//     uuid: string
+//     name: string
+//     slug: string
+//     createdAt: string
+// }
 
 
 
-export const Listing = ({courseId} : Props) => {
-    const endpoint = `/courses/${courseId}/problems`
+export const Listing = () => {
+    const endpoint = `courses`
     // delete modal
 
     const router = useRouter()
@@ -49,9 +45,8 @@ export const Listing = ({courseId} : Props) => {
     
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-    const categories = useFetchQuery<Category[]>('categories', )
 
-    const entities = useFetchQuery<ProblemAPI[]>(
+    const entities = useFetchQuery<CourseAPI[]>(
         endpoint,
         {
             pagination,
@@ -66,25 +61,15 @@ export const Listing = ({courseId} : Props) => {
 
     const entityColumns =
         !entities.error &&
-        entities.data?.data.map((entity: ProblemAPI) => {
+        entities.data?.data.map((entity: CourseAPI) => {
             return {
                 uuid: entity.uuid,
                 name: entity.name,
+                description: entity.description,
                 slug: entity.slug,
-                category: entity.category,
-                grade: entity.history || [],
-                submissionCount: entity.submissionCount || 0,
-                lastSubmitted: entity.lastSubmitted || '',
-                difficulty: entity.difficulty,
             }
         })
    
-    const categoryOptions = categories.data?.data.map((category) => {
-        return {
-            value: category.uuid,
-            label: category.name,
-        }
-    })
 
     return (
         <>
@@ -98,24 +83,15 @@ export const Listing = ({courseId} : Props) => {
                         links={[
                             {
                                 label: 'Courses',
-                                href: `/courses`,
+                                href: `/course`,
                             },
-                            {
-                                label: courseId,
-                                href: `/courses/${courseId}`,
-                            },
-                            {
-                                label: 'Problems',
-                                href: `${endpoint}`,
-                            },
-                            // { label: initialData?.name || 'New' },
-                        ]}
+                         ]}
                     />
 
                 </div>
 
                 <Button 
-                    onClick={() => router.push(`${endpoint}/new`)}
+                    onClick={() => router.push(`/courses/new`)}
                 >
                     <Plus className="mr-2 h-4 w-4" />
                     Add New
@@ -132,7 +108,7 @@ export const Listing = ({courseId} : Props) => {
                             )}
 
                             <DataTable
-                                columns={columns(courseId)}
+                                columns={columns}
                                 columnFilters={columnFilters}
                                 emptyMessage={
                                     entities.isPending
@@ -146,10 +122,10 @@ export const Listing = ({courseId} : Props) => {
                                 setPagination={setPagination}
                                 sorting={sorting}
                                 setSorting={setSorting}
-                                filterColumns={[{
-                                    name: "category",
-                                    data: () => categoryOptions ? categoryOptions : []
-                                }]}
+                                // filterColumns={[{
+                                //     name: "category",
+                                //     data: () => categoryOptions ? categoryOptions : []
+                                // }]}
                             />
                 </div>
             </div>

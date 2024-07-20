@@ -87,7 +87,6 @@ export const ProblemForm: React.FC<Props> = ({
     const action = initialData ? 'Save changes' : 'Create'
 
     const mapToForm = (initialData: EntitySchema | null) => {
-        console.log(initialData)
         const data = {
             name: initialData?.name || '',
             categoryUuid: initialData?.categoryUuid || '',
@@ -107,11 +106,9 @@ export const ProblemForm: React.FC<Props> = ({
         defaultValues: mapToForm(initialData),
     })
 
-    console.log("errors", form.formState.errors)
     // Create or update a category
     const postQuery = useMutation({
         mutationFn: (data: FormSchema) => {
-            console.log(initialData)
             const method = initialData ? 'PATCH' : 'POST'
             const catId = initialData ? initialData.uuid : ''
 
@@ -120,7 +117,7 @@ export const ProblemForm: React.FC<Props> = ({
         onSuccess: (response) => {
             toast(toastMessage)
             if (!initialData && !modal) {
-                router.push(`/course/${courseSlug}/${endpoint}/${response.data.slug}`)
+                router.push(`/courses/${courseSlug}/${endpoint}/${response.data.slug}`)
             }
             queryClient.invalidateQueries({ queryKey: [endpoint] })
         },
@@ -139,7 +136,7 @@ export const ProblemForm: React.FC<Props> = ({
         onSuccess: () => {
             if (!modal) {
                 router.refresh()
-                router.push(`/course/${courseSlug}/${endpoint}`)
+                router.push(`/courses/${courseSlug}/${endpoint}`)
             }
             onClose && onClose()
             queryClient.invalidateQueries({ queryKey: [endpoint] })
@@ -187,6 +184,7 @@ export const ProblemForm: React.FC<Props> = ({
                 isOpen={categoryForm}
                 entityId={null}
                 courseId={courseId}
+                courseSlug={courseSlug}
                 onClose={() => showCategoryForm(false)}
                 onConfirm={() => {
                     showCategoryForm(false)
@@ -199,18 +197,25 @@ export const ProblemForm: React.FC<Props> = ({
 
                     <div>
                         <Heading title={title} />
-                        {!modal && (
-                            <BreadCrumb
-                                className="mt-2"
-                                links={[
-                                    {
-                                        label: 'Problems',
-                                        href: `/${endpoint}`,
-                                    },
-                                    { label: initialData?.name || 'New' },
-                                ]}
-                            />
-                        )}
+                        <BreadCrumb
+                            className="mt-2"
+                            links={[
+                                {
+                                    label: 'Courses',
+                                    href: `/courses`,
+
+                                },
+                                {
+                                    label: courseSlug,
+                                    href: `/courses/${courseSlug}`,
+                                },
+                                {
+                                    label: 'Problems',
+                                    href: `/courses/${courseSlug}/${endpoint}`,
+                                },
+                                { label: initialData?.name || 'New' },
+                            ]}
+                        />
                     </div>
                     <div className="ml-auto flex gap-2">
                         {initialData && (

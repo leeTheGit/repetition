@@ -1,9 +1,15 @@
 import React from "react";
-import { Listing } from "@/components/pages/problems/listing";
+import { Listing } from "@/components/pages/courses/listing";
 import { Suspense } from "react";
 import { getUserAuth } from "@/lib/auth/utils";
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";
+import Repository from '@/core/course/Repository'
+import { not } from "@/core/types";
+
+
+const repository = new Repository()
+
 
 const Page = async ({ params }: { params: { entityId: string } }) => {
   const auth = await getUserAuth();
@@ -11,6 +17,10 @@ const Page = async ({ params }: { params: { entityId: string } }) => {
     return null;
   }
 
+    // const course = await courseRepository.fetchByUuid(params.entityId)
+    // if (not(course)) {
+    //     return <div>This page does not exist</div>
+    // }
 
 
   return (
@@ -28,7 +38,7 @@ const Page = async ({ params }: { params: { entityId: string } }) => {
             </div>
           }
         >
-          <Listing courseId={params.entityId} />
+          <Listing  />
         </Suspense>
       </div>
     </div>
