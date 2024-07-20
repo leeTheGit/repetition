@@ -62,8 +62,9 @@ export const fetchParams = z
 
 export type FetchParams = z.infer<typeof fetchParams>
 
-export const fetchProductUuid = z.object({
+export const fetchByUuid = z.object({
     entityId: z.string().uuid().or(z.string().min(3).max(100)),
+    problemId: z.string().uuid().or(z.string().min(3).max(100)),
 })
 
 

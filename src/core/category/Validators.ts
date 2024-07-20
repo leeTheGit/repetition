@@ -3,7 +3,6 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { category } from '@/lib/db/schema/schema'
 
 import { Slugify } from '@/lib/utils'
-import { WithoutNullableKeys } from '../types'
 
 function transformer(schema: any, action?: string) {
     const result: any = {}
@@ -36,6 +35,7 @@ export type FetchParams = z.infer<typeof fetchParams>
 
 export const fetchByUuid = z.object({
     entityId: z.string().uuid().or(z.string().min(3).max(100)),
+    categoryId: z.string().uuid().or(z.string().min(3).max(100)),
 })
 
 export const entitySchema = createSelectSchema(category)

@@ -1,6 +1,6 @@
 import Repository from '@/core/problems/Repository'
 import { isError } from '@/core/types'
-import { patchSchema, fetchProductUuid } from '@/core/problems/Validators'
+import { patchSchema, fetchByUuid } from '@/core/problems/Validators'
 import { HttpResponse, apiHandler, getZodErrors } from '@/lib'
 import { fetchResponse } from '@/core/problems/response/ProblemDTO'
 import { uuidRegex } from '@/lib'
@@ -28,9 +28,7 @@ async function get(
         if (params.entityId.match(uuidRegex)) {
             uuid = true
         }
-
-        input = fetchProductUuid.safeParse(params)
-
+        input = fetchByUuid.safeParse(params)
 
         if (!input.success) {
             return {
@@ -39,8 +37,8 @@ async function get(
             }
         }
 
-        var Entity = await repository.fetchByUuid(params.problemId, {
-            course: params.entityId,
+        var Entity = await repository.fetchByUuid(input.data.problemId, {
+            course: input.data.entityId,
             organisationUuid: ctx.user.organisationUuid,
         })
         if (isError(Entity)) {

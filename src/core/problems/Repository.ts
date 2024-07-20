@@ -272,10 +272,8 @@ class Repository extends BaseRepository<
         identifier: string,
         params: FetchParams = {}
     ): Promise<ModelEntity | ModelError> {
-        let uuid = false
         var filters = [eq(this.table.slug, identifier)]
         if (identifier.match(uuidRegex)) {
-            uuid = true
             filters = [eq(this.table.uuid, identifier)]
         }
 

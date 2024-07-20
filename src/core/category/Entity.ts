@@ -11,7 +11,6 @@ export class CategoryEntity extends Entity<EntitySchema> {
   }
 
   toObject(): EntitySchema {
-    // const billboard = {billboard : this.relations.billboard?.toObject()};
     return {
       ...this.props,
     };
@@ -39,7 +38,6 @@ export class CategoryEntity extends Entity<EntitySchema> {
     return this.props.uuid;
   }
 
-
   get name() {
     return this.props.name;
   }
@@ -47,6 +45,11 @@ export class CategoryEntity extends Entity<EntitySchema> {
   get slug() {
     return this.props.slug;
   }
+
+  get description() {
+    return this.props.description;
+  }
+
 
   get courseId () {
     return this.props.courseId

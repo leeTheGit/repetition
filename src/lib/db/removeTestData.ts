@@ -33,6 +33,10 @@ export const clean = async () => {
 
     const db = drizzle(client)
 
+    console.log('removing test data');
+    await db
+        .delete(category)
+        .where(like(category.slug, `zzxxzztest-%`))
 
     await db
         .delete(problem)

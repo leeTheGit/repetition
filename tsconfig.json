@@ -12,6 +12,9 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "types": [
+      "vitest/importMeta"
+    ],
     "plugins": [
       {
         "name": "next"

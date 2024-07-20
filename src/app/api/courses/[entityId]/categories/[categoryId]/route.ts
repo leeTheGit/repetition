@@ -20,17 +20,8 @@ async function get(
 ) {
     let input
     try {
-        if (!params.entityId) {
-            return { error: `${name} id is required`, status: 400 }
-        }
-        logger.info('in the problem get route', params.categoryId)
-        let uuid = false
-        if (params.entityId.match(uuidRegex)) {
-            uuid = true
-        }
 
         input = fetchByUuid.safeParse(params)
-
 
         if (!input.success) {
             return {

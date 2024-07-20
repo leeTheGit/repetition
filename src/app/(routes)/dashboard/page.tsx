@@ -66,7 +66,7 @@ const Page = async ({ params }: { params: { storeId: string } }) => {
                         <div className="!mt-8 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
                             {courses.map( courseEntity => { 
                                 const course = courseEntity.toObject()
-                                return <CourseCard course={course}/>
+                                return <CourseCard key={course.uuid} course={course}/>
 
                             })}
                         </div>

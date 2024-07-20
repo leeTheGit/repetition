@@ -68,24 +68,19 @@ class CategoryRepository extends BaseRepository<
         return mapResult<ModelEntity, any>(result, this.mapToEntity)
     }
 
-    private fetchOne(
-        id: string,
-        col: keyof typeof category = 'uuid',
-        params: FetchParams = {}
-    ) {
-        const filters: any = []
-
-        const query = db.query['category'].findFirst({
-            where: and(eq(this.table[col] as PgColumn, id), ...filters),
-        })
-        return query
-    }
-
     async fetchByUuid(
         uuid: string,
         params: FetchParams = {}
     ): Promise<ModelEntity | ModelError> {
-        const data = await this.fetchOne(uuid, 'uuid', params)
+
+        var filters = [eq(this.table.slug, uuid)]
+        if (uuid.match(uuidRegex)) {
+            filters = [eq(this.table.uuid, uuid)]
+        }
+        const data = await db.query['category'].findFirst({
+            where: and(...filters),
+        })
+
         if (!data) {
             return {
                 error: `${this.tableName} not found`,
@@ -94,46 +89,8 @@ class CategoryRepository extends BaseRepository<
         return this.mapToEntity(data)
     }
 
-    async fetchBySlug(
-        slug: string,
-        params: FetchParams = {}
-    ): Promise<ModelEntity | ModelError> {
-        const data = await this.fetchOne(slug, 'slug', params)
-        if (!data) {
-            return {
-                error: `${this.tableName} not found`,
-            }
-        }
-        return this.mapToEntity(data)
-    }
 
-    async fetchFirstByStoreUuid(
-        storeUuid: string
-    ): Promise<ModelEntity | ModelError> {
-        const data = await db.query.category.findFirst()
 
-        if (!data) {
-            return {
-                error: `${this.tableName} not found`,
-            }
-        }
-
-        return this.mapToEntity(data)
-    }
-
-    async fetchByUserUuid(
-        userUuid: string
-    ): Promise<ModelEntity[] | ModelError> {
-        const data = await db.query.category.findMany()
-
-        if (!data) {
-            return {
-                error: `${this.tableName} not found`,
-            }
-        }
-
-        return mapResult<ModelEntity, any>(data, this.mapToEntity)
-    }
 
     handleConstraints(e: any, entity?: ModelEntity) {
         // if (e.constraint === 'product_category_uuid_category_uuid_fk') {
