@@ -3,7 +3,7 @@
 export default $config({
     app(input) {
         return {
-            name: 'elcyen',
+            name: 'repetition',
             removal: input?.stage === 'production' ? 'retain' : 'remove',
             home: 'aws',
         }
@@ -28,11 +28,6 @@ export default $config({
             public: true,
         })
 
-        // const sbucket = new aws.s3.Bucket("ElcyenStore2", {
-        //     bucket: `elcyen-store2-${stage}`,
-        //     acl: "public-read",
-        // });
-
         // // Configure ownership controls for the new S3 bucket
         // const ownershipControls = new aws.s3.BucketOwnershipControls("OwnershipControls", {
         //     bucket: sbucket.bucket,
@@ -47,7 +42,7 @@ export default $config({
         //     blockPublicAcls: false,
         // });
 
-        new sst.aws.Nextjs('Elcyen', {
+        new sst.aws.Nextjs('Repetition', {
             // openNextVersion: "3.0.0-rc.16",
             openNextVersion: '3.0.1',
             link: [
@@ -73,7 +68,7 @@ export default $config({
                 // zAWS_REGION: process.env.AWS_REGION || process.env.zAWS_REGION || "",
 
                 // RESEND_API_KEY: process.env.RESEND_API_KEY || '',
-                STRIPE_API_KEY: process.env.STRIPE_API_KEY || '',
+                // STRIPE_API_KEY: process.env.STRIPE_API_KEY || '',
 
                 // Accessible in the browser
                 // VITE_STRIPE_PUBLISHABLE_KEY: 'pk_test_123',
@@ -81,18 +76,3 @@ export default $config({
         })
     },
 })
-
-// {
-//   "Version": "2008-10-17",
-//   "Statement": [
-//       {
-//           "Sid": "AllowPublicRead",
-//           "Effect": "Allow",
-//           "Principal": {
-//               "AWS": "*"
-//           },
-//           "Action": "s3:GetObject",
-//           "Resource": "arn:aws:s3:::borderland-uploads/*"
-//       }
-//   ]
-// }

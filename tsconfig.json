@@ -21,9 +21,11 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@repetition/frontend/*": ["../frontent/src/*"],
+      "@repetition/core/*": ["../core/src/*"],
+      "@repetition/functions/*": ["../functions/src/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "packages"]
 }

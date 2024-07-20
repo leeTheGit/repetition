@@ -1,0 +1,48 @@
+{
+    "name": "@repetition/core",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+      "db:seed": "tsx src/lib/db/seed.ts",
+      "migrate": "drizzle-kit generate --dialect=postgresql --schema=./src/lib/db/schema/schema.ts && sst shell 'node -r esbuild-register src/lib/db/migrate.ts'",
+      "migration:generate": "drizzle-kit generate --dialect=postgresql --schema=./src/lib/db/schema/schema.ts",
+      "migration:introspect": "drizzle-kit introspect --config=drizzle.config.ts",
+      "migration:push": "node -r esbuild-register src/lib/db/migrate.ts",
+      "test": "tsx src/lib/db/removeTestData.ts && tsx src/lib/db/testseed.ts && vitest run",
+      "test:watch": "tsx src/lib/db/removeTestData.ts && tsx src/lib/db/testseed.ts && vitest",
+      "db:removetest": "tsx src/lib/db/removeTestData.ts"
+    },
+    "dependencies": {
+      "@aws-sdk/client-s3": "^3.614.0",
+      "@aws-sdk/client-sns": "^3.614.0",
+      "@aws-sdk/s3-request-presigner": "^3.614.0",
+      "@lucia-auth/adapter-drizzle": "^1.0.7",
+      "add": "^2.0.6",
+      "arctic": "^1.9.1",
+      "date-fns": "^3.6.0",
+      "date-fns-tz": "^3.1.3",
+      "dotenv": "^16.4.5",
+      "drizzle-orm": "^0.31.2",
+      "drizzle-zod": "^0.5.1",
+      "lucia": "^3.2.0",
+      "pg": "^8.12.0",
+      "slugify": "^1.6.6",
+      "sst": "ion",
+      "uuid": "^10.0.0",
+      "winston": "^3.13.0",
+      "zod": "^3.23.8"
+    },
+    "devDependencies": {
+      "@types/node": "^20",
+      "@types/pg": "^8.11.6",
+      "@types/uuid": "^9.0.8",
+      "drizzle-kit": "^0.22.7",
+      "esbuild": "^0.20.2",
+      "esbuild-register": "^3.5.0",
+      "eslint": "^8",
+      "tsx": "^4.16.2",
+      "typescript": "^5",
+      "vitest": "^1.6.0"
+    }
+  }
+  

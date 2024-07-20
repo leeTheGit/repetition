@@ -8,6 +8,28 @@ importers:
 
   .:
     dependencies:
+      sst:
+        specifier: ion
+        version: 3.0.37
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.0(@types/node@20.14.10)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.14.10
+      tsx:
+        specifier: ^4.16.2
+        version: 4.16.2
+      typescript:
+        specifier: ^5
+        version: 5.5.3
+
+  packages/core:
+    dependencies:
       '@aws-sdk/client-s3':
         specifier: ^3.614.0
         version: 3.614.0
@@ -17,12 +39,88 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.614.0
         version: 3.614.0
-      '@hookform/resolvers':
-        specifier: ^3.9.0
-        version: 3.9.0(react-hook-form@7.52.1(react@18.3.1))
       '@lucia-auth/adapter-drizzle':
         specifier: ^1.0.7
         version: 1.0.7(lucia@3.2.0)
+      add:
+        specifier: ^2.0.6
+        version: 2.0.6
+      arctic:
+        specifier: ^1.9.1
+        version: 1.9.1
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
+      date-fns-tz:
+        specifier: ^3.1.3
+        version: 3.1.3(date-fns@3.6.0)
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
+      drizzle-orm:
+        specifier: ^0.31.2
+        version: 0.31.2(@types/pg@8.11.6)(@types/react@18.3.3)(pg@8.12.0)(react@18.3.1)
+      drizzle-zod:
+        specifier: ^0.5.1
+        version: 0.5.1(drizzle-orm@0.31.2(@types/pg@8.11.6)(@types/react@18.3.3)(pg@8.12.0)(react@18.3.1))(zod@3.23.8)
+      lucia:
+        specifier: ^3.2.0
+        version: 3.2.0
+      pg:
+        specifier: ^8.12.0
+        version: 8.12.0
+      slugify:
+        specifier: ^1.6.6
+        version: 1.6.6
+      sst:
+        specifier: ion
+        version: 0.1.4
+      uuid:
+        specifier: ^10.0.0
+        version: 10.0.0
+      winston:
+        specifier: ^3.13.0
+        version: 3.13.0
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.14.10
+      '@types/pg':
+        specifier: ^8.11.6
+        version: 8.11.6
+      '@types/uuid':
+        specifier: ^9.0.8
+        version: 9.0.8
+      drizzle-kit:
+        specifier: ^0.22.7
+        version: 0.22.8
+      esbuild:
+        specifier: ^0.20.2
+        version: 0.20.2
+      esbuild-register:
+        specifier: ^3.5.0
+        version: 3.5.0(esbuild@0.20.2)
+      eslint:
+        specifier: ^8
+        version: 8.57.0
+      tsx:
+        specifier: ^4.16.2
+        version: 4.16.2
+      typescript:
+        specifier: ^5
+        version: 5.5.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.0(@types/node@20.14.10)
+
+  packages/frontend:
+    dependencies:
+      '@hookform/resolvers':
+        specifier: ^3.9.0
+        version: 3.9.0(react-hook-form@7.52.1(react@18.3.1))
       '@monaco-editor/react':
         specifier: ^4.6.0
         version: 4.6.0(monaco-editor@0.50.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -86,9 +184,6 @@ importers:
       add:
         specifier: ^2.0.6
         version: 2.0.6
-      arctic:
-        specifier: ^1.9.1
-        version: 1.9.1
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -107,12 +202,6 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
-      drizzle-orm:
-        specifier: ^0.31.2
-        version: 0.31.2(@types/pg@8.11.6)(@types/react@18.3.3)(pg@8.12.0)(react@18.3.1)
-      drizzle-zod:
-        specifier: ^0.5.1
-        version: 0.5.1(drizzle-orm@0.31.2(@types/pg@8.11.6)(@types/react@18.3.3)(pg@8.12.0)(react@18.3.1))(zod@3.23.8)
       lucia:
         specifier: ^3.2.0
         version: 3.2.0
@@ -131,9 +220,6 @@ importers:
       oslo:
         specifier: ^1.2.0
         version: 1.2.1
-      pg:
-        specifier: ^8.12.0
-        version: 8.12.0
       react:
         specifier: ^18
         version: 18.3.1
@@ -157,7 +243,7 @@ importers:
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       sst:
         specifier: ion
-        version: 3.0.37
+        version: 0.1.4
       table:
         specifier: ^6.8.2
         version: 6.8.2
@@ -173,12 +259,6 @@ importers:
       uuid:
         specifier: ^10.0.0
         version: 10.0.0
-      winston:
-        specifier: ^3.13.0
-        version: 3.13.0
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
       zustand:
         specifier: ^4.5.2
         version: 4.5.4(@types/react@18.3.3)(react@18.3.1)
@@ -207,9 +287,6 @@ importers:
       cypress:
         specifier: ^13.13.0
         version: 13.13.0
-      drizzle-kit:
-        specifier: ^0.22.7
-        version: 0.22.8
       esbuild:
         specifier: ^0.20.2
         version: 0.20.2
@@ -5285,6 +5362,43 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
+  sst-darwin-arm64@0.1.4:
+    resolution: {integrity: sha512-nRkBN5OjruQMzoYGSUF7/uD5EuPIy2/j3i49GGl0e+EWDQo3BUzBZjpEwc6l34vp1PrIa+KcoIV6cXjTHcJS9w==}
+    cpu: [arm64]
+    os: [darwin]
+
+  sst-darwin-x64@0.1.4:
+    resolution: {integrity: sha512-KbaGVNAJi9l/WvVHL4s88Xo5HPNh/KWqk7NKXI/56/HV+VUdL4KMzHyqg9QtJPTiPAb8nFp91/VLZtNcJcbTUA==}
+    cpu: [x64]
+    os: [darwin]
+
+  sst-linux-arm64@0.1.4:
+    resolution: {integrity: sha512-hq5kkyOb+TgDJxq9Seuvqg4xMrtPRIJHkNdZQvKrgDFJWWhFgCrTrU68ZJhS/a2pC1zNCZSy3LKE/ir+CC0wrQ==}
+    cpu: [arm64]
+    os: [linux]
+
+  sst-linux-x64@0.1.4:
+    resolution: {integrity: sha512-tuLW4sU+9Qv2kFYgByBnqYap8yh52NbE2k6/wbteFMcBicECfcBTYbomHIEct756+IesZYnysTQVSA6GEh9TmA==}
+    cpu: [x64]
+    os: [linux]
+
+  sst-linux-x86@0.1.4:
+    resolution: {integrity: sha512-Ht7ml9sgt+vhw0Q7jar1WsYWnVdqsjIZr+pYA69MsN9ZzkcGtW4IZwD2aPs+iEH3EZHxZYeck6oy5e5nPTESPw==}
+    cpu: [x86]
+    os: [linux]
+
+  sst@0.1.4:
+    resolution: {integrity: sha512-bJJz364mIXlCFY9BiRjyXs3C/kOv1H+HObeKXgy5AvxdQA/qOZJW8EoQsXwg/jN3XLZg+ykXa0EAWgMyeo2RbQ==}
+    hasBin: true
+    peerDependencies:
+      hono: 4.x
+      valibot: 0.30.x
+    peerDependenciesMeta:
+      hono:
+        optional: true
+      valibot:
+        optional: true
+
   sst@3.0.37:
     resolution: {integrity: sha512-FgZIvBMEtGKO2UtS47YryfDAoK+4IPAYJYftDRjCM2Dmxh+0HHocCAXW/A2ZpNOK36y9hT9w+Naycq2OhtLCNg==}
     peerDependencies:
@@ -10033,7 +10147,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.9.0(eslint@8.57.0)
       eslint-plugin-react: 7.34.3(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
@@ -10057,7 +10171,7 @@ snapshots:
       enhanced-resolve: 5.17.0
       eslint: 8.57.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.14.0
@@ -10079,7 +10193,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -11756,6 +11870,36 @@ snapshots:
       jsbn: 0.1.1
       safer-buffer: 2.1.2
       tweetnacl: 0.14.5
+
+  sst-darwin-arm64@0.1.4:
+    optional: true
+
+  sst-darwin-x64@0.1.4:
+    optional: true
+
+  sst-linux-arm64@0.1.4:
+    optional: true
+
+  sst-linux-x64@0.1.4:
+    optional: true
+
+  sst-linux-x86@0.1.4:
+    optional: true
+
+  sst@0.1.4:
+    dependencies:
+      '@aws-sdk/client-lambda': 3.478.0
+      aws4fetch: 1.0.18
+      jose: 5.2.3
+      openid-client: 5.6.4
+    optionalDependencies:
+      sst-darwin-arm64: 0.1.4
+      sst-darwin-x64: 0.1.4
+      sst-linux-arm64: 0.1.4
+      sst-linux-x64: 0.1.4
+      sst-linux-x86: 0.1.4
+    transitivePeerDependencies:
+      - aws-crt
 
   sst@3.0.37:
     dependencies:
