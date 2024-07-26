@@ -124,7 +124,6 @@ class Repository extends BaseRepository<
             where: and(...filters),
         })
 
-        // console.log("SQL QUERY", query.toSQL());
 
         const data = await query
         if (!data) {
@@ -132,7 +131,6 @@ class Repository extends BaseRepository<
                 error: `${this.tableName} not found`,
             }
         }
-        // console.log('repos', data)
         const entity = this.mapToEntity(data)
         if (isError(entity)) {
             return entity

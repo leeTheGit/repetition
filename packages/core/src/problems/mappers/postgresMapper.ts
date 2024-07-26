@@ -8,7 +8,6 @@ import { not } from '@repetition/core/types'
 
 export const PostgresMapper = (item: TableType) => {
     
-    console.log('mapping with postgres')
 
     const itemData = convertCase(item)
     if (itemData.createdAt) {
@@ -47,7 +46,6 @@ export const PostgresMapper = (item: TableType) => {
         Entity.submissionCount = item.submissionCount
     }
     if ('lastSubmitted' in item && typeof item.lastSubmitted !== 'undefined' && item.lastSubmitted) {
-        console.log('last submitted in item', item)
         Entity.lastSubmitted = item.lastSubmitted.toString()
     }
     if ('category' in item && typeof item.category !== 'undefined' && item.category) {

@@ -96,6 +96,7 @@ export const ProblemForm: React.FC<Props> = ({
             starterCode: initialData?.starterCode || '',
             answercode: initialData?.answerCode || '', 
             difficulty: initialData?.difficulty || 0, 
+            link: initialData?.link || 0, 
             status: initialData?.status || 'true',
         }
         return data
@@ -153,6 +154,15 @@ export const ProblemForm: React.FC<Props> = ({
         data.description = EditorRef.current.getContent()
         data.starterCode = CodeEditorRef.current.getValue()
         postQuery.mutate(data)
+    }
+
+    const submitCode = async () => {
+        const code = CodeEditorRef.current.getValue()
+        const req = await fetch('/api/code', {
+            method: 'POST',
+            body: code
+        })
+        const result = await req.json();
     }
 
     useEffect(() => {
@@ -410,6 +420,21 @@ export const ProblemForm: React.FC<Props> = ({
                                         </FormItem>
                                     )}
                                 />
+                                <FormField
+                                    control={form.control}
+                                    name="link"
+                                    render={({ field }) => (
+                                        <FormItem className="col-span-5">
+                                            <FormLabel className="flex">
+                                                Link
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
 
                             <div className="max-w-[1200px] m-auto mt-10 grid grid-cols-12 gap-2">
@@ -438,12 +463,12 @@ export const ProblemForm: React.FC<Props> = ({
                                                 editor)
                                         }
                                         theme="vs-dark"
-                                        height="90vh"
+                                        height="40vh"
                                         defaultLanguage="javascript"
                                         defaultValue="// some comment"
                                     />
+                                <Button type="button" onClick={submitCode}>Test code</Button>
                                 </div>
-
 
 
                             </div>

@@ -1,5 +1,5 @@
 import ResetPasswordClient  from './client'
-import { getUserAuth } from '@repetition/core/lib/auth/utils'
+import { getUserAuth } from '@repetition/frontend/lib/auth/utils'
 import { redirect } from 'next/navigation'
 
 export default async function SignInPage() {

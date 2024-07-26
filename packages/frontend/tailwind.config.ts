@@ -22,6 +22,7 @@ const config = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        elcyenlink: "#09c6ff",
         elcyentable: '#0c1624',
         problemeasy: '#009722',
         problemmedium: '#e6b502',

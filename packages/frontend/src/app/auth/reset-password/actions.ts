@@ -1,6 +1,6 @@
 "use server";
 
-import { validateRequest } from '@repetition/core/lib/auth/validate'
+import { validateRequest } from '@repetition/frontend/lib/auth/validate'
 import Repository from '@repetition/core/auth/Repository'
 import UserRepository from '@repetition/core/user/Repository'
 import { rateLimitByIp } from "@repetition/core/lib/limiter";
@@ -57,7 +57,6 @@ const userRepository = new UserRepository
     //     }
     // }
 
-    // console.log("[PASSWORD RESET]", user)
 
     // return {
     //     success: true

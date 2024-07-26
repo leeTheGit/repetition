@@ -24,9 +24,12 @@ export default $config({
         const GoogleClientId = new sst.Secret('GoogleClientId')
         const GoogleClientSecret = new sst.Secret('GoogleClientSecret') 
         
-        const bucket = new sst.aws.Bucket(`StoreUploads`, {
+        const bucket = new sst.aws.Bucket(`RepetitionUploads`, {
             public: true,
         })
+
+
+
 
         // // Configure ownership controls for the new S3 bucket
         // const ownershipControls = new aws.s3.BucketOwnershipControls("OwnershipControls", {
@@ -42,9 +45,20 @@ export default $config({
         //     blockPublicAcls: false,
         // });
 
+        new sst.aws.Vpc("repetitionVPC", {
+            az: 1,
+            transform: {
+                privateSubnet: {
+                    cidrBlock: '10.0.0.0/16'
+                }
+            }
+        })
+
+
+
         new sst.aws.Nextjs('Repetition', {
             // openNextVersion: "3.0.0-rc.16",
-            openNextVersion: '3.0.1',
+            openNextVersion: '3.0.8',
             link: [
                 AppKey,
                 GoogleClientSecret,

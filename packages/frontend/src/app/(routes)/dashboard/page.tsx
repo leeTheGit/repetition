@@ -3,7 +3,7 @@ import { Listing } from "@/components/pages/problems/listing";
 import { not } from '@repetition/core/types'
 import CourseRepository from '@repetition/core/course/Repository'
 import { Suspense } from "react";
-import { getUserAuth } from "@repetition/core/lib/auth/utils";
+import { getUserAuth } from "@repetition/frontend/lib/auth/utils";
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";
 import { Button } from "@/components/ui/button";

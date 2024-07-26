@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getZodErrors } from '@repetition/core/lib'
 import { isError } from '@repetition/core/types'
-import { getUserAuth, getTokenAuth } from '@repetition/core/lib/auth/utils'
+import { getUserAuth, getTokenAuth } from '@repetition/frontend/lib/auth/utils'
 import { headers } from 'next/headers'
 
 type Options = Partial<{
@@ -14,13 +14,9 @@ type Options = Partial<{
 function apiHandler(handler: any, options?: Options) {
 
     let validator: any = null
-    let checkStore = true
     let authCheck = true
     if (options && options.validator) {
         validator = options.validator
-    }
-    if (options && typeof options.storeCheck !== 'undefined') {
-        checkStore = options.storeCheck
     }
     if (options && typeof options.authCheck !== 'undefined') {
         authCheck = options.authCheck
@@ -63,10 +59,6 @@ function apiHandler(handler: any, options?: Options) {
                 })
             }
         }
-
-        // **********************************************************************
-        //        Make sure the user has access to the store being queried
-        // **********************************************************************
 
 
         try {

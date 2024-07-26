@@ -1,9 +1,9 @@
 'use server'
 
-import { validateRequest } from '@repetition/core/lib/auth/validate'
+import { validateRequest } from '@repetition/frontend/lib/auth/validate'
+import { lucia } from '@repetition/frontend/lib/auth/auth'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { lucia } from '@repetition/core/lib/auth/auth'
 
 interface ActionResult {
     error: string

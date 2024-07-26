@@ -59,10 +59,7 @@ export const Submit = ({data}: Props) => {
         },
         onSuccess: (response) => {
             toast("Submission accepted")
-            queryClient.invalidateQueries({ queryKey: ['problems'] })
-            // queryClient.invalidateQueries({
-            //     queryKey: [`${endpoint}/${initialData?.uuid}`],
-            // })
+            queryClient.invalidateQueries({ queryKey: ['/courses/algorithms/problems'] })
         },
         onError: () => {
             toast.error(`${name} failed to save`)
@@ -70,8 +67,6 @@ export const Submit = ({data}: Props) => {
         onSettled: () => {
             form.reset()
             setSubmitModal(false)
-            // router.refresh()
-            // onClose && onClose()
         },
     })
 

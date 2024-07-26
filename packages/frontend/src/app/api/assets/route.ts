@@ -3,7 +3,7 @@ import AssetRepository from '@repetition/core/asset/AssetRepository'
 import { isError } from '@repetition/core/types'
 import { postParams, fetchParams } from '@repetition/core/asset/AssetValidators'
 import { fetchResponse } from '@repetition/core/asset/response/AssetDTO'
-import { HttpResponse, apiHandler } from '@repetition/core/lib'
+import { HttpResponse, apiHandler } from '@/lib'
 import { logger } from '@repetition/core/lib/logger'
 
 const Repository = new AssetRepository()

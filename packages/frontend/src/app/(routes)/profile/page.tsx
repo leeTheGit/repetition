@@ -1,7 +1,7 @@
 import Repository from '@repetition/core/user/Repository'
 import { isError } from '@repetition/core/types'
 import { UserForm as Form } from '@/components/pages/users/user-form'
-import { getUserAuth } from '@repetition/core/lib/auth/utils'
+import { getUserAuth } from '@repetition/frontend/lib/auth/utils'
 
 const repository = new Repository()
 

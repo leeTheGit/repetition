@@ -1,7 +1,7 @@
 import React from "react";
 import { Listing } from "@/components/pages/courses/listing";
 import { Suspense } from "react";
-import { getUserAuth } from "@repetition/core/lib/auth/utils";
+import { getUserAuth } from "@repetition/frontend/lib/auth/utils";
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";
 import Repository from '@repetition/core/course/Repository'

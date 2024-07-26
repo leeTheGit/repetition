@@ -1,7 +1,7 @@
 import React from 'react'
 import Repository from '@repetition/core/problems/Repository'
 import CourseRepository from '@repetition/core/course/Repository'
-import { getUserAuth } from "@repetition/core/lib/auth/utils";
+import { getUserAuth } from "@repetition/frontend/lib/auth/utils";
 import { ProblemForm as Form } from '@/components/pages/problems/form'
 import CategoryRepository from '@repetition/core/category/Repository'
 import Overlay from "@/components/overlay";

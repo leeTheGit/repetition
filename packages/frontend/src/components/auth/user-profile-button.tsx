@@ -11,7 +11,7 @@ import {
 
 import { useSession } from '@/providers/sessionProvider'
 
-import { signout } from '@repetition/core/user/actions/signout'
+import { signout } from '@repetition/frontend/actions/user/signout'
 import Link from 'next/link'
 
 

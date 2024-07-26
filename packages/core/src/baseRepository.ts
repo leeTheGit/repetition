@@ -70,27 +70,6 @@ abstract class BaseRepository<
   }
 
 
-  // async save(entity: ModelEntity): Promise<ModelEntity | ModelError> {
-  //   var created;
-  //   try {
-  //     const values = entity.toObject();
-  //     console.log(values)
-  //     [created] = await db.insert(this.table).values(values).returning();
-  //   } catch (e: any) {
-  //     console.log("ERRRRORROR")
-  //     console.log(e)
-
-  //     return this.handleConstraints(e, entity);
-  //   }
-
-  //   if (!created) {
-  //     console.log("NOT CREATED")
-  //     return {
-  //       error: `${this.tableName} not created`,
-  //     };
-  //   }
-  //   return this.mapToEntity(created as SelectTableType);
-  // }
 
   async update<T>(id: string, data: Partial<T>): Promise<string | ModelError> {
     if (Object.keys(data).length === 0) {
@@ -129,7 +108,6 @@ abstract class BaseRepository<
         .delete(this.table)
         .where(and(eq(this.table.uuid, id), eq(this.table.courseId, courseId)));
 
-      // console.log(delQuery.toSQL())
       let del = await delQuery
       if (del.rowCount === 0) {
         return {

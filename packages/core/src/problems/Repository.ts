@@ -60,7 +60,6 @@ class Repository extends BaseRepository<
 
 
     set mapper(mapper: (item: TableType ) => ModelEntity | ModelError ) {
-        console.log('setting mapper to duynamo')
         this.mapToEntity = mapper
     }
 

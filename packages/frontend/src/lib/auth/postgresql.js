@@ -42,7 +42,6 @@ export class DrizzlePostgreSQLAdapter {
             .where(eq(this.sessionTable.id, sessionId))
 
         if (result.length !== 1) return [null, null]
-        // console.log(result)
         return [
             transformIntoDatabaseSession(result[0].session),
             transformIntoDatabaseUser(result[0].user, result[0].avatar),

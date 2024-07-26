@@ -1,8 +1,8 @@
 'use server'
 
-import { verify } from '@repetition/core/lib/auth/hash'
+import { verify } from '@repetition/frontend/lib/auth/hash'
 import { cookies } from 'next/headers'
-import { lucia } from '@repetition/core/lib/auth/auth'
+import { lucia } from '@repetition/frontend/lib/auth/auth'
 import { redirect } from 'next/navigation'
 import UserRepository from '@repetition/core/user/Repository'
 import { isError } from '@repetition/core/types'

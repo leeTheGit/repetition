@@ -14,6 +14,7 @@ export const fetchResponse = (res: ProblemEntity) => {
         answerCode: res.answerCode,
         status: res.status,
         history: res.history || [],
+        link: res.link || '',
         submissionCount: res.submissionCount || null,
         lastSubmitted: res.lastSubmitted || '',
         description: res.description || '',

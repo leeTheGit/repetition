@@ -1,27 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
+import { useRouter } from 'next/navigation'
+import { ColumnFiltersState, PaginationState,  } from '@tanstack/react-table'
 import { Plus } from 'lucide-react'
 import { columns } from './columns'
-import { DataTableToolbar } from '@/components/ui/data-table-internal-toolbar'
-import { DataTableFacetedFilter } from '@/components/ui/data-table-faceted-filter'
+// import { DataTableToolbar } from '@/components/ui/data-table-internal-toolbar'
+// import { DataTableFacetedFilter } from '@/components/ui/data-table-faceted-filter'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/heading'
 import { Separator } from '@/components/ui/separator'
 import { DataTable } from '@/components/ui/data-table'
-// import { ApiList } from '@/components/ui/api-list'
-// import { FormModal } from '@/components/pages/billboards/form-modal'
 
 import { useFetchQuery } from '@/hooks/use-query'
 import { useDebounce } from '@/hooks/use-debounce'
 import { ProblemAPI } from '@repetition/core/problems/response/ProblemDTO'
 import { BreadCrumb } from '@/components/breadCrumb'
+import { useSort } from '@/hooks/use-sort-table'
 
-// interface Props {
-//     userId: string
-// }
 export type Category = {
     uuid: string
     name: string
@@ -34,19 +30,19 @@ interface Props {
 }
 
 
-
 export const Listing = ({courseId} : Props) => {
     const endpoint = `/courses/${courseId}/problems`
-    // delete modal
+    
 
     const router = useRouter()
-    const [open, setOpen] = useState(false)
-    const [sorting, setSorting] = useState<SortingState>([{desc:true, id:'category'}])
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
         pageSize: 20,
     })
     
+    const {sorting, setTheSort} = useSort({desc: true, id: 'last_practiced'})
+
+
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
     const categories = useFetchQuery<Category[]>('categories', )
@@ -72,6 +68,7 @@ export const Listing = ({courseId} : Props) => {
                 name: entity.name,
                 slug: entity.slug,
                 category: entity.category,
+                link: entity.link,
                 grade: entity.history || [],
                 submissionCount: entity.submissionCount || 0,
                 lastSubmitted: entity.lastSubmitted || '',
@@ -145,7 +142,7 @@ export const Listing = ({courseId} : Props) => {
                                 pagination={pagination}
                                 setPagination={setPagination}
                                 sorting={sorting}
-                                setSorting={setSorting}
+                                setSorting={setTheSort}
                                 filterColumns={[{
                                     name: "category",
                                     data: () => categoryOptions ? categoryOptions : []

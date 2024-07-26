@@ -19,7 +19,6 @@ declare global {
 
 const databaseDSN = process.env.DATABASE_URL
 // console.log('env', process.env)
-console.log("DATABASE", databaseDSN)
 // const databaseDSN = Resource.DatabaseDSN.value
 // const databaseDSN = Resource.DatabaseDSN.value ||  process.env.DATABASE_URL
 export const client =

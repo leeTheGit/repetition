@@ -1,7 +1,7 @@
 import React from 'react'
 import Repository from '@repetition/core/category/Repository'
 import CourseRepository from '@repetition/core/course/Repository'
-import { getUserAuth } from "@repetition/core/lib/auth/utils";
+import { getUserAuth } from "@repetition/frontend/lib/auth/utils";
 import { CategoryForm as Form } from '@/components/pages/categories/category-form'
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";

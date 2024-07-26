@@ -1,0 +1,19 @@
+{
+  "name": "@repetition/functions",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.141",
+    "esbuild": "^0.20.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.616.0"
+  }
+}

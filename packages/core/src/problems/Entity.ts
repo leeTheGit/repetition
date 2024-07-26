@@ -67,6 +67,10 @@ export class ProblemEntity extends Entity<EntitySchema> {
     get name() {
         return this.props.name
     }
+    
+    get link() {
+        return this.props.link
+    }
 
     get status() {
         return this.props.status

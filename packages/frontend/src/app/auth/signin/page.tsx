@@ -1,5 +1,5 @@
 import SignInClient from './client'
-import { getUserAuth } from '@repetition/core/lib/auth/utils'
+import { getUserAuth } from '@repetition/frontend/lib/auth/utils'
 import { redirect } from 'next/navigation'
 
 const PLATFORM_DOMAIN = process.env.PLATFORM_DOMAIN || ''

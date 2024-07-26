@@ -5,7 +5,7 @@ import { CellAction } from './cell-action'
 import Link from 'next/link'
 import { Submit } from './submit'
 import {deltaToNow} from '@repetition/core/lib/dates'
-import { ArrowUpDown } from 'lucide-react'
+import { ArrowUpDown, Link as LinkIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export type ProblemColumn = {
@@ -13,6 +13,7 @@ export type ProblemColumn = {
     name: string
     slug: string
     lastSubmitted: string
+    link: string
     category: string
     grade: number[]
     submissionCount: number
@@ -27,12 +28,22 @@ export const columns = (courseId: string) => {
             header: () => <div className="text-left">Name</div>,
             cell: ({ row }) => {
                 return (
-                    <Link
-                        href={`/courses/${courseId}/problems/${row.original.slug}`}
-                        className="text-base hover:underline"
-                    >
-                        {row.original.name}
-                    </Link>
+                    <div className="flex">
+                        <Link
+                            href={`/courses/${courseId}/problems/${row.original.slug}`}
+                            className="text-base hover:underline"
+                        >
+                            {row.original.name}
+                        </Link>
+                        {row.original.link && <Link
+                            href={row.original.link || ""}
+                            target="_blank"
+                            className="text-sm text-elcyenlink hover:underline ml-2"
+                        >
+                            <LinkIcon />
+                            {/* {row.original.link} */}
+                        </Link>}
+                    </div>
                 )
             },
         },

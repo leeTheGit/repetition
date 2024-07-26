@@ -1,7 +1,7 @@
 import React from 'react'
 import { redirect } from 'next/navigation'
 import { SessionProvider } from '@/providers/sessionProvider'
-import { validateRequest } from '@repetition/core/lib/auth/validate'
+import { validateRequest } from '@repetition/frontend/lib/auth/validate'
 import { TanstackQueryClient } from "@/providers/query-client-provider";
 import MainNav from '@/components/main-nav'
 import Navbar from '@/components/Navbar'

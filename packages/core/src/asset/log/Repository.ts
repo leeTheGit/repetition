@@ -56,7 +56,6 @@ class AssetLogRepository {
             where: and(eq(this.table.uuid, uuid), ...filters),
         })
 
-        // console.log(query.toSQL());
 
         let asset = await query
 

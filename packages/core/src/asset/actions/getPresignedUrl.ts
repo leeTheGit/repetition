@@ -8,7 +8,7 @@ export const getUploadURL = async function(filename: string, prefix: string, con
     const name = path.parse(filename).name;
     const Key = `${prefix}/${name}-${randomID}${ext}`;
     // const Bucket = process.env.AWS_S3_UPLOAD_BUCKET;
-    const Bucket = Resource.StoreUploads.name;
+    const Bucket = Resource.RepetitionUploads.name;
     
     if (!Bucket) {
         throw new Error("AWS_S3_UPLOAD_BUCKET is not set");

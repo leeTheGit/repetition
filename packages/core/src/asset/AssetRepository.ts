@@ -27,9 +27,6 @@ class AssetRepository {
 
     async fetchAll(params: FetchParams = {}): Promise<ModelEntity[]> {
         const filters: any = []
-        if (params?.storeId) {
-            filters.push(eq(this.table.storeUuid, params.storeId))
-        }
         if (params?.organisationId) {
             filters.push(eq(this.table.organisationUuid, params.organisationId))
         }
@@ -57,9 +54,6 @@ class AssetRepository {
         params: FetchParams = {}
     ): Promise<ModelEntity | ModelError> {
         const filters: any = []
-        if (params?.storeId) {
-            filters.push(eq(this.table.storeUuid, params.storeId))
-        }
         if (params?.organisationId) {
             filters.push(eq(this.table.organisationUuid, params.organisationId))
         }
@@ -68,7 +62,6 @@ class AssetRepository {
             where: and(eq(media.uuid, uuid), ...filters),
         })
 
-        // console.log(query.toSQL());
 
         let asset = await query
 
@@ -85,12 +78,9 @@ class AssetRepository {
         let count = 0
 
         const filters: any = []
-        if (params?.storeId) {
-            filters.push(eq(this.table.storeUuid, params.storeId))
-        }
-        if (params?.organisationId) {
-            filters.push(eq(this.table.storeUuid, params.organisationId))
-        }
+        // if (params?.organisationId) {
+        //     filters.push(eq(this.table.organisation, params.organisationId))
+        // }
 
         const query = db
             .select({
@@ -202,7 +192,6 @@ class AssetRepository {
                 .where(
                     and(
                         eq(this.table.uuid, id),
-                        eq(this.table.storeUuid, storeId)
                     )
                 )
 

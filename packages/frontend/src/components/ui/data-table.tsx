@@ -17,6 +17,7 @@ import {
     useReactTable,
     getFacetedRowModel,
     getFacetedUniqueValues,
+    OnChangeFn
 } from '@tanstack/react-table'
 
 import {
@@ -44,9 +45,11 @@ interface DataTableProps<TData, TValue> {
         React.SetStateAction<{ pageIndex: number; pageSize: number }>
     >
     sorting?: {desc:boolean, id: string}[]
-    setSorting?: React.Dispatch<
-        React.SetStateAction<{ desc:boolean, id:string}[]>
-    >
+    // setSorting?: React.Dispatch<
+    //     React.SetStateAction<{ desc:boolean, id:string}[]>
+    // >
+    setSorting?: OnChangeFn<SortingState> 
+
     childElement?: React.ReactElement
     isPaginated?: boolean
     filterColumns?: {

@@ -26,6 +26,6 @@
       "@repetition/functions/*": ["../functions/src/*"],
     }
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "packages/functions/src/code-runner.js"],
   "exclude": ["node_modules", "packages"]
 }

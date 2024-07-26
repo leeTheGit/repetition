@@ -1,7 +1,7 @@
 import { cache } from 'react'
 import { cookies, headers } from 'next/headers'
 import type { Session, User } from 'lucia'
-import type { TokenSession } from '@repetition/core/lib/auth/utils'
+import type { TokenSession } from '@repetition/frontend/lib/auth/utils'
 import { lucia } from './auth'
 import AuthTokenRepository from '@repetition/core/auth/Repository'
 import { isError } from '@repetition/core/types'
@@ -40,7 +40,6 @@ const validReq = async (): Promise<
             )
         }
     } catch(e: any) {
-        console.log('error setting cookie')
         console.log(e)
     }
     return result
@@ -81,6 +80,7 @@ const validToken = async (
     const session = {
         session: {
             organisationUuid: checkToken.organisationUuid,
+            identity: checkToken.identifier,
             type: checkToken.type,
             name: checkToken.name,
             expiresAt: checkToken.expiresAt || null,

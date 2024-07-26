@@ -1,7 +1,7 @@
 import React from "react";
 import { Listing } from "@/components/pages/categories/listing";
 import { Suspense } from "react";
-import { getUserAuth } from "@repetition/core/lib/auth/utils";
+import { getUserAuth } from "@repetition/frontend/lib/auth/utils";
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";
 import { uuidRegex } from '@repetition/core/lib'
