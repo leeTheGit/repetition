@@ -3,7 +3,7 @@
 import { validateRequest } from '@repetition/frontend/lib/auth/validate'
 import Repository from '@repetition/core/auth/Repository'
 import UserRepository from '@repetition/core/user/Repository'
-import { rateLimitByIp } from "@repetition/core/lib/limiter";
+import { rateLimitByIp } from "@repetition/frontend/lib/limiter";
 import { isError } from '@repetition/core/types';
 
 interface ActionResult {

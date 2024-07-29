@@ -10,7 +10,7 @@ import {
 import Image from 'next/image'
 import Link from "next/link";
 import {buttonVariants} from '@/components/ui/button'
-import { cn } from "@repetition/core/lib/utils";
+import { cn } from "@repetition/frontend/lib/utils";
 
 
 import {EntitySchema} from '@repetition/core/course/Validators'

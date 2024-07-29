@@ -196,6 +196,9 @@ importers:
       add:
         specifier: ^2.0.6
         version: 2.0.6
+      arctic:
+        specifier: ^1.9.1
+        version: 1.9.1
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0

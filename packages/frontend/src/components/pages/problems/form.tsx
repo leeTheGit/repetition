@@ -96,8 +96,8 @@ export const ProblemForm: React.FC<Props> = ({
             starterCode: initialData?.starterCode || '',
             answercode: initialData?.answerCode || '', 
             difficulty: initialData?.difficulty || 0, 
-            link: initialData?.link || 0, 
-            status: initialData?.status || 'true',
+            link: initialData?.link || '', 
+            status: initialData?.status || 'draft',
         }
         return data
     }
@@ -405,12 +405,12 @@ export const ProblemForm: React.FC<Props> = ({
                                     control={form.control}
                                     name="status"
                                     
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col items-end justify-end col-span-1">
+                                    render={({ field }) => {
+                                        return <FormItem className="flex flex-col items-end justify-end col-span-1">
                                             <FormLabel>Active</FormLabel>
                                             <div className="h-10 flex items-center">
                                                 <Switch
-                                                    checked={!!field.value}
+                                                    checked={!!field.value }
                                                     onCheckedChange={
                                                         field.onChange
                                                     }
@@ -418,7 +418,7 @@ export const ProblemForm: React.FC<Props> = ({
                                             </div>
                                             <FormMessage />
                                         </FormItem>
-                                    )}
+                                    }}
                                 />
                                 <FormField
                                     control={form.control}

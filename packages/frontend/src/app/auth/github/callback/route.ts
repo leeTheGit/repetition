@@ -3,7 +3,7 @@ import { OAuth2RequestError } from "arctic";
 import AccountRepository from "@repetition/core/auth/account/Repository"
 import UserRepository from '@repetition/core/user/Repository'
 import OrganisationRepository from "@repetition/core/organisation/Repository"
-import { github } from "@repetition/core/lib/auth/auth";
+import { github } from "@repetition/frontend/lib/auth/auth";
 import { CreateUserFromOauth } from '@repetition/core/user/actions/create-user-from-oauth'
 import { isError } from "@repetition/core/types";
 import { sha256 } from "oslo/crypto";

@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '@repetition/core/lib/utils'
+import { cn } from '@repetition/frontend/lib/utils'
 
 interface Props {
     children?: React.ReactNode

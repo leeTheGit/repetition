@@ -100,7 +100,13 @@ export const baseApiInsertSchema = insertSchema
             courseId: z.string().uuid().optional(),
             courseSlug: z.string().optional(),
             difficulty: z.coerce.number(),
-        
+            status: z.preprocess(
+                (status) => {
+                    if (!status || status === 'draft') return 'draft'
+                    return 'published'
+                },
+                z.string()
+            ),
             // collectionIds: z.preprocess((items: any) => {
             //     return items.map((item: { label: string; value: string }) => {
             //         // in the form this will be an object but on the server this will be a string

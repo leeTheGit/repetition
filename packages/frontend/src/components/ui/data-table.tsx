@@ -222,8 +222,7 @@ export function DataTable<TData, TValue>({
                                                             React.cloneElement(
                                                                 childElement,
                                                                 {
-                                                                    //@ts-ignore
-                                                                    orderUuid: row.original.uuid,
+                                                                    problem: row.original,
                                                                 }
                                                             )}
                                                     </TableCell>

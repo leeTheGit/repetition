@@ -21,20 +21,41 @@ export class LambdaStack extends Stack {
         const functionPath = join(__dirname, '..', '..','..', 'functions', 'src' )
         const function2Path = join(__dirname, '..', '..','..', 'functions', 'src', 'code-runner-ts.ts' )
 
-        // const myNodeFunction = new NodejsFunction(this, 'CodeRunner-ts', {
-        //     runtime: Runtime.NODEJS_20_X,
-        //     handler: 'handler',
-        //     entry: function2Path,
-        //     timeout: Duration.seconds(5),
-        //     vpc: props.vpc,
-        //     environment: {
-        //         TABLE_NAME: props.table.tableName
-        //     },
-        //     vpcSubnets: {
-        //         subnetType: ec2.SubnetType.PUBLIC,
-        //     },
-        //     allowPublicSubnet: true
-        // })
+        const TSCodeRunnerFunc = new NodejsFunction(this, 'CodeRunner-ts', {
+            runtime: Runtime.NODEJS_20_X,
+            handler: 'handler',
+            entry: function2Path,
+            timeout: Duration.seconds(5),
+            vpc: props.vpc,
+            environment: {
+                TABLE_NAME: props.table.tableName
+            },
+            vpcSubnets: {
+                subnetType: ec2.SubnetType.PUBLIC,
+            },
+            allowPublicSubnet: true
+        })
+        TSCodeRunnerFunc.addToRolePolicy( new PolicyStatement({
+            effect: Effect.ALLOW,
+            resources: [props.table.tableArn],
+            actions: [
+               'dynamodb:PutItem',
+               'dynamodb:Scan',
+               'dynamodb:GetItem',
+               'dynamodb:UpdateItem',
+               'dynamodb:DeleteItem' 
+            ]
+        }))
+
+        const lambdaUrlTS = TSCodeRunnerFunc.addFunctionUrl({
+            authType: FunctionUrlAuthType.NONE,
+            cors: {
+                allowedMethods: [HttpMethod.POST],
+                allowedOrigins: ["*"]
+            }
+        });
+
+
 
 
         const codeRunnerFunction = new LambdaFunction(this, 'CodeRunner', {
@@ -75,6 +96,7 @@ export class LambdaStack extends Stack {
         });
 
         new CfnOutput(this, 'FunctionUrl ', { value: lambdaUrl.url });
+        new CfnOutput(this, 'TSFunctionUrl ', { value: lambdaUrlTS.url });
         new CfnOutput(this, 'Table Arn ', { value: props.table.tableArn });
 
         // Create an EventBridge event bus
@@ -92,7 +114,7 @@ export class LambdaStack extends Stack {
         });
       
           // Add the Lambda function as a target of the rule
-        rule.addTarget(new targets.LambdaFunction(codeRunnerFunction));
+        rule.addTarget(new targets.LambdaFunction(TSCodeRunnerFunc));
       
           // Output the event bus ARN
         new CfnOutput(this, 'EventBusArn', {

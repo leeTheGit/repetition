@@ -24,11 +24,16 @@ export default class S3Component {
     private s3Bucket: string
 
     constructor() {
-        const secretAccessKey = Resource.AwsSecretAccessKey.value
-        const awsAccessKeyId = Resource.AwsKeyId.value
-        const awsRegion = Resource.AwsRegion.value
+        // const secretAccessKey = Resource.AwsSecretAccessKey.value
+        // const awsAccessKeyId = Resource.AwsKeyId.value
+        // const awsRegion = Resource.AwsRegion.value
+        // this.s3Bucket = Resource.StoreUploads.name || ''
+        
+        const secretAccessKey = ""
+        const awsAccessKeyId = ""
+        const awsRegion = ""
+        this.s3Bucket = ''
 
-        this.s3Bucket = Resource.StoreUploads.name || ''
         const AWS_KEY_ID = awsAccessKeyId
         const AWS_SECRET_ACCESS_KEY = secretAccessKey
         const AWS_REGION = awsRegion

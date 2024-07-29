@@ -18,6 +18,7 @@ export class DataStack extends Stack {
                 name: 'id',
                 type: AttributeType.STRING
             },
+            timeToLiveAttribute: "globalTTL",
             tableName: `Repetition-${suffix}`
         })
 

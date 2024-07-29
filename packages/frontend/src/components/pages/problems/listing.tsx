@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/heading'
 import { Separator } from '@/components/ui/separator'
 import { DataTable } from '@/components/ui/data-table'
-
+import { ItemListing } from '@/components/pages/problems/problem-item'
 import { useFetchQuery } from '@/hooks/use-query'
 import { useDebounce } from '@/hooks/use-debounce'
 import { ProblemAPI } from '@repetition/core/problems/response/ProblemDTO'
@@ -37,7 +37,7 @@ export const Listing = ({courseId} : Props) => {
     const router = useRouter()
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
-        pageSize: 20,
+        pageSize: 2,
     })
     
     const {sorting, setTheSort} = useSort({desc: true, id: 'last_practiced'})
@@ -68,6 +68,8 @@ export const Listing = ({courseId} : Props) => {
                 name: entity.name,
                 slug: entity.slug,
                 category: entity.category,
+                description: entity.description,
+                starterCode: entity.starterCode,
                 link: entity.link,
                 grade: entity.history || [],
                 submissionCount: entity.submissionCount || 0,
@@ -147,6 +149,7 @@ export const Listing = ({courseId} : Props) => {
                                     name: "category",
                                     data: () => categoryOptions ? categoryOptions : []
                                 }]}
+                                childElement={<ItemListing courseId={courseId} />}
                             />
                 </div>
             </div>

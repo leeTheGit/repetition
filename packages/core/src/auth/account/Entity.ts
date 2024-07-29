@@ -51,13 +51,13 @@ export class AccountEntity extends Entity<EntitySchema> {
         return this.props.accountType
     }
 
-    get githubId() {
-        return this.props.githubId
+    get oauthId() {
+        return this.props.oauthId
     }
 
-    get googleId() {
-        return this.props.googleId
-    }
+    // get googleId() {
+    //     return this.props.googleId
+    // }
 
     get user(): UserEntity | undefined {
         return this.relations.user

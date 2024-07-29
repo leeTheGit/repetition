@@ -4,14 +4,14 @@ import Link from 'next/link'
 import { useFormState } from 'react-dom'
 import { useFormStatus } from 'react-dom'
 
-import { signin } from '@repetition/core/user/actions/signin'
+import { signin } from '@repetition/frontend/actions/user/signin'
 
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button, buttonVariants } from '@/components/ui/button'
 import AuthFormError from '../components/AuthFormError'
 import { useParams, useSearchParams } from 'next/navigation'
-import { cn } from '@repetition/core/lib/utils'
+import { cn } from '@repetition/frontend/lib/utils'
 import { useEffect, useState } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Terminal } from 'lucide-react'
@@ -19,7 +19,7 @@ import GoogleIcon from '@/components/auth/icons/google-icon'
 import GithubIcon from '@/components/auth/icons/github-icon'
 import {
     setAuthIntentCookie
-} from '@repetition/core/auth/actions/set-auth-intent-cookie'
+} from '@repetition/frontend/actions/auth/set-auth-intent-cookie'
 
 export default function SignInClient({domain, subdomain}: {domain: string, subdomain: string}) {
     const searchParams = useSearchParams()

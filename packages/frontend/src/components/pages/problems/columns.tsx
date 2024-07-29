@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { CellAction } from './cell-action'
 import Link from 'next/link'
 import { Submit } from './submit'
+import { Practice } from './practice'
 import {deltaToNow} from '@repetition/core/lib/dates'
 import { ArrowUpDown, Link as LinkIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -14,9 +15,11 @@ export type ProblemColumn = {
     slug: string
     lastSubmitted: string
     link: string
+    description: string
     category: string
     grade: number[]
     submissionCount: number
+    starterCode: string | null
     difficulty: number
 }
 
@@ -155,7 +158,8 @@ export const columns = (courseId: string) => {
         {
             id: 'submit',
             cell: ({row}) => {
-                return <Submit data={row.original} />
+                // return <Submit data={row.original} />
+                return <Practice data={row.original} />
             }
         },
         // {

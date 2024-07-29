@@ -1,4 +1,4 @@
-import { googleAuth } from "@repetition/core/lib/auth/auth";
+import { googleAuth } from "@repetition/frontend/lib/auth/auth";
 import { generateCodeVerifier, generateState } from "arctic";
 import { cookies } from "next/headers";
 

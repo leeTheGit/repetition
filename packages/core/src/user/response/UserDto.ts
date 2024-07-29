@@ -11,7 +11,6 @@ export const fetchResponse = (res: UserEntity) => {
     return {
         id: res.id,
         uuid: res.uuid,
-        storeUuid: res.storeUuid,
         organisationUuid: res.organisationUuid,
         username: res.username,
         firstname: res.firstname,

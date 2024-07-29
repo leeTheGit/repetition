@@ -2,6 +2,11 @@ import { HttpResponse, apiHandler } from '@/lib'
 import { logger } from '@repetition/core/lib/logger'
 import EventBridgeComponent from '@repetition/core/lib/aws/EventBridgeComponent'
 import Repository from '@repetition/core/code/Repository'
+import { randomNumbers } from '@repetition/frontend/lib'
+import { fetchBySubmission } from '@repetition/core/code/Validators'
+import { fetchResponse } from '@repetition/core/code/response/RunnerDTO'
+import { not } from '@repetition/core/types'
+
 
 const repository = new Repository()
 
@@ -15,7 +20,7 @@ type EventDetail = {
     test_code: string
 
 }
-export const GET = apiHandler(get)
+export const GET = apiHandler(get, {validator: fetchBySubmission})
 export const POST = apiHandler(post)
 
 async function get(
@@ -23,12 +28,24 @@ async function get(
     {}: {},
     ctx:any
 ) {
-    console.log('using the repository gto getcfh item')
-    const item = await repository.fetchByUuid(ctx.user.identity + "_" + "122333")
-
-    console.log('in the route', item)
-
-    return item
+    console.log('[CODE ROUTE] submission', ctx.data)
+    const submissionId = ctx.data.submissionId
+    const userId = ctx.user.identity || ctx.user.id
+    if (!userId) {
+        return {
+            error: "User auth error"
+        }
+    }
+    // console.log("the id", userId + "_" + submissionId )
+    const ok = await repository.fetchByUuid(userId + "_" + submissionId)
+    if (not(ok)) {
+        console.log('rerting 40000333')
+        return {
+            status: 404,
+            error: ok.error
+        }
+    }
+    return HttpResponse(ok, fetchResponse)
 }
 
 async function post(
@@ -38,7 +55,7 @@ async function post(
 ) {
     try {
         let body = await req.text()
-        console.log(body)
+        console.log("[ROUTE] Body: ",  body)
 
 
         let inputs = [[5, 12], [4, 2, 1]]
@@ -68,18 +85,18 @@ async function post(
         `
 
         const userId = ctx.user.id;
-        const submissionId = '122333';
+        const submissionId = randomNumbers();
 
-        console.log('triggering....')
+        console.log('[ROUTE] triggering....')
         const trigger = await eventBridge.send<EventDetail>({
             user_id: userId,
             submission_id: submissionId,
-            user_code: body,
+            user_code: body.replace(/console\.log/g, "process.stdout.write"),
             test_code: test_code
         })
 
 
-        console.log("router trigger", trigger)
+        console.log("[ROUTE] trigger", trigger)
 
 
         return submissionId

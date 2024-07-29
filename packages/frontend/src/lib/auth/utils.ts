@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { type Cookie } from 'lucia'
 
 import { validateRequest, validateToken } from './validate'
-import { UsernameAndPassword, authenticationSchema } from './authSchema'
+import { UsernameAndPassword, authenticationSchema } from '@repetition/core/lib/db/schema/authSchema'
 
 
 export type AuthSession = {

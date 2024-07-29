@@ -23,7 +23,7 @@ export const Modal: React.FC<ModalProps> = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onChange}>
-            <DialogContent className={className}>{children}</DialogContent>
+            <DialogContent aria-describedby="foo" className={className}>{children}</DialogContent>
         </Dialog>
     )
 }

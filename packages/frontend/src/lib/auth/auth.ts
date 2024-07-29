@@ -5,29 +5,9 @@ import { GitHub, Google } from "arctic";
 import { DrizzlePostgreSQLAdapter } from './postgresql'
 import { db } from '@repetition/core/lib/db'
 import { sessionTable, users } from '@repetition/core/lib/db/schema/schema'
-import { pgTable, text } from 'drizzle-orm/pg-core'
+import {mediaTable, userTable, orgTable} from '@repetition/core/lib/db/schema/authSchema'
 import { Resource } from "sst";
 
-
-const mediaTable = pgTable('media', {
-    uuid: text('uuid').primaryKey(),
-    cdnUrl: text('cdn_url'),
-})
-
-const userTable = pgTable('user', {
-    id: text('uuid').primaryKey(),
-    username: text('username'),
-    email: text('email'),
-    organisationUuid: text('organisation_uuid'),
-    profileImageId: text('profile_image_id'),
-    // avatar: text('avatar'),
-})
-
-const orgTable = pgTable('organisation', {
-    uuid: text('uuid').primaryKey(),
-    name: text('name'),
-    domain: text('domain'),
-})
 
 const adapter = new DrizzlePostgreSQLAdapter(
     db,

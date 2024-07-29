@@ -1,4 +1,4 @@
-import { github } from "@repetition/core/lib/auth/auth";
+import { github } from "@repetition/frontend/lib/auth/auth";
 import { generateState } from "arctic";
 import { cookies } from "next/headers";
 

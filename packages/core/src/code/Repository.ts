@@ -1,7 +1,8 @@
 import DynamoComponent from '@repetition/core/lib/aws/DynamoComponent'
 
 import { FetchParams } from '@repetition/core/code/Validators'
-import { ModelError, isError } from '@repetition/core/types'
+import { ModelError, isError, not } from '@repetition/core/types'
+import { RunnerEntity as ModelEntity } from '@repetition/core/code/RunnerEntity' 
 
 const Dynamo = new DynamoComponent
 
@@ -21,64 +22,40 @@ class Repository {
         identifier: string,
         params: FetchParams = {}
     ) {
+        console.log('identifier', identifier)
         const item = await Dynamo.getItem(identifier)
-        return item
+        console.log('repository', item)
+        if (not(item)) {
+            return item
+        }
+        return this.mapToEntity(item)
     }
 
 
     async create(data: any) {
-        const saved = Dynamo.putItem(data)
+        const saved = await Dynamo.putItem(data)
+        return saved;
     }
 
 
-    // mapToEntity(item: TableType) {
-        // console.log("logging it", this.EntityMapper)
-        // return this.EntityMapper(item)
-    //     const itemData = convertCase(item)
-    //     if (itemData.createdAt) {
-    //         itemData.createdAt = new Date(itemData.createdAt)
-    //     }
-    //     if (itemData.updatedAt) {
-    //         itemData.updatedAt = new Date(itemData.updatedAt)
-    //     }
-    //     const Entity = ModelEntity.fromValues(itemData, item.uuid)
-    //     if (isError(Entity)) {
-    //         return Entity
-    //     }
-    //     if ('category' in itemData && itemData.category) {
-    //         const categoryRepository = new CategoryRepository()
-    //         const category = categoryRepository.mapToEntity(
-    //             itemData.category as CategoryTable
-    //         )
-    //         if (!isError(category)) {
-    //             Entity.category = category
-    //         }
-    //     }
+    mapToEntity(item: any) {
+        // console.log("item from database", item)
+        // if (item.submittedAt) {
+        //     item.submittedAt = new Date(item.createdAt)
+        // }
+        item.logs = JSON.parse(item.logs)
+        console.log("got the logs", item.logs)
+        item.answer = JSON.parse(item.answer)
+        const Entity = ModelEntity.fromValues(item, item.id)
+        console.log('did it work', Entity)
+        if (isError(Entity)) {
+            return Entity
+        }
 
-    //     // if ('media' in item) {
-    //     //     const assetRepository = new AssetRepository()
-    //     //     const galleryItem = assetRepository.mapToEntity(
-    //     //         item.media as AssetTable
-    //     //     )
-    //     //     if (!isError(galleryItem)) {
-    //     //         Entity.image = galleryItem
-    //     //     }
-    //     // }
-    //     if ('submissions' in item && typeof item.submissions !== 'undefined') {
-    //         Entity.submissions = item.submissions
-    //     }
-    //     if ('submissionCount' in item && typeof item.submissionCount !== 'undefined') {
-    //         Entity.submissionCount = item.submissionCount
-    //     }
-    //     if ('lastSubmitted' in item && typeof item.lastSubmitted !== 'undefined' && item.lastSubmitted) {
-    //         Entity.lastSubmitted = item.lastSubmitted.toString()
-    //     }
-    //     if ('category' in item && typeof item.category !== 'undefined' && item.category) {
-    //         Entity.categoryName = item.category.toString()
-    //     }
 
-    //     return Entity
-    // }
+
+        return Entity
+    }
 
 
 

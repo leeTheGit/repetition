@@ -59,7 +59,6 @@ export type InsertSchema = z.infer<typeof insertSchema>
 
 export const apiInsertSchema = insertSchema.omit({
     organisationUuid: true,
-    storeUuid: true,
     identifier: true,
 })
 export type ApiInsertSchema = z.infer<typeof apiInsertSchema>

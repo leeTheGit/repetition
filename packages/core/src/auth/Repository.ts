@@ -16,7 +16,6 @@ export function mapToEntity(item: TableType) {
     const Entity = new ModelEntity(
         {
             id: item.id,
-            storeUuid: item.storeUuid,
             organisationUuid: item.organisationUuid,
             type: item.type,
             identifier: item.identifier,

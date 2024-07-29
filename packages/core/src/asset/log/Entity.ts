@@ -43,9 +43,6 @@ export class AssetLogEntity extends Entity<EntitySchema> {
     get organisationUuid() {
         return this.props.organisationUuid
     }
-    get storeUuid() {
-        return this.props.storeUuid
-    }
 
     get assetUuid() {
         return this.props.mediaUuid

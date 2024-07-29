@@ -40,7 +40,7 @@ const UploadAsset = ({ storeId, entity, entityUuid }: Props) => {
                 message="Upload or search for assets"
                 onClose={() => setUploadModal(false)}
                 onConfirm={async (file) => {
-                    const url = await uploadAsset(storeId, file, {
+                    const url = await uploadAsset(file, {
                         entity: entity,
                         entity_uuid: entityUuid,
                         type: 'banner',

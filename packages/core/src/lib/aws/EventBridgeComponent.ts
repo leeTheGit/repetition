@@ -17,20 +17,18 @@ export default class EventBridgeComponent {
             ],
         };
         
-        console.log("Event bridge params", params)
+        console.log("[EVENT BRIDGE] params", params)
 
         // Send the event
-        const put = await eventBridge.putEvents(params, (err:any, data:any) => {
-            console.log(err, data)
-            if (err) {
-                console.log('Error:', err);
-            } else {
-                console.log('Success:', data);
-            }
-        });
+        try {
+            const put = await eventBridge.putEvents(params);
+            console.log("[EVENT BRIDGE]", put)
+            return put;
+        } catch(e) {
+            console.log("[EVENT BRIDGE]", e)
+            
+        }
 
-
-        console.log('the put', put)
-        return put;
+        return false
     }
 }

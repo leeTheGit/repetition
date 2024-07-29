@@ -1,12 +1,7 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
 import sluggish from "slugify";
 import winston from "winston";
 import { v4 as uuidv4 } from "uuid";
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
 
 export const getZodErrors = (input: any): string => {
   // https://stackoverflow.com/questions/57438198/typescript-element-implicitly-has-an-any-type-because-expression-of-type-st
@@ -17,6 +12,7 @@ export const getZodErrors = (input: any): string => {
   }
   return errorString.trim();
 };
+
 export function mapResult<Entity, M extends (item: any) => Entity>(
   result: any,
   mapToEntity: M,
@@ -56,14 +52,3 @@ export function randomNumbers(length: number = 10) {
 export function createUuid() {
   return uuidv4();
 }
-
-import { QueryClient } from "@tanstack/query-core";
-import { cache } from "react";
-
-let getQueryClient: () => QueryClient;
-if (process.env.NODE_ENV === "production") {
-  getQueryClient = cache(() => new QueryClient());
-} else {
-  getQueryClient = () => new QueryClient();
-}
-export default getQueryClient;

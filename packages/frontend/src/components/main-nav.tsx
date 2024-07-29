@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { cn } from '@repetition/core/lib/utils'
+import { cn } from '@repetition/frontend/lib/utils'
 import { useParams, usePathname } from 'next/navigation'
 import Link from 'next/link'
 

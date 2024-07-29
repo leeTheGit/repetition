@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import { type SessionData } from '@repetition/core/lib/auth/auth'
+import { type SessionData } from '@repetition/frontend/lib/auth/auth'
 
 const SessionContext = React.createContext({} as SessionData)
 

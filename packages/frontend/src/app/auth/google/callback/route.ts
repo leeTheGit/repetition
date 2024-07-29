@@ -3,7 +3,7 @@ import { OAuth2RequestError } from "arctic";
 import AccountRepository from "@repetition/core/auth/account/Repository"
 import UserRepository from '@repetition/core/user/Repository'
 import OrganisationRepository from "@repetition/core/organisation/Repository"
-import { googleAuth } from "@repetition/core/lib/auth/auth";
+import { googleAuth } from "@repetition/frontend/lib/auth/auth";
 import { CreateUserFromGoogle } from '@repetition/core/user/actions/create-user-from-google'
 // import { signupLucia } from "@repetition/core/lib/auth/auth";
 import { isError } from "@repetition/core/types";

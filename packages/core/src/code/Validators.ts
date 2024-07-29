@@ -24,6 +24,21 @@ export const fetchByUuid = z.object({
 })
 
 
+export const fetchBySubmission = z.object({
+    submissionId: z.string().or(z.string().min(3).max(15)),
+})
 
 
+export const entitySchema = z.object({
+    id: z.string(),
+    submittedAt: z.coerce.number(),
+    logs: z.array(z.any()),
+    answer: z.array(z.object({
+        pass: z.string(),
+        expected: z.number(),
+        recieved: z.number()
+    }))
+    // answer: z.string()
+})
+export type EntitySchema = z.infer<typeof entitySchema>
 

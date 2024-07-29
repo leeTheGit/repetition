@@ -4,12 +4,12 @@ import Link from 'next/link'
 import { useFormState } from 'react-dom'
 import { useFormStatus } from 'react-dom'
 import Image from 'next/image'
-import { signup } from '@repetition/core/user/actions/signup'
+import { signup } from '@repetition/frontend/actions/user/signup'
 import { useSession } from '@/providers/sessionProvider'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { cn } from '@repetition/core/lib/utils'
+import { cn } from '@repetition/frontend/lib/utils'
 import { Button, buttonVariants } from '@/components/ui/button'
 import AuthFormError from '../components/AuthFormError'
 import Overlay from '@/components/overlay'
@@ -18,7 +18,7 @@ import GoogleIcon from '@/components/auth/icons/google-icon'
 import GithubIcon from '@/components/auth/icons/google-icon'
 import {
     setAuthIntentCookie
-} from '@repetition/core/auth/actions/set-auth-intent-cookie'
+} from '@repetition/frontend/actions/auth/set-auth-intent-cookie'
 
 // import HexBG from "../../components/HexBG";
 

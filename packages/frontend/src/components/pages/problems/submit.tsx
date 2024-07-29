@@ -19,15 +19,16 @@ import { Delete, create } from '@/hooks/queries'
 import { toast } from 'sonner'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-
+import { DialogHeader, DialogTitle } from '@/components/ui/dialog'
 interface Props {
     data: ProblemColumn;
+    className?: string
 } 
 
 const endpoint = 'submission'
 const name = 'Submission'
 
-export const Submit = ({data}: Props) => {
+export const Submit = ({data, className}: Props) => {
     const [submitModal, setSubmitModal] = useState(false)
     const [loading, setLoading] = useState(false)
     const queryClient = useQueryClient();
@@ -91,12 +92,15 @@ export const Submit = ({data}: Props) => {
                 isOpen={submitModal}
                 onClose={() => setSubmitModal(false)}
             >
+                <DialogHeader>
+                    <DialogTitle>How did you go?</DialogTitle>
+                </DialogHeader>
+
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="space-y-8 w-full"
                     >
-                        <h1>How did you go?</h1>
                         <FormField
                             control={form.control}
                             name="grade"
@@ -158,7 +162,7 @@ export const Submit = ({data}: Props) => {
 
             </Modal>
 
-            <Button onClick={() => setSubmitModal(true)}>Submit</Button>
+            <Button className={className} onClick={() => setSubmitModal(true)}>Submit</Button>
 
         </>
     )

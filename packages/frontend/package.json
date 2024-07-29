@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "cypress:open": "cypress open"
   },
   "dependencies": {
@@ -32,6 +33,7 @@
     "@tanstack/react-table": "^8.19.2",
     "@tinymce/tinymce-react": "^5.1.1",
     "add": "^2.0.6",
+    "arctic": "^1.9.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",

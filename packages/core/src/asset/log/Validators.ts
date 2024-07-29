@@ -31,7 +31,6 @@ export type EntitySchema = z.infer<typeof entitySchema>
 export const basePostSchema = createInsertSchema(assetLog).omit({
     uuid: true,
     organisationUuid: true,
-    storeUuid: true,
 })
 
 export type FormSchema = NoUndefinedField<z.infer<typeof basePostSchema>>

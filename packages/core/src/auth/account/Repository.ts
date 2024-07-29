@@ -65,7 +65,7 @@ class Repository extends BaseRepository<
     async fetchByGithubId(githubId: string): Promise<ModelEntity | ModelError>  {
         const account =  await db.query.accounts.findFirst({
             where: and(
-                eq(accounts.githubId, githubId),
+                eq(accounts.oauthId, githubId),
                 eq(accounts.accountType, 'github')
             ),
             with: {
@@ -83,10 +83,10 @@ class Repository extends BaseRepository<
     }
 
 
-    async fetchByGoogleId(googleId: string): Promise<ModelEntity | ModelError>  {
+    async fetchByGoogleId(oauthId: string): Promise<ModelEntity | ModelError>  {
         const query = db.query.accounts.findFirst({
             where: and(
-                eq(accounts.googleId, googleId),
+                eq(accounts.oauthId, oauthId),
                 eq(accounts.accountType, 'google')
             ),
             with: {

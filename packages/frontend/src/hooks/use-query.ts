@@ -58,5 +58,6 @@ export const useFetchQuery = <T>(
         queryKey: qKey,
         queryFn: () => get(),
         enabled,
+        
     })
 }

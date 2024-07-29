@@ -131,3 +131,8 @@
 .blend-luminosity {
     mix-blend-mode: luminosity;
 }
+
+
+.problem-description p {
+    font-size: 12px
+}
