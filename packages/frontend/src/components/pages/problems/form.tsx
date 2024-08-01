@@ -214,6 +214,7 @@ export const ProblemForm: React.FC<Props> = ({
         window.require(["monaco-vim"], function (MonacoVim) {
             const statusNode = document.querySelector(".status-node");
             vimSetting = MonacoVim.initVimMode(editor, statusNode);
+            vimSetting.constructor.Vim.map('jj', '<Esc>', 'insert')
         });
     }
 
