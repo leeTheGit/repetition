@@ -1,0 +1,22 @@
+meta {
+  name: Update a course
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/api/courses/1cecca59-3a86-4359-9814-9d4d8711771f
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: 14399d64-8718-46f8-ad15-15e7afe5d995
+}
+
+body:json {
+  {
+      "name": "zzxxzztest-what",
+      "description": "whoe?"
+  }
+}

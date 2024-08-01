@@ -1,0 +1,15 @@
+meta {
+  name: Problem by Uuid
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/courses/6d3dbbc2-8df6-46d0-a820-5b063dee97e6/problems/get-value-at-index
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{Auth token}}
+}

@@ -22,9 +22,7 @@ class Repository {
         identifier: string,
         params: FetchParams = {}
     ) {
-        console.log('identifier', identifier)
         const item = await Dynamo.getItem(identifier)
-        console.log('repository', item)
         if (not(item)) {
             return item
         }
@@ -44,10 +42,8 @@ class Repository {
         //     item.submittedAt = new Date(item.createdAt)
         // }
         item.logs = JSON.parse(item.logs)
-        console.log("got the logs", item.logs)
         item.answer = JSON.parse(item.answer)
         const Entity = ModelEntity.fromValues(item, item.id)
-        console.log('did it work', Entity)
         if (isError(Entity)) {
             return Entity
         }
@@ -65,18 +61,6 @@ class Repository {
 // function convertCase(obj: any) {
 //     const result: Record<string, string> = {}
 //     const camelCaseColumns: Record<string, string> = {
-//         category_uuid :'categoryUuid',
-//         topic_id :'topicId',
-//         course_id : 'courseId',
-//         starter_code:'starterCode',
-//         answer_code:'answerCode', 
-//         is_deleted: 'isDeleted',
-//         image_uuid: 'imageUuid', 
-//         is_seeded: 'isSeeded', 
-//         created_at: 'createdAt',
-//         updated_at: 'updatedAt',
-//         // submission_count: 'submissionCount',
-//         last_submission: 'lastSubmission'
 //     }
 
 //     for (let [key, value] of Object.entries(camelCaseColumns)) {

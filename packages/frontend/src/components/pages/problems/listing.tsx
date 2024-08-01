@@ -37,7 +37,7 @@ export const Listing = ({courseId} : Props) => {
     const router = useRouter()
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
-        pageSize: 2,
+        pageSize: 20,
     })
     
     const {sorting, setTheSort} = useSort({desc: true, id: 'last_practiced'})

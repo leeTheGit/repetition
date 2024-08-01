@@ -1,0 +1,1 @@
+ALTER TABLE "problem" ADD COLUMN "test_code" text;

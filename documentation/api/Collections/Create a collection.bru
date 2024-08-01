@@ -1,0 +1,35 @@
+meta {
+  name: Create a collection
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://api.getpostman.com/collections
+  body: json
+  auth: none
+}
+
+params:query {
+  ~workspace: {{workspaceId}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "collection": {
+          "info": {
+              "name": "{{collectionName}}",
+              "schema": "{{collectionSchemaUrl}}"
+          },
+          "item": [
+              {
+                  "request": {}
+              }
+          ]
+      }
+  }
+}

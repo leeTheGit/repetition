@@ -6,7 +6,8 @@ interface ModalProps {
     isOpen: boolean
     onClose: () => void
     children?: React.ReactNode
-    className?: string
+    className?: string,
+    escapeKey?: boolean
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -14,6 +15,7 @@ export const Modal: React.FC<ModalProps> = ({
     onClose,
     children,
     className,
+    escapeKey = true
 }) => {
     const onChange = (open: boolean) => {
         if (!open) {
@@ -23,7 +25,14 @@ export const Modal: React.FC<ModalProps> = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onChange}>
-            <DialogContent aria-describedby="foo" className={className}>{children}</DialogContent>
+            <DialogContent 
+                className={className}
+                onEscapeKeyDown={(e)=>{
+                    if (!escapeKey) e.preventDefault()
+                }}
+                >
+                {children}
+            </DialogContent>
         </Dialog>
     )
 }

@@ -38,8 +38,6 @@ let myLogger:(string| Uint8Array)[] = []
 
 const handler = async  (event: EventBridgeEvent<TDetailType, TDetail>, context: Context) => {
   console.log('[RUNNER] handler')
-  // console.log(event);
-  // console.log('[RUNNER] Will read from ', process.env.TABLE_NAME || 'dynamo')
   myLogger = []
 
 
@@ -48,10 +46,14 @@ const handler = async  (event: EventBridgeEvent<TDetailType, TDetail>, context: 
     //@ts-ignore
     process.stdout._orig_write = process.stdout.write;
   }
-  process.stdout.write = (data) => {
-    myLogger.push(JSON.stringify(data));
+  process.stdout.write = (data, ...optionalParams) => {
+    const print:any = [data]
+    if (optionalParams.length > 0) {
+      print.push(...optionalParams)
+    }
+    myLogger.push(JSON.stringify(util.format.apply(this, print)));
       //@ts-ignore
-    return process.stdout._orig_write(util.format.apply(this, [data]) + '\n');
+    return process.stdout._orig_write(util.format.apply(this, print) + '\n');
   }
 
 
@@ -69,14 +71,26 @@ const handler = async  (event: EventBridgeEvent<TDetailType, TDetail>, context: 
   const userId = event.detail.user_id;
   const submissionId = event.detail.submission_id;
   const runCode = event.detail.user_code + ';' + event.detail.test_code
-  const answer = eval(runCode)
+  let answer;
+  try {
+    answer = eval(runCode)
+  } catch(e:any) {
+    // myLogger.push(JSON.stringify(util.format.apply(this, print)));
+    myLogger.push(JSON.stringify("[ERROR] " + e.message))
+    answer = [{
+        pass: 'false',
+        expected: "Non erroring code",
+        recieved: "Error in code"
+      }]
+  }
+
   const id = userId + "_" + submissionId
   const result = {
       id,
       answer: JSON.stringify(answer),
       submittedAt: Date.now(),
       logs: JSON.stringify(myLogger),
-      GlobalTTL: Date.now()
+      globalTTL: Date.now() + 1000
   }
 
   if( process.env.NODE_ENV !== 'development') {

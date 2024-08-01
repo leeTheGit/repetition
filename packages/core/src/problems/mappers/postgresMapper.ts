@@ -63,6 +63,7 @@ function convertCase(obj: any) {
         topic_id :'topicId',
         course_id : 'courseId',
         starter_code:'starterCode',
+        test_code:'testCode',
         answer_code:'answerCode', 
         is_deleted: 'isDeleted',
         image_uuid: 'imageUuid', 

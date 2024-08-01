@@ -1,0 +1,22 @@
+meta {
+  name: Create a new course
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/courses
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: 6d17e1e9-fea2-4bc3-8748-ee48b81e02e6
+}
+
+body:json {
+  {
+      "name": "zzxxzztest-what",
+      "description": "whoe?"
+  }
+}

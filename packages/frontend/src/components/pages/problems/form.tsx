@@ -13,6 +13,10 @@ import {
     FormSchema,
 } from '@repetition/core/problems/Validators'
 import Editor from '@monaco-editor/react'
+
+
+
+
 import { FormModal } from '@/components/pages/categories/form-modal'
 import { HelpCircle, PlusCircle, Trash } from 'lucide-react'
 import { toast } from 'sonner'
@@ -27,6 +31,9 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
+
+import { Checkbox } from "@/components/ui/checkbox"
+
 import {
     Popover,
     PopoverContent,
@@ -40,6 +47,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
@@ -63,6 +71,15 @@ interface Props {
 
 const endpoint = 'problems'
 const name = 'Problem'
+let vimSetting:any;
+
+// When saving we grab the code from each editor instance.
+// As each editor is in a tab, it may not be mounted.
+// We use the codeStash variable to store unsaved changes
+const codeStash = {
+    user: "",
+    test: ""
+}
 
 export const ProblemForm: React.FC<Props> = ({
     initialData,
@@ -76,11 +93,13 @@ export const ProblemForm: React.FC<Props> = ({
     const queryClient = useQueryClient()
     const EditorRef = useRef<any>(null)
     const CodeEditorRef = useRef<any>(null)
+    const TestCodeEditorRef = useRef<any>(null)
 
     // Delete modal
     const [open, setOpen] = useState(false)
     const [editorChoice, setEditorChoice] = useState('text')
     const [categoryForm, showCategoryForm] = useState(false)
+    const [vimMode, setVimMode] = useState(false)
 
     const title = initialData ? `Edit ${name}` : `New ${name}`
     const toastMessage = initialData ? `${name} updated` : `${name} created`
@@ -94,6 +113,7 @@ export const ProblemForm: React.FC<Props> = ({
             courseSlug: initialData?.slug || courseSlug,
             description: initialData?.description || '',
             starterCode: initialData?.starterCode || '',
+            testCode: initialData?.testCode || '',
             answercode: initialData?.answerCode || '', 
             difficulty: initialData?.difficulty || 0, 
             link: initialData?.link || '', 
@@ -150,9 +170,24 @@ export const ProblemForm: React.FC<Props> = ({
         },
     })
 
+
     const onSubmit = async (data: FormSchema) => {
         data.description = EditorRef.current.getContent()
-        data.starterCode = CodeEditorRef.current.getValue()
+        if (CodeEditorRef.current) {
+            data.starterCode = CodeEditorRef.current.getValue()
+        } else {
+            if (codeStash.user !== "") {
+                data.starterCode = codeStash.user
+            }
+        }
+        if (TestCodeEditorRef.current) {
+            data.testCode = TestCodeEditorRef.current.getValue()
+        } else {
+            if (codeStash.test !== "") {
+                data.testCode = codeStash.test
+            }
+        }
+
         postQuery.mutate(data)
     }
 
@@ -165,16 +200,24 @@ export const ProblemForm: React.FC<Props> = ({
         const result = await req.json();
     }
 
-    useEffect(() => {
-        if (initialData) {
-            modal && form.reset(mapToForm(initialData))
-        }
-    }, [initialData])
+    
 
-    function showValue() {
-        const value = CodeEditorRef.current.getValue()
-        alert(value)
+    // setup monaco-vim
+    function handleEditorDidMount(editor:any) {
+        //@ts-ignore
+        window.require.config({
+          paths: {
+            "monaco-vim": "/assets/monaco-vim"
+          }
+        });
+   
+        window.require(["monaco-vim"], function (MonacoVim) {
+            const statusNode = document.querySelector(".status-node");
+            vimSetting = MonacoVim.initVimMode(editor, statusNode);
+        });
     }
+
+
 
     return (
         <>
@@ -245,7 +288,7 @@ export const ProblemForm: React.FC<Props> = ({
 
 
             
-            <div className={`${!modal ? 'mt-20' : ''} w-full justify-center`}>
+            <div className={` w-full justify-center`}>
                 <div className="">
                     <Form {...form}>
                         <form
@@ -437,10 +480,12 @@ export const ProblemForm: React.FC<Props> = ({
                                 />
                             </div>
 
-                            <div className="max-w-[1200px] m-auto mt-10 grid grid-cols-12 gap-2">
+                            <div className="max-w-[1500px] m-auto mt-10 grid grid-cols-12 gap-5">
                                 
 
                                 <div className=" col-span-6">
+                                    <h3 className="mb-3">Problem description</h3>
+
                                     <TinyEditor
                                         reference={EditorRef}
                                         content={
@@ -452,29 +497,122 @@ export const ProblemForm: React.FC<Props> = ({
                                 </div>
 
                                 <div className="mt-2 col-span-6">
-                                    <Editor
-                                        value={
-                                            form.formState
-                                                .defaultValues
-                                                ?.starterCode || ''
-                                        }
-                                        onMount={(editor, monaco) =>
-                                            (CodeEditorRef.current =
-                                                editor)
-                                        }
-                                        theme="vs-dark"
-                                        height="40vh"
-                                        defaultLanguage="javascript"
-                                        defaultValue="// some comment"
-                                    />
-                                <Button type="button" onClick={submitCode}>Test code</Button>
+
+                                <Tabs className="w-full" defaultValue="user_code" onValueChange={(value) => {
+                                    // When flipping between tabs we lose any code that has been changed
+                                    // without being saved so we stash when switching then restsore.
+                                    // Each editor has an onMount function used to place the text back.
+                                    if (value === 'user_code') {
+                                        codeStash.test = TestCodeEditorRef.current.getValue()
+                                        TestCodeEditorRef.current = null
+                                    }
+                                    if (value === 'test_code') {
+                                        codeStash.user = CodeEditorRef.current.getValue()
+                                        CodeEditorRef.current = null
+                                    }
+
+                                }}>
+                                    <TabsList>
+
+                                        <TabsTrigger
+                                            className={`data-[state=active]:bg-buttonactive data-[state=active]:text-white`}
+                                            value={`user_code`}
+                                        >
+                                            User code
+                                        </TabsTrigger>
+                                        <TabsTrigger
+                                            className={`data-[state=active]:bg-buttonactive data-[state=active]:text-white`}
+                                            value={`test_code`}
+                                        >
+                                            Test code
+                                        </TabsTrigger>
+
+                                    </TabsList>
+
+                                    <TabsContent value={`user_code`}>
+                                        <div>
+                                            <div className="flex items-center space-x-2 mb-2 w-full">
+                                                <Checkbox 
+                                                    className="ml-auto"
+                                                    checked={vimMode}
+                                                    onCheckedChange={() => {
+                                                        setVimMode(!vimMode)
+                                                        if (vimMode) {
+                                                            vimSetting.dispose()
+                                                        } else {
+                                                            handleEditorDidMount(CodeEditorRef.current)
+                                                        }
+                                                    }
+                                                }
+                                                />
+                                                <label
+                                                    htmlFor="terms"
+                                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                >
+                                                   Vim mode 
+                                                </label>
+                                            </div>
+                                            <Editor
+                                                value={
+                                                    codeStash.user ||
+                                                    form.formState
+                                                        .defaultValues
+                                                        ?.starterCode
+                                                }
+                                                onMount={(editor, monaco) => {
+                                                    CodeEditorRef.current = editor
+                                                    if (codeStash.user !== "") {
+                                                        CodeEditorRef.current.setValue(codeStash.user)
+                                                    }
+                                                    if (vimMode) handleEditorDidMount(editor)
+                                                }}
+                                                theme="vs-dark"
+                                                height="60vh"
+                                                defaultLanguage="javascript"
+                                                defaultValue=""
+                                            />
+                                            <code className="status-node"></code>
+                                            <Button className="mt-4" type="button" onClick={submitCode}>Test code</Button>
+                                        </div>
+                                    </TabsContent>
+                                    
+                                    <TabsContent value={`test_code`}>
+                                        <div className="">
+                                            <Editor
+                                                value={
+                                                    form.formState
+                                                        .defaultValues
+                                                        ?.testCode || ''
+                                                }
+                                                onMount={(editor, monaco) => {
+                                                    TestCodeEditorRef.current = editor
+                                                    if (codeStash.test !== "") {
+                                                        TestCodeEditorRef.current.setValue(codeStash.test)
+                                                    }
+                                                }}
+                                                onChange={(editor, monaco) => {
+                                                    // console.log(editor)
+                                                    // console.log(monaco)
+                                                }}
+                                                theme="vs-dark"
+                                                height="60vh"
+                                                defaultLanguage="javascript"
+                                                defaultValue="// some comment"
+                                            />
+                                        </div>
+
+                                    </TabsContent>
+
+
+                                </Tabs>
+
+
+                                <div className="h-[200px]" id="testeditor"></div>
                                 </div>
-
-
                             </div>
 
-                            <div className="max-w-[1200px] m-auto flex mt-10">
-                                <Button className="ml-auto" type="submit">
+                            <div className="max-w-[1200px] m-auto  flex mt-10">
+                                <Button className="" type="submit">
                                     {action}
                                 </Button>
 

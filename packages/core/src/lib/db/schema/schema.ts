@@ -279,6 +279,7 @@ export const problem = pgTable(
         slug: text('slug').notNull(),
         description: text('description'),
         starterCode: text('starter_code'),
+        testCode:text('test_code'),
         answerCode: text('answer_code'),
         difficulty: integer('difficulty').notNull(),
         // tags: text('tags'),

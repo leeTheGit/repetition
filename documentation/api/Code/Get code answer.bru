@@ -1,0 +1,15 @@
+meta {
+  name: Get code answer
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/code
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{Auth token}}
+}

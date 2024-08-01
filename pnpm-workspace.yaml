@@ -1,3 +1,5 @@
 packages:
   - "packages/core"
   - "packages/frontend"
+  - "packages/infra"
+  - "packages/functions"

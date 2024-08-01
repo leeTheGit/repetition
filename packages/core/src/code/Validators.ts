@@ -28,6 +28,11 @@ export const fetchBySubmission = z.object({
     submissionId: z.string().or(z.string().min(3).max(15)),
 })
 
+export const postTestCode = z.object({
+    problemId: z.string().uuid(),
+    code: z.string()
+})
+
 
 export const entitySchema = z.object({
     id: z.string(),
@@ -35,8 +40,8 @@ export const entitySchema = z.object({
     logs: z.array(z.any()),
     answer: z.array(z.object({
         pass: z.string(),
-        expected: z.number(),
-        recieved: z.number()
+        expected: z.any(),
+        recieved: z.any()
     }))
     // answer: z.string()
 })

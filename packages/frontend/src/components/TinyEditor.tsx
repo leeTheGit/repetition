@@ -92,7 +92,7 @@ export default function TinyEditor({ content, reference }: Props) {
                     license_key: 'gpl',
                     skin: skin,
                     content_css: contentCSS,
-                    height: 300,
+                    height: "100%",
                     scriptLoading: 'defer',
                     width: '100%',
                     menubar: false,

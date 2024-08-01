@@ -83,8 +83,13 @@ export class ProblemEntity extends Entity<EntitySchema> {
         return this.props.difficulty
     }
     get starterCode() {
-        return this.props.starterCode
+        return this.props.starterCode 
     }
+
+    get testCode() {
+        return this.props.testCode || ""
+    }
+
     get answerCode() {
         return this.props.answerCode
     }
