@@ -1,4 +1,6 @@
 import { HttpResponse, apiHandler } from '@/lib'
+import { db } from '@repetition/core/lib/db'
+
 import { logger } from '@repetition/core/lib/logger'
 import EventBridgeComponent from '@repetition/core/lib/aws/EventBridgeComponent'
 import Repository from '@repetition/core/code/Repository'
@@ -10,7 +12,7 @@ import { not } from '@repetition/core/types'
 
 
 const repository = new Repository()
-const problemRepository = new ProblemRepository()
+const problemRepository = new ProblemRepository(db)
 
 const name = 'Code'
 

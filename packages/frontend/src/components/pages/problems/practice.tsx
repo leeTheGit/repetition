@@ -13,6 +13,8 @@ import { useQuery } from '@tanstack/react-query'
 import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from "@/components/ui/checkbox"
+import Overlay from "@/components/overlay";
+import InlineSpinner from "@/components/spinners/InlineSpinner";
 // import {
 //     Select,
 //     SelectContent,
@@ -41,6 +43,7 @@ export const Practice = ({data}: Props) => {
     const CodeEditorRef = useRef<any>(null)
     const [submitModal, setSubmitModal] = useState(false)
     const [submissionId, setSubmissionId] = useState(undefined)
+    const [submitting, setSubmitting] = useState(false)
     const [vimMode, setVimMode] = useState(false)
     const [loading, setLoading] = useState(false)
     const queryClient = useQueryClient();
@@ -140,16 +143,26 @@ export const Practice = ({data}: Props) => {
         //     fail: () => {},
         //     succeed: () => {}
         // })
-        const req = await fetch('/api/code', {
-            method: 'POST',
-            body: JSON.stringify({
-                problemId: data.uuid, 
-                code
+        setSubmitting(true)
+        try {
+            const req = await fetch('/api/code', {
+                method: 'POST',
+                body: JSON.stringify({
+                    problemId: data.uuid, 
+                    code
+                })
             })
-        })
-
-        const result = await req.json();
-        setSubmissionId(result.data)
+            if (!req.ok) {
+                throw new Error(`Failed to submit code`)
+            }
+            const result = await req.json();
+            setSubmissionId(result.data)
+            setSubmitting(false) 
+ 
+        } catch(e) {
+            console.log("Error: ", e)
+            setSubmitting(false) 
+        }
     }
     
 
@@ -168,56 +181,90 @@ export const Practice = ({data}: Props) => {
 
                 <div className="grid grid-cols-2 gap-8">
 
-                    <div className="col-span-1" >
-                        <div className="problem-description" dangerouslySetInnerHTML={{ __html: data.description }}></div>
-
-                        <Tabs className="w-full" defaultValue="test0">
+                    <div className="col-span-1">
+                        <div className="mt-[25px] problem-description overflow-y-auto" dangerouslySetInnerHTML={{ __html: data.description }}>
+                            {/* Description editor */}
+                        </div>
+                            
+                        <Tabs className="mt-auto w-full" defaultValue="results">
                             <TabsList>
-                            {poll.data?.data && poll.data.data.answers.map((answer:any, i:number) => {
-                                const textColor = answer.pass === 'true' ? "text-green-400" : "text-red-500" 
-                                const selColor = answer.pass === 'true' ? "data-[state=active]:text-green-400" : "data-[state=active]:text-red-500" 
-
-                                return <TabsTrigger
-                                    className={`data-[state=active]:bg-[#4b4b4b] ${selColor} ${textColor}`}
-                                    value={`test${i}`}
+                                <TabsTrigger
+                                    key="results"
+                                    className={`data-[state=active]:bg-[#4b4b4b]`}
+                                    value="results"
                                 >
-                                    Test {i+1}
+                                    Results
                                 </TabsTrigger>
-                            })}
-
+                                <TabsTrigger
+                                    key="results"
+                                    className={`data-[state=active]:bg-[#4b4b4b]`}
+                                    value="console"
+                                >
+                                    Console
+                                </TabsTrigger>
                             </TabsList>
 
-                            {poll.data?.data && poll.data.data.answers.map((answer: {pass:string, expected:number, recieved: number}, i:number) => {
-                                return <TabsContent value={`test${i}`}>
-                                    <div>
-                                        <p className={`${answer.pass === 'true' ? "text-green-400" : "text-red-500"}`}>
-                                            {answer.pass === 'true' ? "Success!" : "Fail"}
-                                        </p>
-                                        <p>We were looking for: {answer.expected}</p>
-                                        <p>And your code produced: {answer.recieved}</p>
+                            <TabsContent key="results" value="results">
+                                
+                                <Tabs className="w-full" defaultValue="test0">
+                                    <TabsList>
+                                    {poll.data?.data && poll.data.data.answers.map((answer:any, i:number) => {
+                                        const textColor = answer.pass === 'true' ? "text-green-400" : "text-red-500" 
+                                        const selColor = answer.pass === 'true' ? "data-[state=active]:text-green-400" : "data-[state=active]:text-red-500" 
+
+                                        return <TabsTrigger
+                                            key={i}
+                                            className={`data-[state=active]:bg-[#4b4b4b] ${selColor} ${textColor}`}
+                                            value={`test${i}`}
+                                        >
+                                            Test {i+1}
+                                        </TabsTrigger>
+                                    })}
+
+                                    </TabsList>
+
+                                    {poll.data?.data && poll.data.data.answers.map((answer: {pass:string, expected:number, recieved: number}, i:number) => {
+                                        return <TabsContent key={i} value={`test${i}`}>
+                                            <div>
+                                                <p className={`${answer.pass === 'true' ? "text-green-400" : "text-red-500"}`}>
+                                                    {answer.pass === 'true' ? "Success!" : "Fail"}
+                                                </p>
+                                                <p>We were looking for: {JSON.stringify(answer.expected)}</p>
+                                                <p>And your code produced: {JSON.stringify(answer.recieved) || "nothing"}</p>
+                                            </div>
+                                        </TabsContent>
+                                    })}
+                                </Tabs> 
+                            </TabsContent>
+
+                            <TabsContent key="console" value="console">
+                                <div className="mt-5">
+                                    <p className="text-lg ">Console</p>
+                                    <div className="bg-black p-2">
+                                    
+                                        {poll.data?.data && poll.data.data.logs.map((log: string, i:number) => {
+                                            const logItem = JSON.stringify(JSON.parse(log))
+                                            return <div key={i} className="text-sm  text-white px-2"> {}
+                                                <pre>{logItem.substring(1, logItem.length-1)}</pre>
+                                            </div>
+                                        })}
                                     </div>
-                                </TabsContent>
-                            })}
+                                </div>
+                            </TabsContent>
 
                         </Tabs>
 
-                        <div className="mt-5">
-                            <p className="text-lg ">Console</p>
-                            <div className="bg-black p-2">
-                            
-                            {poll.data?.data && poll.data.data.logs.map((log: string) => {
-                                const logItem = JSON.stringify(JSON.parse(log))
-                                return <div className="text-sm  text-white px-2"> {}
-                                    <pre>{logItem.substring(1, logItem.length-1)}</pre>
-                                </div>
-                            })}
-                        </div>
 
-                        </div>
 
                     </div>
 
-                    <div className="mt-2 col-span-1">
+                    <div className="col-span-1">
+                        {(poll.isFetching || submitting) && 
+                        <Overlay>
+                            <InlineSpinner />
+                        </Overlay>
+                        }
+
                         <div className="flex items-center space-x-2 mb-2 w-full">
                             <Checkbox 
                                 className="ml-auto"
@@ -257,16 +304,15 @@ export const Practice = ({data}: Props) => {
                         />
                         <code className="status-node"></code>
                         <div className="mt-5 flex">
-                            <Button type="button" onClick={submitCode}>Test code</Button>
+                            <Button disabled={poll.isFetching || submitting} type="button" onClick={submitCode}>Test code</Button>
                             <Submit className="ml-auto" data={data} />
                         </div>
                     </div>
-
                 </div>
 
             </Modal>
 
-            <Button onClick={() => setSubmitModal(true)}>Practice</Button>
+            <Button type="button" onClick={() => setSubmitModal(true)}>Practice</Button>
             
         </>
     )

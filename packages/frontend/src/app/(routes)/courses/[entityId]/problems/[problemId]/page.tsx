@@ -1,4 +1,5 @@
 import React from 'react'
+import { db } from '@repetition/core/lib/db'
 import Repository from '@repetition/core/problems/Repository'
 import CourseRepository from '@repetition/core/course/Repository'
 import { getUserAuth } from "@repetition/frontend/lib/auth/utils";
@@ -7,8 +8,8 @@ import CategoryRepository from '@repetition/core/category/Repository'
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";
 import { isError } from '@repetition/core/types';
-
-const repository = new Repository()
+import { fetchResponse, ProblemAPI } from '@repetition/core/problems/response/ProblemDTO'
+const repository = new Repository(db)
 const courseRepository = new CourseRepository()
 const categoryRepository = new CategoryRepository()
 
@@ -35,7 +36,9 @@ const Page = async ({ params }: { params: { entityId: string, problemId:string }
         }
         courseId = entity.courseId
     }
-
+    if (!entity) {
+        return <div>Error</div>
+    }
 
     if (!courseId) {
         const course = await courseRepository.fetchByUuid(params.entityId)
@@ -50,11 +53,13 @@ const Page = async ({ params }: { params: { entityId: string, problemId:string }
         courseId: courseId,
     })
 
+    const initialData: ProblemAPI = fetchResponse(entity)
+
     return (
         <div className="flex-col">
             <div className="flex-1 pt-6">
                 <Form 
-                    initialData={entity ? entity.toObject() : null} 
+                    initialData={initialData} 
                     courseSlug={params.entityId}
                     courseId={courseId}
                     categories={categories.map(category => category.toObject())}

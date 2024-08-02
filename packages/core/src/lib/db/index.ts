@@ -48,6 +48,8 @@ if (process.env.NODE_ENV !== 'production') {
 // }
 
 const db = drizzle(client, { schema, logger })
+
+export type DBType = typeof db
 // console.log("[DATABASE_CONNECTION] DB:", db)
 
 export { db }

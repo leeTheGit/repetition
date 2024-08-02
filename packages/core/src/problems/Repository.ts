@@ -1,4 +1,4 @@
-import { db } from '@repetition/core/lib/db'
+import { DBType } from '@repetition/core/lib/db'
 import { problem, category, media } from '@repetition/core/lib/db/schema/schema'
 import { PostgresMapper } from '@repetition/core/problems/mappers/postgresMapper'
 
@@ -29,6 +29,7 @@ import BaseRepository from '@repetition/core/baseRepository'
 //     TableType as AssetTable,
 // } from '@repetition/core/asset/AssetRepository'
 import { uuidRegex, mapResult } from '@repetition/core/lib'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
 // import { logger } from '@repetition/core/lib/logger'
 
 export type TableType = typeof problem.$inferSelect & {
@@ -53,9 +54,11 @@ class Repository extends BaseRepository<
 > {
 
     private mapToEntity = PostgresMapper
+    private db
 
-    constructor() {
+    constructor(db:DBType) {
         super(problem, 'Problem')
+        this.db = db;
     }
 
 
@@ -225,7 +228,7 @@ class Repository extends BaseRepository<
         // const string = pgDialect.sqlToQuery(query)
         // console.log(string)
 
-        const result = await db.execute(query)
+        const result = await this.db.execute(query)
 
         if (params?.withSubmissions && params.userId) {
             const submissionRepository = new SubmissionRepository()
@@ -254,7 +257,7 @@ class Repository extends BaseRepository<
         let count = 0
         const filters = this.getFilters(params)
 
-        const query = db
+        const query = this.db
             .select({ count: sql`COUNT(*)`.mapWith(Number) })
             .from(this.table)
             .leftJoin(category, eq(this.table.categoryUuid, category.uuid))
@@ -282,7 +285,7 @@ class Repository extends BaseRepository<
             filters.push(eq(this.table.courseId, params.course))
         }
 
-        const query = db.query['problem'].findFirst({
+        const query = this.db.query['problem'].findFirst({
             where: and(...filters),
         })
 

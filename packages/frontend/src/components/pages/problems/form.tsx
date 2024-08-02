@@ -58,9 +58,11 @@ import { AlertModal } from '@/components/modals/alert-modal'
 import { BreadCrumb } from '@/components/breadCrumb'
 import { Delete, create } from '@/hooks/queries'
 import Link from 'next/link'
+import { Practice } from './practice'
+import {  ProblemAPI } from '@repetition/core/problems/response/ProblemDTO'
 
 interface Props {
-    initialData: EntitySchema | null
+    initialData: ProblemAPI
     courseSlug: string
     courseId: string
     // courseId: string
@@ -76,7 +78,7 @@ let vimSetting:any;
 // When saving we grab the code from each editor instance.
 // As each editor is in a tab, it may not be mounted.
 // We use the codeStash variable to store unsaved changes
-const codeStash = {
+let codeStash = {
     user: "",
     test: ""
 }
@@ -105,10 +107,12 @@ export const ProblemForm: React.FC<Props> = ({
     const toastMessage = initialData ? `${name} updated` : `${name} created`
     const action = initialData ? 'Save changes' : 'Create'
 
-    const mapToForm = (initialData: EntitySchema | null) => {
+    const mapToForm = (initialData: ProblemAPI | null) => {
         const data = {
             name: initialData?.name || '',
             categoryUuid: initialData?.categoryUuid || '',
+            submissionCount: initialData?.submissionCount || 0,
+
             // courseId:initialData?.courseId || courseId, 
             courseSlug: initialData?.slug || courseSlug,
             description: initialData?.description || '',
@@ -218,7 +222,27 @@ export const ProblemForm: React.FC<Props> = ({
         });
     }
 
+    useEffect(() => {
+        codeStash = {
+            user: "",
+            test: ""
+        }
+    }, [])
 
+
+    const probs = {
+        uuid: initialData.uuid,
+        name: initialData.name,
+        slug: initialData.slug,
+        category: initialData.categoryUuid,
+        description: initialData.description,
+        starterCode: initialData.starterCode,
+        link: initialData.link,
+        grade: initialData.history || [],
+        submissionCount: initialData.submissionCount || 0,
+        lastSubmitted: initialData.lastSubmitted || '',
+        difficulty: initialData.difficulty,
+    }
 
     return (
         <>
@@ -294,7 +318,7 @@ export const ProblemForm: React.FC<Props> = ({
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(onSubmit)}
-                            className=" bg-gradient-to-t from-[#f1f5f9] dark:from-[#161f33] pt-10"
+                            className="pt-10"
                         >
                             <div className="max-w-[1200px] m-auto grid grid-cols-12 gap-8">
                                 <FormField
@@ -481,7 +505,7 @@ export const ProblemForm: React.FC<Props> = ({
                                 />
                             </div>
 
-                            <div className="max-w-[1500px] m-auto mt-10 grid grid-cols-12 gap-5">
+                            <div className="max-w-[1200px] m-auto mt-10 grid grid-cols-12 gap-5">
                                 
 
                                 <div className=" col-span-6">
@@ -555,7 +579,7 @@ export const ProblemForm: React.FC<Props> = ({
                                             </div>
                                             <Editor
                                                 value={
-                                                    codeStash.user ||
+                                                    // codeStash.user ||
                                                     form.formState
                                                         .defaultValues
                                                         ?.starterCode
@@ -616,17 +640,7 @@ export const ProblemForm: React.FC<Props> = ({
                                 <Button className="" type="submit">
                                     {action}
                                 </Button>
-
-                                {modal && (
-                                    <Button
-                                        type="button"
-                                        disabled={postQuery.isPending}
-                                        variant="outline"
-                                        onClick={onClose}
-                                    >
-                                        Cancel
-                                    </Button>
-                                )}
+                                <Practice data={initialData} />
                             </div>
                         </form>
                     </Form>

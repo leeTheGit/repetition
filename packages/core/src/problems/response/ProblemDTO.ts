@@ -12,13 +12,16 @@ export const fetchResponse = (res: ProblemEntity) => {
         difficulty: res.difficulty,
         starterCode: res.starterCode,
         answerCode: res.answerCode,
+        grade: res.history || [],
+        testCode: res.testCode,
         status: res.status,
         history: res.history || [],
         link: res.link || '',
-        submissionCount: res.submissionCount || null,
+        submissionCount: res.submissionCount || 0,
         lastSubmitted: res.lastSubmitted || '',
         description: res.description || '',
         category: res.categoryName || '',
+        categoryUuid: res.categoryUuid,
         createdAt: res.createdAt,
     }
 }

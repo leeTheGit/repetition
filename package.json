@@ -4,12 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "sst dev",
-    "build": "sst build",
-    "deploy": "sst deploy",
-    "remove": "sst remove",
-    "console": "sst console",
-    "typecheck": "tsc --noEmit"
+    "dev": "pnpm -F=frontend dev",
+    "build": "pnpm -F=frontend build",
+    "typecheck": "tsc --noEmit",
+    "db:seed": "pnpm -F=core db:seed",
+    "migrate": "pnpm -F=core migrate",
+    "deploy:lambda": "pnpm -F=infra deploy:lambda",
+    "deploy": "cdk deploy --all"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -90,7 +90,7 @@ export const Listing = ({courseId} : Props) => {
             <div className="flex items-center justify-between">
                 <div>
                     <Heading
-                        title={`Problems ${entities?.data?.data.length ? `(${entities.data.data.length})` : ''}`}
+                        title={`Practice ${entities?.data?.data.length ? `(${entities.data.data.length})` : ''}`}
                     />
                     <BreadCrumb
                         className="mt-2"

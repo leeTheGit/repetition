@@ -40,4 +40,3 @@ export const useMutation = <T>(url: string, params:Params = {}) => {
 };
 
 
-// const users = useFetch("https://jsonplaceholder.typicode.com/users");

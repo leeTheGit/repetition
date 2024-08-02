@@ -162,7 +162,7 @@ export const Submit = ({data, className}: Props) => {
 
             </Modal>
 
-            <Button className={className} onClick={() => setSubmitModal(true)}>Submit</Button>
+            <Button className={className} onClick={() => setSubmitModal(true)}>Rate</Button>
 
         </>
     )
