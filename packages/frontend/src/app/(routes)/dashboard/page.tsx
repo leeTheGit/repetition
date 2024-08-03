@@ -9,8 +9,8 @@ import InlineSpinner from "@/components/spinners/InlineSpinner";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/heading";
 import { Separator } from "@/components/ui/separator";
-import { Plus } from "lucide-react";
 import { CourseCard } from './course-card'
+import { NewCourse } from "@/components/pages/courses/new-course-button";
 
 const courseRepository = new CourseRepository()
 
@@ -25,6 +25,8 @@ const Page = async ({ params }: { params: { storeId: string } }) => {
     if ( not(courses) ) {
       courses = []
     }
+
+    
 
     return (
         <div className="flex-col">
@@ -50,10 +52,8 @@ const Page = async ({ params }: { params: { storeId: string } }) => {
                         />
                     </div>
 
-                    <Button >
-                        <Plus className="mr-2 h-4 w-4" />
-                        New Course
-                    </Button>
+                    <NewCourse />
+
                 </div>
 
                 <Separator />

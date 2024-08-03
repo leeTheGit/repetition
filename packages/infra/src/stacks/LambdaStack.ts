@@ -1,5 +1,12 @@
 import { Stack, StackProps, Duration, CfnOutput } from 'aws-cdk-lib'
-import { Code, Function as LambdaFunction, Runtime, FunctionUrlAuthType, HttpMethod} from 'aws-cdk-lib/aws-lambda'
+import { 
+    Code, 
+    Function as LambdaFunction, 
+    DockerImageFunction,
+    Runtime, 
+    FunctionUrlAuthType, 
+    HttpMethod
+} from 'aws-cdk-lib/aws-lambda'
 import { Construct } from 'constructs'
 import { join } from 'path'
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
@@ -21,6 +28,21 @@ export class LambdaStack extends Stack {
         const functionPath = join(__dirname, '..', '..','..', 'functions', 'src' )
         const function2Path = join(__dirname, '..', '..','..', 'functions', 'src', 'code-runner-ts.ts' )
 
+        // const dfun = new DockerImageFunction(this, 'dockerRunner', {
+
+        //     function_name:"ExampleDockerLambda",
+        //     // # Use aws_cdk.aws_lambda.DockerImageCode.from_image_asset to build
+        //     // # a docker image on deployment
+        //     code: Code.fromAsset(functionPath)
+        //     code: _lambda.DockerImageCode.from_image_asset(
+        //         # Directory relative to where you execute cdk deploy
+        //         # contains a Dockerfile with build instructions
+        //         directory="cdk_docker_lambda/ExampleDockerLambda"
+        //     ),
+        // }
+        // )
+
+
         const TSCodeRunnerFunc = new NodejsFunction(this, 'CodeRunner-ts', {
             runtime: Runtime.NODEJS_20_X,
             handler: 'handler',
@@ -40,10 +62,10 @@ export class LambdaStack extends Stack {
             resources: [props.table.tableArn],
             actions: [
                'dynamodb:PutItem',
-               'dynamodb:Scan',
+            //    'dynamodb:Scan',
                'dynamodb:GetItem',
-               'dynamodb:UpdateItem',
-               'dynamodb:DeleteItem' 
+            //    'dynamodb:UpdateItem',
+            //    'dynamodb:DeleteItem' 
             ]
         }))
 

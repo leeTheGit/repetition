@@ -14,7 +14,7 @@ import {
 import { FetchParams } from '@repetition/core/course/Validators'
 import { ModelError, isError } from '@repetition/core/types'
 import { CourseEntity as ModelEntity } from '@repetition/core/course/Entity'
-import { PgDialect, PgSelect } from 'drizzle-orm/pg-core'
+import { alias, PgDialect, PgSelect } from 'drizzle-orm/pg-core'
 import CategoryRepository, {
     SelectTableType as CategoryTable,
 } from '@repetition/core/category/Repository'
@@ -70,10 +70,28 @@ class Repository extends BaseRepository<
         }
 
         const filters: any = []
-
+        const courseImage = alias(media, 'courseImage')
         const query = db
-            .select()
+            .select({
+                id: self.table.id,
+                uuid: self.table.uuid,
+                organisationUuid: self.table.organisationUuid,
+                userId: self.table.userId,
+                name: self.table.name,
+                slug: self.table.slug, 
+                description: self.table.description,
+                imageUuid: self.table.imageUuid,
+                status: self.table.status,
+                isSeeded: self.table.isSeeded,
+                createdAt: self.table.createdAt,
+                updatedAt: self.table.updatedAt,
+                courseImage
+            })
             .from(this.table)
+            .leftJoin(
+                courseImage,
+                eq(self.table.imageUuid, courseImage.uuid)
+            )
             .where(and(...filters))
             .limit(params?.limit || DEFAULT_LIMIT)
             .offset(params?.offset || DEFAULT_OFFSET)
@@ -122,6 +140,9 @@ class Repository extends BaseRepository<
 
         const query = db.query.course.findFirst({
             where: and(...filters),
+            with: {
+                courseImage: true,
+            },
         })
 
 
@@ -175,15 +196,15 @@ class Repository extends BaseRepository<
         }
 
 
-        // if ('media' in item) {
-        //     const assetRepository = new AssetRepository()
-        //     const galleryItem = assetRepository.mapToEntity(
-        //         item.media as AssetTable
-        //     )
-        //     if (!isError(galleryItem)) {
-        //         Entity.image = galleryItem
-        //     }
-        // }
+        if ('courseImage' in item && item.courseImage !== null) { 
+            const assetRepository = new AssetRepository()
+            const galleryItem = assetRepository.mapToEntity(
+                item.courseImage as AssetTable
+            )
+            if (!isError(galleryItem)) {
+                Entity.courseImage = galleryItem
+            }
+        }
 
         return Entity
     }

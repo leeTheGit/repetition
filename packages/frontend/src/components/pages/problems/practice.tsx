@@ -22,9 +22,9 @@ import InlineSpinner from "@/components/spinners/InlineSpinner";
 //     SelectTrigger,
 //     SelectValue,
 // } from '@/components/ui/select'
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from 'react-hook-form';
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { useForm } from 'react-hook-form';
+// import { useMutation, useQueryClient } from '@tanstack/react-query'
 // import { Delete, create } from '@/hooks/queries'
 // import { toast } from 'sonner'
 // import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -46,23 +46,25 @@ export const Practice = ({data}: Props) => {
     const [submitting, setSubmitting] = useState(false)
     const [vimMode, setVimMode] = useState(false)
     const [loading, setLoading] = useState(false)
-    const queryClient = useQueryClient();
-    const submitSchema = z.object({
-        problemUuid:z.string().uuid(),
-        grade: z.string(),
-        note: z.string(),
-    })
+    // const queryClient = useQueryClient();
+    // const submitSchema = z.object({
+    //     problemUuid:z.string().uuid(),
+    //     starterCode: z.string(),
+    //     grade: z.string(),
+    //     note: z.string(),
+    // })
 
-    type FormSchema = z.infer<typeof submitSchema>
+    // type FormSchema = z.infer<typeof submitSchema>
 
-    const form = useForm<FormSchema>({
-        resolver: zodResolver(submitSchema),
-        defaultValues: {
-            problemUuid: data.uuid,
-            grade: '',
-            note: ''
-        }
-    })
+    // const form = useForm<FormSchema>({
+    //     resolver: zodResolver(submitSchema),
+    //     defaultValues: {
+    //         problemUuid: data.uuid,
+    //         starterCode: data.starterCode || "",
+    //         grade: '',
+    //         note: ''
+    //     }
+    // })
 
     const get = async (submissionId?: string) => {
         if (!submissionId) {
@@ -111,9 +113,7 @@ export const Practice = ({data}: Props) => {
 
     const submitCode = async () => {
         setSubmissionId(undefined)
-
-        const code = CodeEditorRef.current.getValue()
-
+        let code = CodeEditorRef.current?.getValue()
         // handler({
         //     id: '2adsfs',
         //     version: '2',
@@ -165,14 +165,13 @@ export const Practice = ({data}: Props) => {
         }
     }
     
-
     return (
 
         <>
             <Modal
                 isOpen={submitModal}
                 onClose={() => setSubmitModal(false)}
-                className="max-w-[80%]  max-h-full min-h-[80%]"
+                className="max-w-[80%]  max-h-full min-h-[80%] dark:bg-[#121215] "
                 escapeKey={false}
             >
                 <DialogHeader>
@@ -185,7 +184,9 @@ export const Practice = ({data}: Props) => {
                         <div className="mt-[25px] problem-description overflow-y-auto" dangerouslySetInnerHTML={{ __html: data.description }}>
                             {/* Description editor */}
                         </div>
-                            
+
+
+                        {data.starterCode &&     
                         <Tabs className="mt-auto w-full" defaultValue="results">
                             <TabsList>
                                 <TabsTrigger
@@ -239,8 +240,7 @@ export const Practice = ({data}: Props) => {
 
                             <TabsContent key="console" value="console">
                                 <div className="mt-5">
-                                    <p className="text-lg ">Console</p>
-                                    <div className="bg-black p-2">
+                                    <div className="">
                                     
                                         {poll.data?.data && poll.data.data.logs.map((log: string, i:number) => {
                                             const logItem = JSON.stringify(JSON.parse(log))
@@ -253,11 +253,14 @@ export const Practice = ({data}: Props) => {
                             </TabsContent>
 
                         </Tabs>
+                    }
 
 
 
                     </div>
 
+
+                    {data.starterCode && 
                     <div className="col-span-1">
                         {(poll.isFetching || submitting) && 
                         <Overlay>
@@ -305,9 +308,11 @@ export const Practice = ({data}: Props) => {
                         <code className="status-node"></code>
                         <div className="mt-5 flex">
                             <Button disabled={poll.isFetching || submitting} type="button" onClick={submitCode}>Test code</Button>
-                            <Submit className="ml-auto" data={data} />
+                            <Submit className="ml-auto" data={data} ref={CodeEditorRef} />
                         </div>
                     </div>
+                }
+                <Submit className="ml-auto" data={data} ref={CodeEditorRef} />
                 </div>
 
             </Modal>

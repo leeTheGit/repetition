@@ -25,21 +25,19 @@ async function get(
             status: 400,
         }
     }
-
     // We want the integer id of the user's organisation to use in the path
     // of the asset for storing in S3
     const organisation = await organisationRepository.fetchByUuid(
-        ctx.store.organisationUuid
+        ctx.user.organisationUuid
     )
     if (isError(organisation)) {
         return organisation
     }
 
-    const prefix = 'sites/o_' + organisation.id + '/s_' + ctx.store.id
+    const prefix = 'sites/o_' + organisation.id + '/u_' + ctx.user.id
 
     const { name, type } = input.data
     const signed = await getUploadURL(name, prefix, type)
-
     return {
         data: signed,
     }

@@ -817,3 +817,10 @@ export const userRelations = relations(users, ({ one }) => ({
         references: [media.uuid],
     }),
 }))
+
+export const courseRelations = relations(course, ({ one }) => ({
+    courseImage: one(media, {
+        fields: [course.imageUuid],
+        references: [media.uuid],
+    }),
+}))

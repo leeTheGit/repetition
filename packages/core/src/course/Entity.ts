@@ -4,11 +4,14 @@ import { Entity } from '@repetition/core/baseEntity'
 import { entitySchema, EntitySchema } from './Validators'
 import { getZodErrors, randomNumbers } from '@repetition/core/lib'
 import { ModelError } from '@repetition/core/types'
+import { AssetEntity } from '@repetition/core/asset/AssetEntity'
+import { EntitySchema as AssetEntitySchema } from '@repetition/core/asset/AssetValidators'
+
 
 export class CourseEntity extends Entity<EntitySchema> {
     private relations: {
-    } = { }
-
+        courseImage?: AssetEntity
+    } = {}
     private metadata: {
     } = {}
 
@@ -19,9 +22,13 @@ export class CourseEntity extends Entity<EntitySchema> {
     data(): EntitySchema {
         return this.props
     }
-    toObject(): EntitySchema {
+
+    toObject(): EntitySchema & { courseImage?: AssetEntitySchema | null } & {
+        courseImage?: AssetEntitySchema | null
+    } {
         return {
             ...this.props,
+            courseImage: this.relations.courseImage?.toObject() || null,
         }
     }
 
@@ -79,6 +86,15 @@ export class CourseEntity extends Entity<EntitySchema> {
     get slug() {
         return this.props.slug
     }
+
+    set courseImage(image: AssetEntity) {
+        this.relations.courseImage = image
+    }
+
+    get courseImage(): AssetEntity | null {
+        return this.relations.courseImage || null
+    }
+
 
     /**
      * The repository class will run this recursively, adding

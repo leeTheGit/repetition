@@ -42,10 +42,7 @@ type InitialData = Pick<
     EntitySchema,
     'uuid' | 'username' | 'email' | 'firstname' | 'lastname'
 >
-type Role = {
-    uuid: string
-    name: string
-}
+
 interface Props {
     initialData: (InitialData & { profileImage?: AssetSchema | null }) | null
     onClose?: () => void
@@ -70,9 +67,6 @@ export const UserForm: React.FC<Props> = ({
 
     const { uploadAsset } = useUploadToS3()
 
-    const { storeId } = useParams<{
-        storeId: string
-    }>()
 
     const title = initialData ? `Edit ${name}` : `New ${name}`
     const toastMessage = initialData ? `${name} updated` : `${name} created`
@@ -191,7 +185,7 @@ export const UserForm: React.FC<Props> = ({
 
             <ImageUploadModal
                 isOpen={imageUploadModal}
-                message="Upload store logo?"
+                message="Add avatar"
                 onClose={() => setUploadModal(false)}
                 loading={loading}
                 onConfirm={async (file) => {
@@ -256,7 +250,6 @@ export const UserForm: React.FC<Props> = ({
                     {!modal && (
                         <div className={`mt-10 mb-10 flex flex-row`}>
                             <LogoUpload
-                                storeId={storeId}
                                 logo={initialData?.profileImage}
                                 type="default"
                                 onOpen={() => setUploadModal(true)}
@@ -284,66 +277,6 @@ export const UserForm: React.FC<Props> = ({
                                         </FormItem>
                                     )}
                                 />
-                                {/* <FormField
-                                    control={form.control}
-                                    name="roleUuid"
-                                    render={({ field }) => (
-                                        <FormItem className="">
-                                            <div className="flex items-center">
-                                                <FormLabel className="flex items-center">
-                                                    Role{' '}
-                                                </FormLabel>
-                                                <p className="ml-2 hover:cursor-pointer">
-                                                    <PlusCircle
-                                                        // onClick={() =>
-                                                        //     showRolesForm(
-                                                        //         true
-                                                        //     )
-                                                        // }
-                                                        height="15"
-                                                        width="15"
-                                                        className="text-gray-600 hover:text-gray-200"
-                                                    />
-                                                </p>
-                                                <Link
-                                                    target="_blank"
-                                                    className="ml-auto text-xs hover:underline"
-                                                    href={`/${storeId}/user/roles/${field.value}`}
-                                                >
-                                                    Edit
-                                                </Link>
-                                            </div>
-                                            <Select
-                                                disabled={loading}
-                                                onValueChange={field.onChange}
-                                                value={field.value}
-                                                defaultValue={field.value}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue
-                                                            defaultValue={
-                                                                field.value
-                                                            }
-                                                            placeholder="Select a role"
-                                                        />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {roles.map((role) => (
-                                                        <SelectItem
-                                                            key={role.uuid}
-                                                            value={role.uuid}
-                                                        >
-                                                            {role.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                /> */}
                                 <FormField
                                     control={form.control}
                                     name="firstname"

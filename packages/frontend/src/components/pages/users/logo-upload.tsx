@@ -3,14 +3,13 @@ import Logo from './logo'
 import { PlusSquare } from 'lucide-react'
 
 interface Props {
-    storeId: string
     logo: AssetSchema | null | undefined
     type: string
     onOpen: () => void
     onDelete: () => void
 }
 
-const LogoUpload = ({ storeId, logo, type, onOpen, onDelete }: Props) => {
+const LogoUpload = ({ logo, type, onOpen, onDelete }: Props) => {
     let className =
         'bg-muted dark:bg-black hover:bg-slate-200 dark:hover:bg-slate-900'
     if (type === 'reverse') {
@@ -44,7 +43,6 @@ const LogoUpload = ({ storeId, logo, type, onOpen, onDelete }: Props) => {
                         caption: logo.caption || '',
                         altText: logo.altText || '',
                     }}
-                    storeId={storeId}
                     deleteHandler={onDelete}
                 />
             )}

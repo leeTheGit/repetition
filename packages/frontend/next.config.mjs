@@ -16,6 +16,12 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname:
+                    'repetition-uploads-068c3211e9f7.s3.ap-southeast-2.amazonaws.com',
+                port: '',
+            },
+            {
+                protocol: 'https',
+                hostname:
                     'elcyen-leeneenan-storeuploads-casvesfk.s3.ap-southeast-2.amazonaws.com',
                 port: '',
             },
@@ -25,6 +31,8 @@ const nextConfig = {
                     'elcyen-prod-storeuploads-tezkaofv.s3.ap-southeast-2.amazonaws.com',
                 port: '',
             },
+
+            
             {
                 protocol: 'https',
                 hostname: 'icotar.com',

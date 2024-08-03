@@ -21,12 +21,12 @@ import { Check } from 'lucide-react'
 import Link from 'next/link'
 
 interface Props {
+    courseId: string
     image: Asset
-    storeId: string
     linkToEdit?: boolean
 }
 
-export function ImageQuickEdit({ image, storeId, linkToEdit = false }: Props) {
+export function ImageQuickEdit({ courseId, image, linkToEdit = false }: Props) {
     const [loading, setLoading] = useState(false)
 
     const form = useForm<EntityPostSchema>({
@@ -43,7 +43,7 @@ export function ImageQuickEdit({ image, storeId, linkToEdit = false }: Props) {
     const onSubmit = async (data: EntityPostSchema) => {
         setLoading(true)
 
-        const url = `/api/${storeId}/assets/${image.uuid}`
+        const url = `/api/${courseId}/assets/${image.uuid}`
         try {
             const save = await fetch(url, {
                 method: 'PATCH',
@@ -66,7 +66,7 @@ export function ImageQuickEdit({ image, storeId, linkToEdit = false }: Props) {
                 <h4 className="font-medium leading-none">Quick edit</h4>
                 {linkToEdit && <Link 
                     target="_blank" 
-                    href={`/${storeId}/assets/${image.uuid}`}
+                    href={`/${courseId}/assets/${image.uuid}`}
                     className="pt-2 text-sm text-blue-400 hover:underline"
                     >Full edit</Link>}
 

@@ -36,7 +36,7 @@ const Page = async ({ params }: { params: { entityId: string, problemId:string }
         }
         courseId = entity.courseId
     }
-    if (!entity) {
+    if (!isNew && !entity) {
         return <div>Error</div>
     }
 
@@ -53,13 +53,17 @@ const Page = async ({ params }: { params: { entityId: string, problemId:string }
         courseId: courseId,
     })
 
-    const initialData: ProblemAPI = fetchResponse(entity)
+    let parsedData:( ProblemAPI | null) = null
+
+    if (!isNew && entity) {
+        parsedData = fetchResponse(entity)
+    }
 
     return (
         <div className="flex-col">
             <div className="flex-1 pt-6">
                 <Form 
-                    initialData={initialData} 
+                    initialData={parsedData} 
                     courseSlug={params.entityId}
                     courseId={courseId}
                     categories={categories.map(category => category.toObject())}

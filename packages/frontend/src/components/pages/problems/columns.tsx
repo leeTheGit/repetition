@@ -19,7 +19,7 @@ export type ProblemColumn = {
     category: string
     grade: number[]
     submissionCount: number
-    starterCode: string | null
+    starterCode: string | null,
     difficulty: number
 }
 

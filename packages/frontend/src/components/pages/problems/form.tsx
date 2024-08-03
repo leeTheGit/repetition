@@ -62,7 +62,7 @@ import { Practice } from './practice'
 import {  ProblemAPI } from '@repetition/core/problems/response/ProblemDTO'
 
 interface Props {
-    initialData: ProblemAPI
+    initialData: ProblemAPI | null
     courseSlug: string
     courseId: string
     // courseId: string
@@ -206,21 +206,6 @@ export const ProblemForm: React.FC<Props> = ({
 
     
 
-    // setup monaco-vim
-    function handleEditorDidMount(editor:any) {
-        //@ts-ignore
-        window.require.config({
-          paths: {
-            "monaco-vim": "/assets/monaco-vim"
-          }
-        });
-   
-        window.require(["monaco-vim"], function (MonacoVim) {
-            const statusNode = document.querySelector(".status-node");
-            vimSetting = MonacoVim.initVimMode(editor, statusNode);
-            vimSetting.constructor.Vim.map('jj', '<Esc>', 'insert')
-        });
-    }
 
     useEffect(() => {
         codeStash = {
@@ -231,17 +216,17 @@ export const ProblemForm: React.FC<Props> = ({
 
 
     const probs = {
-        uuid: initialData.uuid,
-        name: initialData.name,
-        slug: initialData.slug,
-        category: initialData.categoryUuid,
-        description: initialData.description,
-        starterCode: initialData.starterCode,
-        link: initialData.link,
-        grade: initialData.history || [],
-        submissionCount: initialData.submissionCount || 0,
-        lastSubmitted: initialData.lastSubmitted || '',
-        difficulty: initialData.difficulty,
+        uuid: initialData?.uuid,
+        name: initialData?.name,
+        slug: initialData?.slug,
+        category: initialData?.categoryUuid,
+        description: initialData?.description,
+        starterCode: initialData?.starterCode,
+        link: initialData?.link,
+        grade: initialData?.history || [],
+        submissionCount: initialData?.submissionCount || 0,
+        lastSubmitted: initialData?.lastSubmitted || '',
+        difficulty: initialData?.difficulty,
     }
 
     return (
@@ -320,7 +305,8 @@ export const ProblemForm: React.FC<Props> = ({
                             onSubmit={form.handleSubmit(onSubmit)}
                             className="pt-10"
                         >
-                            <div className="max-w-[1200px] m-auto grid grid-cols-12 gap-8">
+                            <div 
+                                className="max-w-[1200px] m-auto grid grid-cols-12 gap-8">
                                 <FormField
                                     control={form.control}
                                     name="name"
@@ -509,7 +495,7 @@ export const ProblemForm: React.FC<Props> = ({
                                 
 
                                 <div className=" col-span-6">
-                                    <h3 className="mb-3">Problem description</h3>
+                                    <h3 className="mb-3">Lesson content</h3>
 
                                     <TinyEditor
                                         reference={EditorRef}
@@ -556,27 +542,6 @@ export const ProblemForm: React.FC<Props> = ({
 
                                     <TabsContent value={`user_code`}>
                                         <div>
-                                            <div className="flex items-center space-x-2 mb-2 w-full">
-                                                <Checkbox 
-                                                    className="ml-auto"
-                                                    checked={vimMode}
-                                                    onCheckedChange={() => {
-                                                        setVimMode(!vimMode)
-                                                        if (vimMode) {
-                                                            vimSetting.dispose()
-                                                        } else {
-                                                            handleEditorDidMount(CodeEditorRef.current)
-                                                        }
-                                                    }
-                                                }
-                                                />
-                                                <label
-                                                    htmlFor="terms"
-                                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                                >
-                                                   Vim mode 
-                                                </label>
-                                            </div>
                                             <Editor
                                                 value={
                                                     // codeStash.user ||
@@ -589,14 +554,12 @@ export const ProblemForm: React.FC<Props> = ({
                                                     if (codeStash.user !== "") {
                                                         CodeEditorRef.current.setValue(codeStash.user)
                                                     }
-                                                    if (vimMode) handleEditorDidMount(editor)
                                                 }}
                                                 theme="vs-dark"
                                                 height="60vh"
                                                 defaultLanguage="javascript"
                                                 defaultValue=""
                                             />
-                                            <code className="status-node"></code>
                                             <Button className="mt-4" type="button" onClick={submitCode}>Test code</Button>
                                         </div>
                                     </TabsContent>
@@ -640,7 +603,8 @@ export const ProblemForm: React.FC<Props> = ({
                                 <Button className="" type="submit">
                                     {action}
                                 </Button>
-                                <Practice data={initialData} />
+
+                                {initialData && <Practice data={initialData} />}
                             </div>
                         </form>
                     </Form>

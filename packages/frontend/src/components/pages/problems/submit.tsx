@@ -1,9 +1,9 @@
 "use client"
+
 import { z } from 'zod'
-import React, { useState } from "react"
+import React, { forwardRef, useState } from "react"
 import { Button } from '@/components/ui/button'
 import { ProblemColumn } from "./columns";
-import { AlertModal } from "@/components/modals/alert-modal";
 import { Modal } from "@/components/modals/form-modal";
 import {
     Select,
@@ -15,25 +15,30 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Delete, create } from '@/hooks/queries'
+import { create } from '@/hooks/queries'
 import { toast } from 'sonner'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog'
+
 interface Props {
-    data: ProblemColumn;
-    className?: string
+    data: ProblemColumn
+    className: string
+
 } 
 
 const endpoint = 'submission'
 const name = 'Submission'
 
-export const Submit = ({data, className}: Props) => {
+export const Submit = forwardRef<HTMLInputElement, Props>((props, ref) => {
+    const {data} = props
+    let   {className}= props
     const [submitModal, setSubmitModal] = useState(false)
     const [loading, setLoading] = useState(false)
     const queryClient = useQueryClient();
     const submitSchema = z.object({
         problemUuid:z.string().uuid(),
+        solution: z.string(),
         grade: z.string(),
         note: z.string(),
     })
@@ -44,6 +49,7 @@ export const Submit = ({data, className}: Props) => {
         resolver: zodResolver(submitSchema),
         defaultValues: {
             problemUuid: data.uuid,
+            solution: data.starterCode || "",
             grade: '',
             note: ''
         }
@@ -73,6 +79,10 @@ export const Submit = ({data, className}: Props) => {
 
 
     const onSubmit = (data: FormSchema) => {
+        if (ref && 'current' in ref) {
+            //@ts-ignore
+            data.solution = ref?.current?.getValue()
+        }
         postQuery.mutate(data)
     }
     
@@ -166,4 +176,4 @@ export const Submit = ({data, className}: Props) => {
 
         </>
     )
-}
+})

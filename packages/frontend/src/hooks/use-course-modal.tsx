@@ -6,8 +6,11 @@ interface Props {
     onClose: () => void
 }
 
-export const useStoreModal = create<Props>((set) => ({
+export const useCourseModal = create<Props>((set) => ({
     isOpen: false,
-    onOpen: () => set({ isOpen: true }),
+    onOpen: () => {
+        console.log('setting is open')
+        set({ isOpen: true })
+    },
     onClose: () => set({ isOpen: false }),
 }))

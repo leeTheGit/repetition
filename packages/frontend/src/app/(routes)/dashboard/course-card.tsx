@@ -11,6 +11,7 @@ import Image from 'next/image'
 import Link from "next/link";
 import {buttonVariants} from '@/components/ui/button'
 import { cn } from "@repetition/frontend/lib/utils";
+import { getUserAuth } from "@repetition/frontend/lib/auth/utils";
 
 
 import {EntitySchema} from '@repetition/core/course/Validators'
@@ -19,7 +20,8 @@ interface Props {
     course: EntitySchema
 }
 
-export const CourseCard = ({ course }: Props ) => {
+export const CourseCard = async ({ course }: Props ) => {
+    const auth = await getUserAuth();
 
     return (
         <Card className="bg-muted dark:bg-[#161f33]">
@@ -36,13 +38,24 @@ export const CourseCard = ({ course }: Props ) => {
                     width={550}
                 />
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex flex-col">
                 <Link className={cn(
                     buttonVariants({
                         variant: "default",
                     }),
                     "w-full"
-                )} href={`/courses/${course.slug}/problems`}>Go</Link>
+                )} href={`/courses/${course.slug}/problems`}>Practice</Link>
+                
+                {course.userId === auth.session?.user.id && (
+                    <Link className={cn(
+                        buttonVariants({
+                            variant: "default",
+                        }),
+                        "mt-5",
+                        "w-full"
+                    )} href={`/courses/${course.slug}/edit`}>Edit</Link>
+                )}
+
             </CardFooter>
         </Card>
     )

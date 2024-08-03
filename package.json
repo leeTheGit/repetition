@@ -10,7 +10,7 @@
     "db:seed": "pnpm -F=core db:seed",
     "migrate": "pnpm -F=core migrate",
     "deploy:lambda": "pnpm -F=infra deploy:lambda",
-    "deploy": "cdk deploy --all"
+    "deploy:all": "pnpm -F=infra deploy"
   },
   "devDependencies": {
     "@types/node": "^20",

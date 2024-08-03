@@ -6,7 +6,7 @@ import {
     DeleteObjectCommand,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { Resource } from 'sst'
+// import { Resource } from 'sst'
 
 type s3Params = {
     Bucket: string
@@ -28,12 +28,14 @@ export default class S3Component {
         // const awsAccessKeyId = Resource.AwsKeyId.value
         // const awsRegion = Resource.AwsRegion.value
         // this.s3Bucket = Resource.StoreUploads.name || ''
-        
-        const secretAccessKey = ""
-        const awsAccessKeyId = ""
-        const awsRegion = ""
-        this.s3Bucket = ''
-
+        const secretAccessKey = process.env.zAWS_SECRET_ACCESS_KEY || ""
+        const awsAccessKeyId = process.env.AWS_KEY_ID || ""
+        const awsRegion = process.env.zAWS_REGION || ""
+        this.s3Bucket = process.env.AWS_S3_UPLOAD_BUCKET || ""
+        // const secretAccessKey = ""
+        // const awsAccessKeyId = ""
+        // const awsRegion = ""
+        // this.s3Bucket = ''
         const AWS_KEY_ID = awsAccessKeyId
         const AWS_SECRET_ACCESS_KEY = secretAccessKey
         const AWS_REGION = awsRegion

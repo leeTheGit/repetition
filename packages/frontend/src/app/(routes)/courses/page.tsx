@@ -17,10 +17,10 @@ const Page = async ({ params }: { params: { entityId: string } }) => {
     return null;
   }
 
-    // const course = await courseRepository.fetchByUuid(params.entityId)
-    // if (not(course)) {
-    //     return <div>This page does not exist</div>
-    // }
+    const course = await repository.fetchAll()
+    if (not(course)) {
+        return <div>This page does not exist</div>
+    }
 
 
   return (

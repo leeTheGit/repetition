@@ -109,7 +109,8 @@ function useUploadToS3() {
                     width,
                     height,
                 }
-                const saved = await fetch(`/api/asset`, {
+                
+                const saved = await fetch(`/api/assets`, {
                     method: 'POST',
                     body: JSON.stringify(saveData),
                 })

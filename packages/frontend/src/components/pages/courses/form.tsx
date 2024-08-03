@@ -11,9 +11,10 @@ import {
     apiInsertSchema,
     FormSchema,
 } from '@repetition/core/course/Validators'
-import Editor from '@monaco-editor/react'
-// import { FormModal } from '@/components/pages/categories/form-modal'
-import { HelpCircle, PlusCircle, Trash } from 'lucide-react'
+
+import { EntitySchema as AssetSchema } from '@repetition/core/asset/AssetValidators'
+
+import { Trash } from 'lucide-react'
 import { toast } from 'sonner'
 import { Heading } from '@/components/heading'
 import { Button } from '@/components/ui/button'
@@ -31,15 +32,19 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import TinyEditor from '@/components/TinyEditor'
-
+import LogoUpload from '@/components/pages/users/logo-upload'
 import { Input } from '@/components/ui/input'
 import { AlertModal } from '@/components/modals/alert-modal'
 import { BreadCrumb } from '@/components/breadCrumb'
 import { Delete, create } from '@/hooks/queries'
 import Link from 'next/link'
+import useUploadToS3 from '@/hooks/upload-to-s3'
+import { ImageUploadModal } from '@/components/modals/image-upload-modal'
+
+type InitialData = EntitySchema
 
 interface Props {
-    initialData: EntitySchema | null
+    initialData: (InitialData & { courseImage?: AssetSchema | null }) | null
     courseSlug: string
     courseId: string
     // courseId: string
@@ -59,17 +64,18 @@ export const CourseForm: React.FC<Props> = ({
 }) => {
     const router = useRouter()
     const queryClient = useQueryClient()
-    const EditorRef = useRef<any>(null)
-    const CodeEditorRef = useRef<any>(null)
 
     // Delete modal
     const [open, setOpen] = useState(false)
-    const [editorChoice, setEditorChoice] = useState('text')
-    const [categoryForm, showCategoryForm] = useState(false)
+    const [imageUploadModal, setUploadModal] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [assetDelete, setAssetDeleteOpen] = useState(false)
 
     const title = initialData ? `Edit ${name}` : `New ${name}`
     const toastMessage = initialData ? `${name} updated` : `${name} created`
     const action = initialData ? 'Save changes' : 'Create'
+    
+    const { uploadAsset } = useUploadToS3()
 
     const mapToForm = (initialData: EntitySchema | null) => {
         const data = {
@@ -128,9 +134,38 @@ export const CourseForm: React.FC<Props> = ({
     })
 
     const onSubmit = async (data: FormSchema) => {
-        data.description = EditorRef.current.getContent()
         postQuery.mutate(data)
     }
+
+
+    const onDeleteImage = async () => {
+        // setLoading(true)
+        try {
+            const imageDelete = await fetch(
+                `/api/${endpoint}/${initialData?.uuid}`,
+                {
+                    method: 'PATCH',
+                    body: JSON.stringify({ profileImageId: null }),
+                }
+            )
+            if (!imageDelete.ok) {
+                throw new Error(imageDelete.statusText)
+            }
+
+            toast.success('Image deleted')
+        } catch (error: any) {
+            toast.error(
+                'There was an error deleting your image ' + error.message
+            )
+        } finally {
+            router.refresh()
+            // setLoading(false)
+            setOpen(false)
+            setAssetDeleteOpen(false)
+        }
+    }
+
+
 
     useEffect(() => {
         if (initialData) {
@@ -138,10 +173,6 @@ export const CourseForm: React.FC<Props> = ({
         }
     }, [initialData])
 
-    function showValue() {
-        const value = CodeEditorRef.current.getValue()
-        alert(value)
-    }
 
 
     const breadCrumbLinks = [
@@ -174,7 +205,33 @@ export const CourseForm: React.FC<Props> = ({
                 }
                 loading={deleteQuery.isPending}
             />
+            <ImageUploadModal
+                isOpen={imageUploadModal}
+                message="Add avatar"
+                onClose={() => setUploadModal(false)}
+                loading={loading}
+                onConfirm={async (file) => {
+                    const url = await uploadAsset(file, {
+                        entity_uuid: initialData?.uuid,
+                        entity: 'course',
+                        attribute: 'imageUuid',
+                        type: 'banner',
+                        assetType: 'image',
+                    })
+                    router.refresh()
+                    return true
+                }}
+            />
 
+            {assetDelete && (
+                <AlertModal
+                    isOpen={true}
+                    message={`Are you sure you want to delete this image?`}
+                    onClose={() => setAssetDeleteOpen(false)}
+                    onConfirm={() => onDeleteImage()}
+                    loading={loading}
+                />
+            )}
 
 
             <div className="flex flex-col px-8 justify-between">
@@ -205,8 +262,20 @@ export const CourseForm: React.FC<Props> = ({
 
 
             
-            <div className={`${!modal ? 'mt-20' : ''} w-full justify-center`}>
+            <div className={`mt-20  w-full justify-center`}>
                 <div className="">
+
+                    <div className="mt-8 w-full justify-center">
+                        <div className="max-w-[1000px] m-auto">                        
+                            <LogoUpload
+                                logo={initialData?.courseImage}
+                                type="default"
+                                onOpen={() => setUploadModal(true)}
+                                onDelete={() => setAssetDeleteOpen(true)}
+                            />
+                        </div>
+                    </div>
+
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(onSubmit)}
@@ -258,7 +327,7 @@ export const CourseForm: React.FC<Props> = ({
                                 render={({ field }) => (
                                     <FormItem className="col-span-12">
                                         <FormLabel className="flex">
-                                            Description
+                                           Short description
                                         </FormLabel>
                                         <FormControl>
                                             <Textarea {...field} value={field.value || ""} />

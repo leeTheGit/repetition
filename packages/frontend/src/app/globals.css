@@ -134,5 +134,11 @@
 
 
 .problem-description p {
-    font-size: 12px
+    font-size: 12px;
+    color: #d5d5d5;
+}
+code {
+    color: darkseagreen;
+    font-size: 12px;
+
 }

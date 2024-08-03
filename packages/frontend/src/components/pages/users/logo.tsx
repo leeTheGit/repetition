@@ -10,7 +10,6 @@ import {
 import { ImageQuickEdit } from '@/components/pages/users/image-quick-edit'
 
 interface Props {
-    storeId: string
     image: {
         uuid: string
         cdnUrl: string
@@ -21,7 +20,7 @@ interface Props {
     deleteHandler: (uuid: string) => void
 }
 
-const Logo = ({ image, storeId, deleteHandler }: Props) => {
+const Logo = ({ image, deleteHandler }: Props) => {
     return (
         <div
             key={image.uuid}
@@ -45,11 +44,10 @@ const Logo = ({ image, storeId, deleteHandler }: Props) => {
                         </PopoverTrigger>
 
                         <PopoverContent className="dark:bg-black w-[450px]">
-                            <ImageQuickEdit
+                            {/* <ImageQuickEdit
                                 image={image}
-                                storeId={storeId}
                                 linkToEdit={true}
-                            />
+                            /> */}
                         </PopoverContent>
                     </Popover>
 

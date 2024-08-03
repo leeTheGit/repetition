@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 
-import { useStoreModal } from '@/hooks/use-store-modal'
+import { useCourseModal } from '@repetition/frontend/hooks/use-course-modal'
 
-import { Modal } from '@/components/ui/modal'
+import { Modal } from '@repetition/frontend/components/ui/modal'
 import { useForm } from 'react-hook-form'
 import {
     Form,
@@ -15,9 +15,9 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+} from '@repetition/frontend/components/ui/form'
+import { Input } from '@repetition/frontend//components/ui/input'
+import { Button } from '@repetition/frontend//components/ui/button'
 import { toast } from 'sonner'
 // import { redirect } from "next/navigation";
 
@@ -25,8 +25,8 @@ const formSchema = z.object({
     name: z.string().min(1),
 })
 
-export const StoreModal = () => {
-    const storeModal = useStoreModal()
+export const CourseModal = () => {
+    const courseModal = useCourseModal()
 
     const [loading, setLoading] = useState(false)
 
@@ -40,14 +40,15 @@ export const StoreModal = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true)
         try {
-            const saveStore = await fetch('/api/stores', {
+            const saveCourse = await fetch('/api/courses', {
                 method: 'POST',
                 body: JSON.stringify(values),
             })
-            const response = await saveStore.json()
-            window.location.assign(`/${response.uuid}`)
+            const response = await saveCourse.json()
+            console.log("the response", response)
+            window.location.assign(`/courses/${response.uuid}`)
         } catch (error) {
-            toast.error('There was an error saving your store')
+            toast.error('There was an error saving your course')
         } finally {
             setLoading(false)
         }
@@ -55,10 +56,10 @@ export const StoreModal = () => {
 
     return (
         <Modal
-            title="Create store"
-            description="Add a new store to manage products and categories"
-            isOpen={storeModal.isOpen}
-            onClose={storeModal.onClose}
+            title="Create new course"
+            description="Add a new private course"
+            isOpen={courseModal.isOpen}
+            onClose={courseModal.onClose}
         >
             <div>
                 <div className="space-y-4 py-2 pb-4">
@@ -72,7 +73,6 @@ export const StoreModal = () => {
                                         <FormLabel>Name</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="E-Commerce"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -83,7 +83,7 @@ export const StoreModal = () => {
                             <div className="pt-6 space-x-2 flex items-center justify-end">
                                 <Button
                                     variant="outline"
-                                    onClick={storeModal.onClose}
+                                    onClick={courseModal.onClose}
                                 >
                                     Cancel
                                 </Button>
