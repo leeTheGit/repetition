@@ -97,14 +97,14 @@ export const Listing = ({courseId} : Props) => {
                         links={[
                             {
                                 label: 'Courses',
-                                href: `/courses`,
+                                href: `/dashboard`,
                             },
                             {
                                 label: courseId,
                                 href: `/courses/${courseId}`,
                             },
                             {
-                                label: 'Problems',
+                                label: 'Practice Items',
                                 href: `${endpoint}`,
                             },
                             // { label: initialData?.name || 'New' },

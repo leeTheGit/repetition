@@ -1,5 +1,3 @@
-import { z } from 'zod'
-
 import { Entity } from '@repetition/core/baseEntity'
 import { entitySchema, EntitySchema } from './Validators'
 import { getZodErrors, randomNumbers } from '@repetition/core/lib'
@@ -43,9 +41,9 @@ export class CourseEntity extends Entity<EntitySchema> {
             return { error: getZodErrors(data) }
         }
 
-        const ProgramEntity = new CourseEntity(data.data, id)
+        const courseEntity = new CourseEntity(data.data, id)
 
-        return ProgramEntity
+        return courseEntity
     }
 
     get id() {

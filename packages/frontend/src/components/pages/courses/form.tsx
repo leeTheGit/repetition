@@ -145,7 +145,7 @@ export const CourseForm: React.FC<Props> = ({
                 `/api/${endpoint}/${initialData?.uuid}`,
                 {
                     method: 'PATCH',
-                    body: JSON.stringify({ profileImageId: null }),
+                    body: JSON.stringify({ courseImageId: null }),
                 }
             )
             if (!imageDelete.ok) {
@@ -187,7 +187,7 @@ export const CourseForm: React.FC<Props> = ({
 
     if (initialData?.name) {
         breadCrumbLinks.push({
-            label: 'Problems',
+            label: 'Practice Items',
             href: `/${endpoint}/${courseSlug}/problems`,
         })
     }

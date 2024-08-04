@@ -45,8 +45,8 @@ export const CourseModal = () => {
                 body: JSON.stringify(values),
             })
             const response = await saveCourse.json()
-            console.log("the response", response)
-            window.location.assign(`/courses/${response.uuid}`)
+
+            window.location.assign(`/courses/${response.data.slug}/edit`)
         } catch (error) {
             toast.error('There was an error saving your course')
         } finally {

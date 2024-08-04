@@ -83,7 +83,7 @@ export const Listing = () => {
                         links={[
                             {
                                 label: 'Courses',
-                                href: `/course`,
+                                href: `/dashboard`,
                             },
                          ]}
                     />

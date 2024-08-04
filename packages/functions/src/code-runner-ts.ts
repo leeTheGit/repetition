@@ -2,6 +2,7 @@ import { EventBridgeEvent, Context } from "aws-lambda"
 import Repository from '@repetition/core/code/Repository'
 import util from 'node:util'
 
+
 const repository = new Repository
 
 type TDetailType = string
@@ -40,20 +41,22 @@ const handler = async  (event: EventBridgeEvent<TDetailType, TDetail>, context: 
     console.log('[RUNNER] handler')
     myLogger = []
 
-
-    //@ts-ignore
-    if (!process.stdout._orig_write) {
+    // console.log(event);
+    if (event.id !== 'localtest') {
         //@ts-ignore
-        process.stdout._orig_write = process.stdout.write;
-    }
-    process.stdout.write = (data, ...optionalParams) => {
-        const print:any = [data]
-        if (optionalParams.length > 0) {
-          print.push(...optionalParams)
+        if (!process.stdout._orig_write) {
+            //@ts-ignore
+            process.stdout._orig_write = process.stdout.write;
         }
-        myLogger.push(JSON.stringify(util.format.apply(this, print)));
-        //@ts-ignore
-        return process.stdout._orig_write(util.format.apply(this, print) + '\n');
+        process.stdout.write = (data, ...optionalParams) => {
+            const print:any = [data]
+            if (optionalParams.length > 0) {
+                print.push(...optionalParams)
+            }
+            myLogger.push(JSON.stringify(util.format.apply(this, print)));
+            //@ts-ignore
+            return process.stdout._orig_write(util.format.apply(this, print) + '\n');
+        }
     }
 
 

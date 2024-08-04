@@ -83,6 +83,7 @@ class Repository extends BaseRepository<
                 imageUuid: self.table.imageUuid,
                 status: self.table.status,
                 isSeeded: self.table.isSeeded,
+                isDeleted: self.table.isDeleted,
                 createdAt: self.table.createdAt,
                 updatedAt: self.table.updatedAt,
                 courseImage
@@ -162,22 +163,21 @@ class Repository extends BaseRepository<
 
 
 
-    handleConstraints(e: any, entity?: ModelEntity) {
+    async handleConstraints(e: any, entity?: ModelEntity): Promise<ModelEntity | ModelError> {
         if (e.constraint === 'product_category_uuid_category_uuid_fk') {
             return {
                 error: 'Cannot delete category as it has associated products',
             }
         }
-        if (e.constraint === 'category_slug_idx' && entity) {
+        if (e.constraint === 'course_slug_idx' && entity) {
             entity.uniqueSlug()
-            return this.save(entity)
+            return await this.save(entity)
         }
 
-        // if (e.constraint === "order_item_product_uuid_product_uuid_fk") {
-        //   return {
-        //     error: "Cannon delete product as it has associated orders",
-        //   };
-        // }
+        return {
+            error: `Error creating ${this.tableName}`,
+        };
+
     }
 
 

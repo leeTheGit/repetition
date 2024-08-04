@@ -42,9 +42,11 @@ async function post(
     try {
         const values = {
             ...ctx.data,
+            userId: ctx.user.id,
             organisationUuid: ctx.user.organisationUuid
         }
         const newEntity = await repository.create(values)
+        // console.log(newEntity)
         if (isError(newEntity)) {
             return newEntity
         }

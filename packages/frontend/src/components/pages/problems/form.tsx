@@ -265,7 +265,7 @@ export const ProblemForm: React.FC<Props> = ({
                             links={[
                                 {
                                     label: 'Courses',
-                                    href: `/courses`,
+                                    href: `/dashboard`,
 
                                 },
                                 {
@@ -273,7 +273,7 @@ export const ProblemForm: React.FC<Props> = ({
                                     href: `/courses/${courseSlug}`,
                                 },
                                 {
-                                    label: 'Problems',
+                                    label: 'Practice Items',
                                     href: `/courses/${courseSlug}/${endpoint}`,
                                 },
                                 { label: initialData?.name || 'New' },
