@@ -160,7 +160,21 @@ class Repository extends BaseRepository<
         return data
     }
 
-    handleConstraints(e: any, entity?: ModelEntity) {}
+    async handleConstraints(e: any, entity?: ModelEntity): Promise<ModelEntity | ModelError> {
+
+        // if (e.constraint === 'product_category_uuid_category_uuid_fk') {
+        //     return {
+        //         error: 'Cannot delete category as it has associated products',
+        //     }
+        // }
+        // if (e.constraint === 'category_slug_idx' && entity) {
+        //     entity.uniqueSlug()
+        //     return this.save(entity)
+        // }
+        return {
+            error: `Error creating ${this.tableName}`,
+        };   
+    }
 
     mapToEntity(item: EntitySchema): ModelEntity | ModelError {
         const Entity = ModelEntity.fromValues(item, item.uuid)

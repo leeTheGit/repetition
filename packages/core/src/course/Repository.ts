@@ -10,6 +10,7 @@ import {
     sql,
     ilike,
     SQL,
+    isNull,
 } from 'drizzle-orm'
 import { FetchParams } from '@repetition/core/course/Validators'
 import { ModelError, isError } from '@repetition/core/types'
@@ -46,11 +47,19 @@ class Repository extends BaseRepository<
     constructor() {
         super(course, 'Course')
     }
+
+
     getFilters(params: FetchParams) {
         const filters: any = []
 
         if (params?.name) {
             filters.push(ilike(this.table.name, `%${params.name}%`))
+        }
+        if (params?.shared) {
+            filters.push(isNull(this.table.userId))
+        }
+        if (params?.userId) {
+            filters.push(eq(this.table.userId, params.userId))
         }
 
 
@@ -69,7 +78,9 @@ class Repository extends BaseRepository<
             }
         }
 
-        const filters: any = []
+        // const filters: any = []
+        const filters = this.getFilters(params)
+        
         const courseImage = alias(media, 'courseImage')
         const query = db
             .select({
@@ -181,7 +192,7 @@ class Repository extends BaseRepository<
     }
 
 
-    mapToEntity(item: TableType) {
+    mapToEntity(item: TableType): ModelEntity | ModelError {
         const itemData = convertCase(item)
         if (itemData.createdAt) {
             itemData.createdAt = new Date(itemData.createdAt)

@@ -1,3 +1,4 @@
+import { db } from '@repetition/core/lib/db'
 import Repository from '@repetition/core/problems/Repository'
 import { isError } from '@repetition/core/types'
 import { patchSchema, fetchByUuid } from '@repetition/core/problems/Validators'
@@ -6,7 +7,7 @@ import { fetchResponse } from '@repetition/core/problems/response/ProblemDTO'
 import { uuidRegex } from '@repetition/core/lib'
 import { logger } from '@repetition/core/lib/logger'
 
-const repository = new Repository()
+const repository = new Repository(db)
 const name = 'Problem'
 
 export const GET = apiHandler(get)

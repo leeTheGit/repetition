@@ -89,7 +89,7 @@ const ImageItemSidebar = ({ image, storeId }: Props) => {
                 </PopoverTrigger>
 
                 <PopoverContent className="dark:bg-black w-[450px]">
-                    <ImageQuickEdit image={image} storeId={storeId} />
+                    <ImageQuickEdit image={image} courseId="23" />
                 </PopoverContent>
             </Popover>
 

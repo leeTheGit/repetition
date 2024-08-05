@@ -12,17 +12,17 @@ import Link from "next/link";
 import {buttonVariants} from '@/components/ui/button'
 import { cn } from "@repetition/frontend/lib/utils";
 import { getUserAuth } from "@repetition/frontend/lib/auth/utils";
-
+import { EntitySchema as AssetEntitySchema } from '@repetition/core/asset/AssetValidators'
 
 import {EntitySchema} from '@repetition/core/course/Validators'
 
 interface Props {
-    course: EntitySchema
+    course: EntitySchema & { courseImage?: AssetEntitySchema | null }
 }
 
 export const CourseCard = async ({ course }: Props ) => {
     const auth = await getUserAuth();
-
+    
     return (
         <Card className="bg-muted dark:bg-[#161f33]">
             <CardHeader>
@@ -30,13 +30,14 @@ export const CourseCard = async ({ course }: Props ) => {
                 <CardDescription>{course.description}</CardDescription>
             </CardHeader>
             <CardContent>
-                <Image
-                    src="https://elcyen-prod-storeuploads-tezkaofv.s3.ap-southeast-2.amazonaws.com/platform/google-recaptcha.png"
-                    alt="ReCAPTCHA logo"
-                    className="invert"
+                {course.courseImage && <Image
+                    src={course.courseImage.cdnUrl}
+                    alt={course.courseImage.title || "Course image"}
+                    className=""
                     height={550}
                     width={550}
                 />
+                }
             </CardContent>
             <CardFooter className="flex flex-col">
                 <Link className={cn(

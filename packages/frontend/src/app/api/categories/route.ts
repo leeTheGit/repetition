@@ -45,7 +45,7 @@ async function post(
     ctx: any
 ) {
     try {
-        const ok = await repository.create<InsertSchema>({
+        const ok = await repository.create({
             name: ctx.data.name,
             slug: ctx.data.slug,
         })

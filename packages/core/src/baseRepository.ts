@@ -1,12 +1,12 @@
-//@ts-nocheck
+
 import { db } from "@repetition/core/lib/db";
-import { ModelError } from "@repetition/core/types";
+import { isError, ModelError } from "@repetition/core/types";
 import { PgTable, TableConfig } from "drizzle-orm/pg-core";
 import { and, eq } from "drizzle-orm";
 
 abstract class BaseRepository<
   TableType extends PgTable<TableConfig>,
-  ModelEntity extends { toObject: () => any },
+  ModelEntity extends { toObject: () => any, isNew: () => boolean},
   SelectTableType,
 > {
   protected table: TableType;
@@ -17,7 +17,7 @@ abstract class BaseRepository<
     this.tableName = tableName;
   }
 
-  async create<T>(values: T): Promise<ModelEntity | ModelError> {
+  async create(values:any): Promise<ModelEntity | ModelError> {
     try {
       const [created] = await db.insert(this.table).values(values).returning();
       if (!created) {
@@ -28,13 +28,14 @@ abstract class BaseRepository<
 
       return this.mapToEntity(created as SelectTableType);
     } catch (e: any) {
+      
       return {
         error: `Error creating ${this.tableName}`,
       };
     }
   }
 
-  async save(entity: ModelEntity): Promise<ModelEntity | ModelError> {
+  async save<T extends ModelEntity>(entity: T): Promise<ModelEntity | ModelError> {
     var saved
     const data = entity.toObject()
 
@@ -42,15 +43,14 @@ abstract class BaseRepository<
         try {
             ;[saved] = await db.insert(this.table).values(data).returning()
         } catch (e: any) {
-            return {
-                error: e.message,
-            }
+            return await this.handleConstraints(e, entity);
         }
     } else {
         try {
             saved = await db
                 .update(this.table)
                 .set(data)
+                //@ts-ignore
                 .where(eq(this.table.uuid, entity.uuid))
                 .returning()
         } catch (e: any) {
@@ -86,6 +86,7 @@ abstract class BaseRepository<
     var updated = await db
       .update(this.table)
       .set({ ...data, updatedAt: new Date() })
+      //@ts-ignore
       .where(eq(this.table.uuid, id));
 
     if (updated.rowCount === 0) {
@@ -103,10 +104,12 @@ abstract class BaseRepository<
         error: `Table does not have an Id column`,
       };
     }
+
     try {
       let delQuery = db
         .delete(this.table)
-        .where(and(eq(this.table.uuid, id), eq(this.table.courseId, courseId)));
+        //@ts-ignore
+        .where(and(eq(this.table.uuid, id)));
 
       let del = await delQuery
       if (del.rowCount === 0) {
@@ -116,7 +119,11 @@ abstract class BaseRepository<
       }
     } catch (e: any) {
       console.log(e)
-      return this.handleConstraints(e);
+      let fix = await this.handleConstraints(e);
+      
+      if (isError(fix)) {
+        return fix
+      }
 
       return {
         error: `${this.tableName} not deleted`,
@@ -126,8 +133,8 @@ abstract class BaseRepository<
     return "Deleted";
   }
 
-  // abstract mapToEntity(data: SelectTableType): ModelEntity | ModelError;
-  abstract handleConstraints(e: any, entity?: ModelEntity): unknown;
+  abstract handleConstraints(e: any, entity?: ModelEntity): Promise<ModelEntity | ModelError>;
+  abstract mapToEntity(item: SelectTableType): ModelEntity | ModelError
 }
 
 export default BaseRepository;

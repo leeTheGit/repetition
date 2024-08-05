@@ -104,7 +104,14 @@ class Repository extends BaseRepository<
         return this.mapToEntity(account)
     }
   
-    handleConstraints(e: any, entity?: ModelEntity) {}
+    async handleConstraints(e: any, entity?: ModelEntity): Promise<ModelEntity | ModelError> {
+
+        return {
+            error: `Error creating ${this.tableName}`,
+        };
+
+    }
+
 
     mapToEntity(item: TableType): ModelEntity | ModelError {
         const Entity = ModelEntity.fromValues(item, item.id.toString())

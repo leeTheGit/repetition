@@ -1,6 +1,5 @@
 import { DBType } from '@repetition/core/lib/db'
 import { problem, category, media } from '@repetition/core/lib/db/schema/schema'
-import { PostgresMapper } from '@repetition/core/problems/mappers/postgresMapper'
 
 import {
     eq,
@@ -29,7 +28,7 @@ import BaseRepository from '@repetition/core/baseRepository'
 //     TableType as AssetTable,
 // } from '@repetition/core/asset/AssetRepository'
 import { uuidRegex, mapResult } from '@repetition/core/lib'
-import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+// import { NodePgDatabase } from 'drizzle-orm/node-postgres'
 // import { logger } from '@repetition/core/lib/logger'
 
 export type TableType = typeof problem.$inferSelect & {
@@ -53,7 +52,7 @@ class Repository extends BaseRepository<
     TableType
 > {
 
-    private mapToEntity = PostgresMapper
+    // public mapToEntity = PostgresMapper
     private db
 
     constructor(db:DBType) {
@@ -305,8 +304,8 @@ class Repository extends BaseRepository<
     }
 
 
+    async handleConstraints(e: any, entity?: ModelEntity): Promise<ModelEntity | ModelError> {
 
-    handleConstraints(e: any, entity?: ModelEntity) {
         if (e.constraint === 'product_category_uuid_category_uuid_fk') {
             return {
                 error: 'Cannot delete category as it has associated products',
@@ -316,88 +315,88 @@ class Repository extends BaseRepository<
             entity.uniqueSlug()
             return this.save(entity)
         }
+        return {
+            error: `Error creating ${this.tableName}`,
+        };   
     }
 
+    mapToEntity(item: TableType): ModelEntity | ModelError {
+        const itemData = convertCase(item)
+        if (itemData.createdAt) {
+            itemData.createdAt = new Date(itemData.createdAt)
+        }
+        if (itemData.updatedAt) {
+            itemData.updatedAt = new Date(itemData.updatedAt)
+        }
+        const Entity = ModelEntity.fromValues(itemData, item.uuid)
+        if (isError(Entity)) {
+            return Entity
+        }
+        if ('category' in itemData && itemData.category) {
+            const categoryRepository = new CategoryRepository()
+            const category = categoryRepository.mapToEntity(
+                itemData.category as CategoryTable
+            )
+            if (!isError(category)) {
+                Entity.category = category
+            }
+        }
 
-    // mapToEntity(item: TableType) {
-        // console.log("logging it", this.EntityMapper)
-        // return this.EntityMapper(item)
-    //     const itemData = convertCase(item)
-    //     if (itemData.createdAt) {
-    //         itemData.createdAt = new Date(itemData.createdAt)
-    //     }
-    //     if (itemData.updatedAt) {
-    //         itemData.updatedAt = new Date(itemData.updatedAt)
-    //     }
-    //     const Entity = ModelEntity.fromValues(itemData, item.uuid)
-    //     if (isError(Entity)) {
-    //         return Entity
-    //     }
-    //     if ('category' in itemData && itemData.category) {
-    //         const categoryRepository = new CategoryRepository()
-    //         const category = categoryRepository.mapToEntity(
-    //             itemData.category as CategoryTable
-    //         )
-    //         if (!isError(category)) {
-    //             Entity.category = category
-    //         }
-    //     }
+        // if ('media' in item) {
+        //     const assetRepository = new AssetRepository()
+        //     const galleryItem = assetRepository.mapToEntity(
+        //         item.media as AssetTable
+        //     )
+        //     if (!isError(galleryItem)) {
+        //         Entity.image = galleryItem
+        //     }
+        // }
+        if ('submissions' in item && typeof item.submissions !== 'undefined') {
+            Entity.submissions = item.submissions
+        }
+        if ('submissionCount' in item && typeof item.submissionCount !== 'undefined') {
+            Entity.submissionCount = item.submissionCount
+        }
+        if ('lastSubmitted' in item && typeof item.lastSubmitted !== 'undefined' && item.lastSubmitted) {
+            Entity.lastSubmitted = item.lastSubmitted.toString()
+        }
+        if ('category' in item && typeof item.category !== 'undefined' && item.category) {
+            Entity.categoryName = item.category.toString()
+        }
 
-    //     // if ('media' in item) {
-    //     //     const assetRepository = new AssetRepository()
-    //     //     const galleryItem = assetRepository.mapToEntity(
-    //     //         item.media as AssetTable
-    //     //     )
-    //     //     if (!isError(galleryItem)) {
-    //     //         Entity.image = galleryItem
-    //     //     }
-    //     // }
-    //     if ('submissions' in item && typeof item.submissions !== 'undefined') {
-    //         Entity.submissions = item.submissions
-    //     }
-    //     if ('submissionCount' in item && typeof item.submissionCount !== 'undefined') {
-    //         Entity.submissionCount = item.submissionCount
-    //     }
-    //     if ('lastSubmitted' in item && typeof item.lastSubmitted !== 'undefined' && item.lastSubmitted) {
-    //         Entity.lastSubmitted = item.lastSubmitted.toString()
-    //     }
-    //     if ('category' in item && typeof item.category !== 'undefined' && item.category) {
-    //         Entity.categoryName = item.category.toString()
-    //     }
-
-    //     return Entity
-    // }
+        return Entity
+    }
 
 
 
 }
 
 
-// function convertCase(obj: any) {
-//     const result: Record<string, string> = {}
-//     const camelCaseColumns: Record<string, string> = {
-//         category_uuid :'categoryUuid',
-//         topic_id :'topicId',
-//         course_id : 'courseId',
-//         starter_code:'starterCode',
-//         answer_code:'answerCode', 
-//         is_deleted: 'isDeleted',
-//         image_uuid: 'imageUuid', 
-//         is_seeded: 'isSeeded', 
-//         created_at: 'createdAt',
-//         updated_at: 'updatedAt',
-//         // submission_count: 'submissionCount',
-//         last_submission: 'lastSubmission'
-//     }
+function convertCase(obj: any) {
+    const result: Record<string, string> = {}
+    const camelCaseColumns: Record<string, string> = {
+        category_uuid :'categoryUuid',
+        topic_id :'topicId',
+        course_id : 'courseId',
+        starter_code:'starterCode',
+        answer_code:'answerCode', 
+        is_deleted: 'isDeleted',
+        image_uuid: 'imageUuid', 
+        is_seeded: 'isSeeded', 
+        created_at: 'createdAt',
+        updated_at: 'updatedAt',
+        // submission_count: 'submissionCount',
+        last_submission: 'lastSubmission'
+    }
 
-//     for (let [key, value] of Object.entries(camelCaseColumns)) {
-//         if (typeof obj[key] !== 'undefined') {
-//             result[value] = obj[key]
-//             delete obj[key]
-//         }
-//     }
-//     return { ...obj, ...result }
-// }
+    for (let [key, value] of Object.entries(camelCaseColumns)) {
+        if (typeof obj[key] !== 'undefined') {
+            result[value] = obj[key]
+            delete obj[key]
+        }
+    }
+    return { ...obj, ...result }
+}
 
 
 export default Repository

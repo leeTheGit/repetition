@@ -30,6 +30,7 @@ export const fetchParams = z
         order: z.enum(['asc', 'desc']).optional(),
         name: z.string().trim().optional(),
         userId:z.string().uuid().optional(),
+        shared: z.boolean().optional()
         // sortColumn: z.enum([]).optional(),
    })
     .optional()
@@ -53,7 +54,6 @@ export type EntitySchema = z.infer<typeof entitySchema>
 export const insertSchema = createInsertSchema(course).omit({
     id: true,
     uuid: true,
-    organisationUuid: true,
     createdAt: true,
     updatedAt: true,
 })
@@ -66,6 +66,7 @@ export const baseApiInsertSchema = insertSchema
     })
     .merge(
         z.object({
+            organisationUuid: z.string().uuid().optional(),
             name: z.preprocess(
                 (name) => {
                     if (!name || typeof name !== 'string') {

@@ -98,7 +98,7 @@ export const Submit = forwardRef<HTMLInputElement, Props>((props, ref) => {
     return (
 
         <>
-            <Modal
+            {/* <Modal
                 isOpen={submitModal}
                 onClose={() => setSubmitModal(false)}
             >
@@ -170,10 +170,12 @@ export const Submit = forwardRef<HTMLInputElement, Props>((props, ref) => {
                     </form>
                 </Form>
 
-            </Modal>
+            </Modal> */}
 
             <Button className={className} onClick={() => setSubmitModal(true)}>Rate</Button>
 
         </>
     )
 })
+
+Submit.displayName = 'Submit';

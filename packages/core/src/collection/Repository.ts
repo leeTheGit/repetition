@@ -1,9 +1,9 @@
 import { db } from '@repetition/core/lib/db'
 import { collection } from '@repetition/core/lib/db/schema/schema'
 import { eq, desc, asc, ne, or, and, like } from 'drizzle-orm'
-import { FetchParams } from '@repetition/core/collections/Validators'
+import { FetchParams } from '@repetition/core/collection/Validators'
 import { ModelError, isError } from '@repetition/core/types'
-import { CollectionEntity as ModelEntity } from '@repetition/core/collections/Entity'
+import { CollectionEntity as ModelEntity } from '@repetition/core/collection/Entity'
 import BaseRepository from '@repetition/core/baseRepository'
 
 // import BillboardRepository, { TableType as BillboardTable } from "@repetition/core/billboard/BillboardRepository"
@@ -67,9 +67,6 @@ class Repository extends BaseRepository<
         params: FetchParams = {}
     ) {
         const filters: any = []
-        if (params?.storeId) {
-            filters.push(eq(this.table.storeUuid, params.storeId))
-        }
 
         const query = db.query['collection'].findFirst({
             where: and(
@@ -107,14 +104,21 @@ class Repository extends BaseRepository<
         return this.mapToEntity(data)
     }
 
-    handleConstraints(e: any, entity?: ModelEntity) {
+    async handleConstraints(e: any, entity?: ModelEntity): Promise<ModelEntity | ModelError> {
+
         // if (e.constraint === 'product_category_uuid_category_uuid_fk') {
         //     return {
         //         error: 'Cannot delete category as it has associated products',
         //     }
         // }
+        // if (e.constraint === 'category_slug_idx' && entity) {
+        //     entity.uniqueSlug()
+        //     return this.save(entity)
+        // }
+        return {
+            error: `Error creating ${this.tableName}`,
+        };   
     }
-
     mapToEntity(item: TableType): ModelEntity | ModelError {
         const Entity = ModelEntity.fromValues(item, item.uuid)
 

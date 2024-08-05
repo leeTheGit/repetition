@@ -1,11 +1,9 @@
 "use client"
 
-import { z } from 'zod'
 import React, { useRef, useState } from "react"
 import { Button } from '@/components/ui/button'
 import { ProblemColumn } from "./columns";
 import { PaginationState } from '@tanstack/react-table'
-// import { AlertModal } from "@/components/modals/alert-modal";
 import Editor from '@monaco-editor/react'
 import { Modal } from "@/components/modals/form-modal";
 import {Submit} from "./submit"
@@ -136,8 +134,10 @@ export const Practice = ({data}: Props) => {
             fail: () => {},
             succeed: () => {}
         })
-        poll.data.data.answers = JSON.parse( req.body.result.answer )
-        poll.data.data.logs = JSON.parse( req.body.result.logs )
+        if ("result" in req.body) {
+            poll.data.data.answers = JSON.parse( req.body.result.answer )
+            poll.data.data.logs = JSON.parse( req.body.result.logs )
+        }
         setRecieved(true)
         
 

@@ -178,7 +178,7 @@ export const CourseForm: React.FC<Props> = ({
     const breadCrumbLinks = [
         { 
             label: 'Courses',
-            href: `/${endpoint}`
+            href: `/dashboard`
         },
         { 
             label: initialData?.name || 'New' 

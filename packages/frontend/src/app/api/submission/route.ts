@@ -58,7 +58,7 @@ async function post(
             submittedAt: new Date()
         }
         
-        const ok = await repository.create<InsertSchema>(data)
+        const ok = await repository.create(data)
 
         if (not(ok)) {
             return ok.error

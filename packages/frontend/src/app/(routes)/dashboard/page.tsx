@@ -21,12 +21,16 @@ const Page = async ({ params }: { params: { storeId: string } }) => {
     return null;
   }
 
-    let courses = await courseRepository.fetchAll()
-    if ( not(courses) ) {
-      courses = []
+    let sharedCourses = await courseRepository.fetchAll({shared: true})
+    if ( not(sharedCourses) ) {
+        sharedCourses = []
     }
 
-    
+    let userCourses = await courseRepository.fetchAll({userId: auth.session.user.id})
+    if ( not(userCourses) ) {
+        userCourses = []
+    }
+ 
 
     return (
         <div className="flex-col">
@@ -64,7 +68,7 @@ const Page = async ({ params }: { params: { storeId: string } }) => {
                         <h1 className="text-3xl">Shared courses</h1>
 
                         <div className="!mt-8 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-                            {courses.map( courseEntity => { 
+                            {sharedCourses.map( courseEntity => { 
                                 const course = courseEntity.toObject()
                                 return <CourseCard key={course.uuid} course={course}/>
 
@@ -74,8 +78,15 @@ const Page = async ({ params }: { params: { storeId: string } }) => {
                         <Separator className="mt-10" />
 
                         <h1 className="mt-10 text-3xl">Your courses</h1>
+                        <div className="!mt-8 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+                            
+                            {userCourses.map( courseEntity => { 
+                                const course = courseEntity.toObject()
+                                return <CourseCard key={course.uuid} course={course}/>
 
-                        <div className="!mt-8 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8"></div>
+                            })}
+                        </div>
+
 
                     </div>
                 </div>

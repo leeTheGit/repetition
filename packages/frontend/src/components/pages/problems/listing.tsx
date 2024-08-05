@@ -70,6 +70,7 @@ export const Listing = ({courseId} : Props) => {
                 category: entity.category,
                 description: entity.description,
                 starterCode: entity.starterCode,
+                testCode: entity.testCode,
                 link: entity.link,
                 grade: entity.history || [],
                 submissionCount: entity.submissionCount || 0,

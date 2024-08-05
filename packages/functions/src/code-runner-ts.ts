@@ -37,7 +37,7 @@ let myLogger:(string| Uint8Array)[] = []
 // }(console));
 
 
-const handler = async  (event: EventBridgeEvent<TDetailType, TDetail>, context: Context) => {
+const handler = async (event: EventBridgeEvent<TDetailType, TDetail>, context: Context) => {
     console.log('[RUNNER] handler')
     myLogger = []
 

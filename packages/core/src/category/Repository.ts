@@ -92,7 +92,7 @@ class CategoryRepository extends BaseRepository<
 
 
 
-    handleConstraints(e: any, entity?: ModelEntity) {
+    async handleConstraints(e: any, entity?: ModelEntity): Promise<ModelEntity | ModelError> {
         // if (e.constraint === 'product_category_uuid_category_uuid_fk') {
         //     return {
         //         error: 'Cannot delete category as it has associated products',
@@ -108,6 +108,9 @@ class CategoryRepository extends BaseRepository<
         //     error: "Cannon delete product as it has associated orders",
         //   };
         // }
+        return {
+            error: `Error creating ${this.tableName}`,
+        };   
     }
 
     mapToEntity(item: SelectTableType): ModelEntity | ModelError {

@@ -42,9 +42,6 @@ export class CollectionEntity extends Entity<EntitySchema> {
         return this.props.organisationUuid
     }
 
-    get storeUuid() {
-        return this.props.storeUuid
-    }
 
     get name() {
         return this.props.name

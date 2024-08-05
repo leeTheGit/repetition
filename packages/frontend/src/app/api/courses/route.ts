@@ -5,7 +5,7 @@ import { apiInsertSchema, fetchParams } from '@repetition/core/course/Validators
 import { fetchResponse } from '@repetition/core/course/response/CourseDTO'
 import { HttpResponse, apiHandler } from '@/lib'
 import { logger } from '@repetition/core/lib/logger'
-
+import { PartialCourseEntity, CourseEntity } from '@repetition/core/course/Entity'
 const repository = new Repository()
 
 export const GET = apiHandler(get, { validator: fetchParams })
@@ -45,13 +45,18 @@ async function post(
             userId: ctx.user.id,
             organisationUuid: ctx.user.organisationUuid
         }
-        const newEntity = await repository.create(values)
-        // console.log(newEntity)
+        const newEntity = PartialCourseEntity.fromValues(values)
         if (isError(newEntity)) {
             return newEntity
         }
 
+        const saved = await repository.save(newEntity as CourseEntity)
+        if (isError(saved)) {
+            return saved
+        }
+
         return newEntity.toObject()
+
     } catch (error) {
         logger.info('[PRODUCT_POST]', error)
         return {
