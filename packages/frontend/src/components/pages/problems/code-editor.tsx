@@ -16,9 +16,9 @@ export const CodeEditor = React.forwardRef<{
     codeStach:{user:string, test:string}
     
 } | null, Props>((props, ref) => {
-    // const codeStash = props.codeStash
     const form = props.form
-    console.log("the refs", ref)
+    
+    // @ts-expect-error
     const { CodeEditorRef, TestCodeEditorRef, codeStash } = ref;
 
     const submitCode = async () => {
@@ -44,7 +44,6 @@ export const CodeEditor = React.forwardRef<{
                 codeStash.current.user = CodeEditorRef.current.getValue()
                 CodeEditorRef.current = null
             }
-            console.log("the stash", codeStash)
 
         }}>
             <TabsList>
