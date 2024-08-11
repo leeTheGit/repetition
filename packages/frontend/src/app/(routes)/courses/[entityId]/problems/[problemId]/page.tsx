@@ -59,6 +59,8 @@ const Page = async ({ params }: { params: { entityId: string, problemId:string }
         parsedData = fetchResponse(entity)
     }
 
+    console.log('he problem', parsedData)
+
     return (
         <div className="flex-col">
             <div className="flex-1 pt-6">

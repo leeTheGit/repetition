@@ -16,5 +16,9 @@
     "aws-cdk-lib": "^2.149.0",
     "constructs": "^10.3.0",
     "esbuild": "^0.20.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.624.0",
+    "@aws-sdk/lib-dynamodb": "^3.616.0"
   }
 }

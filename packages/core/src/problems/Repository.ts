@@ -141,6 +141,7 @@ class Repository extends BaseRepository<
                 "test_code",
                 "answer_code",
                 "difficulty",
+                "type",
                 "course_id",
                 "link",
                 "image_uuid",
@@ -165,6 +166,7 @@ class Repository extends BaseRepository<
                     "problem"."test_code",
                     "problem"."answer_code",
                     "problem"."difficulty",
+                    "problem"."type",
                     "problem"."course_id",
                     "problem"."link",
                     "problem"."image_uuid",
@@ -228,7 +230,6 @@ class Repository extends BaseRepository<
         // console.log(string)
 
         const result = await this.db.execute(query)
-
         if (params?.withSubmissions && params.userId) {
             const submissionRepository = new SubmissionRepository()
 
@@ -380,6 +381,7 @@ function convertCase(obj: any) {
         course_id : 'courseId',
         starter_code:'starterCode',
         answer_code:'answerCode', 
+        test_code: 'testCode', 
         is_deleted: 'isDeleted',
         image_uuid: 'imageUuid', 
         is_seeded: 'isSeeded', 

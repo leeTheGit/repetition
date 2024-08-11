@@ -88,7 +88,7 @@ export default function TinyEditor({ content, reference }: Props) {
                 //     changeHandler(editorRef.current.getContent());
                 // }}
                 init={{
-                    //@ts-ignore
+                    //@ts-expect-error
                     license_key: 'gpl',
                     skin: skin,
                     content_css: contentCSS,

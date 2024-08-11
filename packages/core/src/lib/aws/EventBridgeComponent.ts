@@ -17,12 +17,11 @@ export default class EventBridgeComponent {
             ],
         };
         
-        console.log("[EVENT BRIDGE] params", params)
+        // console.log("[EVENT BRIDGE] params", params)
 
         // Send the event
         try {
             const put = await eventBridge.putEvents(params);
-            console.log("[EVENT BRIDGE]", put)
             return put;
         } catch(e) {
             console.log("[EVENT BRIDGE]", e)

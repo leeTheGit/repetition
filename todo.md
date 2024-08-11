@@ -8,7 +8,7 @@ https://codepen.io/jamesbarnett/pen/kBOpRr
 https://github.com/thyagoluciano/sm2
 https://github.com/open-spaced-repetition/fsrs4anki/wiki/Spaced-Repetition-Algorithm:-A-Three%E2%80%90Day-Journey-from-Novice-to-Expert
 https://stackoverflow.com/questions/49047159/spaced-repetition-algorithm-from-supermemo-sm-2
-
+https://www.bcu.ac.uk/exams-and-revision/best-ways-to-revise/spaced-repetition
 
 # untrusted code execution
 https://medium.com/@yashbudukh/building-a-remote-code-execution-system-9e55c5b248d6

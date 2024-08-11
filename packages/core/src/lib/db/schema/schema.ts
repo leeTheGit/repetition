@@ -262,7 +262,7 @@ export const topic = pgTable(
     })
 )
 
-
+export const problemType = pgEnum('type', ['basic', 'code', 'multi-choice', 'written-answer', 'math'])
 export const problem = pgTable(
     'problem',
     {
@@ -282,6 +282,7 @@ export const problem = pgTable(
         testCode:text('test_code'),
         answerCode: text('answer_code'),
         difficulty: integer('difficulty').notNull(),
+        type: problemType('type').notNull().default('basic'),
         // tags: text('tags'),
         link: text('link'),
         status: varchar('status', { length: 50 }).notNull().default('draft'),

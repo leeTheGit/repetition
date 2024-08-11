@@ -94,6 +94,10 @@ export class ProblemEntity extends Entity<EntitySchema> {
         return this.props.answerCode
     }
 
+    get type() {
+        return this.props.type
+    }
+    
     get history() {
         return this.relations.submissions?.map(s => {
             return s.grade 

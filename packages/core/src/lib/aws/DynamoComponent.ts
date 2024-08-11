@@ -36,10 +36,8 @@ export default class DynamoComponent {
             TableName: this.tableName,
             Item: data
         }
-        console.log(saveData);
         const saveCommand = new PutCommand(saveData)
         const save = await this.docClient.send( saveCommand )
-        console.log("s", save)
         return save;
     }
 }

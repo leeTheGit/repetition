@@ -8,14 +8,17 @@ import Editor from '@monaco-editor/react'
 import { Modal } from "@/components/modals/form-modal";
 import {Submit} from "./submit"
 import { useFetchQuery } from '@/hooks/use-query'
-import { useQuery } from '@tanstack/react-query'
-import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+// import { useQuery } from '@tanstack/react-query'
+import { DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from "@/components/ui/checkbox"
 import Overlay from "@/components/overlay";
 import InlineSpinner from "@/components/spinners/InlineSpinner";
 import {handler} from '@repetition/functions/code-runner-ts'
 import { SubmissionAPI } from '@repetition/core/submission/response/SubmissionDTO'
+import { useLocalStorage} from '@/hooks/use-local-storage'
+
+
 
 interface Props {
     data: ProblemColumn;
@@ -36,13 +39,14 @@ const poll = {
 }
 
 export const Practice = ({data}: Props) => {
-    
+    const [token, setToken] = useLocalStorage("tokenName", "");
+    const [localVimMode, setLocalVimMode] = useLocalStorage("vimMode", false) 
     const CodeEditorRef = useRef<any>(null)
     const [submitModal, setSubmitModal] = useState(false)
     const [submissionId, setSubmissionId] = useState(undefined)
     const [submitting, setSubmitting] = useState(false)
-    const [vimMode, setVimMode] = useState(false)
-    const [loading, setLoading] = useState(false)
+    // const [vimMode, setVimMode] = useState(false)
+    // const [loading, setLoading] = useState(false)
     const [recieved, setRecieved]=  useState(false)
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
@@ -83,7 +87,7 @@ export const Practice = ({data}: Props) => {
 
     // setup monaco-vim
     function handleEditorDidMount(editor:any) {
-        //@ts-ignore
+        //@ts-expect-error
         window.require.config({
           paths: {
             "monaco-vim": "/assets/monaco-vim"
@@ -304,10 +308,10 @@ export const Practice = ({data}: Props) => {
                         <div className="flex items-center space-x-2 mb-2 w-full">
                             <Checkbox 
                                 className="ml-auto"
-                                checked={vimMode}
+                                checked={localVimMode}
                                 onCheckedChange={() => {
-                                    setVimMode(!vimMode)
-                                    if (vimMode) {
+                                    setLocalVimMode(!localVimMode)
+                                    if (localVimMode) {
                                         vimSetting.dispose()
                                     } else {
                                         handleEditorDidMount(CodeEditorRef.current)
@@ -330,7 +334,7 @@ export const Practice = ({data}: Props) => {
                             }
                             onMount={(editor, monaco) => {
                                 CodeEditorRef.current = editor
-                                if (vimMode) handleEditorDidMount(editor)
+                                if (localVimMode) handleEditorDidMount(editor)
                             }}
                             theme="vs-dark"
                             height="70vh"

@@ -23,10 +23,15 @@ interface LambdaStackInterface extends StackProps {
 }
 
 export class LambdaStack extends Stack {
+
+    public readonly wsConnectLambda: NodejsFunction 
+    public readonly wsDisconnectLambda: NodejsFunction
+    public readonly sendMessageLambda: NodejsFunction 
+
     constructor(scope: Construct, id: string, props: LambdaStackInterface) {
         super(scope, id, props)
         const functionPath = join(__dirname, '..', '..','..', 'functions', 'src' )
-        const function2Path = join(__dirname, '..', '..','..', 'functions', 'src', 'code-runner-ts.ts' )
+        
 
         // const dfun = new DockerImageFunction(this, 'dockerRunner', {
 
@@ -42,11 +47,37 @@ export class LambdaStack extends Stack {
         // }
         // )
 
+        // Lambda function to handle new connections
+        this.wsConnectLambda = new NodejsFunction(this, 'ws-connect-lambda', {
+            entry: `${functionPath}/sockets/connect.ts`,
+            handler: 'handler',
+            functionName: 'connect-lambda',
+            runtime: Runtime.NODEJS_20_X,
+        });
+
+        // Lambda function to handle disconnections
+        this.wsDisconnectLambda = new NodejsFunction( this, 'ws-disconnect-lambda', {
+            entry:  `${functionPath}/sockets/disconnect.ts`,
+            handler: 'handler',
+            functionName: 'disconnect-lambda',
+            runtime: Runtime.NODEJS_20_X,
+        });
+
+        // Lambda function to handle sending messages
+        this.sendMessageLambda = new NodejsFunction(this, 'send-message-lambda', {
+            entry: `${functionPath}/sockets/sendMessage.ts`,
+            runtime: Runtime.NODEJS_20_X,
+            functionName: 'send-message',
+            handler: 'handler',
+        });
+
+
+
 
         const TSCodeRunnerFunc = new NodejsFunction(this, 'CodeRunner-ts', {
             runtime: Runtime.NODEJS_20_X,
             handler: 'handler',
-            entry: function2Path,
+            entry: `${functionPath}/code-runner-ts.ts`,
             timeout: Duration.seconds(5),
             vpc: props.vpc,
             environment: {
@@ -80,44 +111,44 @@ export class LambdaStack extends Stack {
 
 
 
-        const codeRunnerFunction = new LambdaFunction(this, 'CodeRunner', {
-            runtime: Runtime.NODEJS_20_X,
-            handler: 'code-runner.handler',
-            code: Code.fromAsset(functionPath),
-            timeout: Duration.seconds(5),
-            vpc: props.vpc,
-            environment: {
-                TABLE_NAME: props.table.tableName
-            },
-            vpcSubnets: {
-                subnetType: ec2.SubnetType.PUBLIC,
-            },
-            allowPublicSubnet: true
-        })
+        // const codeRunnerFunction = new LambdaFunction(this, 'CodeRunner', {
+        //     runtime: Runtime.NODEJS_20_X,
+        //     handler: 'code-runner.handler',
+        //     code: Code.fromAsset(functionPath),
+        //     timeout: Duration.seconds(5),
+        //     vpc: props.vpc,
+        //     environment: {
+        //         TABLE_NAME: props.table.tableName
+        //     },
+        //     vpcSubnets: {
+        //         subnetType: ec2.SubnetType.PUBLIC,
+        //     },
+        //     allowPublicSubnet: true
+        // })
 
-        console.log("the dynamo ARn", props.table.tableArn)
+        // console.log("the dynamo ARn", props.table.tableArn)
 
-        codeRunnerFunction.addToRolePolicy( new PolicyStatement({
-            effect: Effect.ALLOW,
-            resources: [props.table.tableArn],
-            actions: [
-               'dynamodb:PutItem',
-               'dynamodb:Scan',
-               'dynamodb:GetItem',
-               'dynamodb:UpdateItem',
-               'dynamodb:DeleteItem' 
-            ]
-        }))
+        // codeRunnerFunction.addToRolePolicy( new PolicyStatement({
+        //     effect: Effect.ALLOW,
+        //     resources: [props.table.tableArn],
+        //     actions: [
+        //        'dynamodb:PutItem',
+        //        'dynamodb:Scan',
+        //        'dynamodb:GetItem',
+        //        'dynamodb:UpdateItem',
+        //        'dynamodb:DeleteItem' 
+        //     ]
+        // }))
 
-        const lambdaUrl = codeRunnerFunction.addFunctionUrl({
-            authType: FunctionUrlAuthType.NONE,
-            cors: {
-                allowedMethods: [HttpMethod.POST],
-                allowedOrigins: ["*"]
-            }
-        });
+        // const lambdaUrl = codeRunnerFunction.addFunctionUrl({
+        //     authType: FunctionUrlAuthType.NONE,
+        //     cors: {
+        //         allowedMethods: [HttpMethod.POST],
+        //         allowedOrigins: ["*"]
+        //     }
+        // });
 
-        new CfnOutput(this, 'FunctionUrl ', { value: lambdaUrl.url });
+        // new CfnOutput(this, 'FunctionUrl ', { value: lambdaUrl.url });
         new CfnOutput(this, 'TSFunctionUrl ', { value: lambdaUrlTS.url });
         new CfnOutput(this, 'Table Arn ', { value: props.table.tableArn });
 

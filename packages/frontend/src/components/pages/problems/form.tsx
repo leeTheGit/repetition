@@ -13,7 +13,7 @@ import {
     FormSchema,
 } from '@repetition/core/problems/Validators'
 import Editor from '@monaco-editor/react'
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 
 
@@ -30,6 +30,7 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
+    
 } from '@/components/ui/form'
 
 import { Checkbox } from "@/components/ui/checkbox"
@@ -47,12 +48,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
+// import { Textarea } from '@/components/ui/textarea'
 import TinyEditor from '@/components/TinyEditor'
-
+import { CodeEditor } from '@/components/pages/problems/code-editor'
 import { Input } from '@/components/ui/input'
 import { AlertModal } from '@/components/modals/alert-modal'
 import { BreadCrumb } from '@/components/breadCrumb'
@@ -60,6 +61,7 @@ import { Delete, create } from '@/hooks/queries'
 import Link from 'next/link'
 import { Practice } from './practice'
 import {  ProblemAPI } from '@repetition/core/problems/response/ProblemDTO'
+import { Textarea } from '@/components/ui/textarea'
 
 interface Props {
     initialData: ProblemAPI | null
@@ -78,10 +80,10 @@ let vimSetting:any;
 // When saving we grab the code from each editor instance.
 // As each editor is in a tab, it may not be mounted.
 // We use the codeStash variable to store unsaved changes
-let codeStash = {
-    user: "",
-    test: ""
-}
+// let codeStash = {
+//     user: "",
+//     test: ""
+// }
 
 export const ProblemForm: React.FC<Props> = ({
     initialData,
@@ -96,6 +98,7 @@ export const ProblemForm: React.FC<Props> = ({
     const EditorRef = useRef<any>(null)
     const CodeEditorRef = useRef<any>(null)
     const TestCodeEditorRef = useRef<any>(null)
+    const codeStash = useRef({user:"", test:""})
 
     // Delete modal
     const [open, setOpen] = useState(false)
@@ -121,6 +124,7 @@ export const ProblemForm: React.FC<Props> = ({
             answercode: initialData?.answerCode || '', 
             difficulty: initialData?.difficulty || 0, 
             link: initialData?.link || '', 
+            type: initialData?.type || 'basic',
             status: initialData?.status || 'draft',
         }
         return data
@@ -130,6 +134,7 @@ export const ProblemForm: React.FC<Props> = ({
         resolver: zodResolver(apiInsertSchema),
         defaultValues: mapToForm(initialData),
     })
+    const cardType = form.watch('type')
 
     // Create or update a category
     const postQuery = useMutation({
@@ -177,57 +182,28 @@ export const ProblemForm: React.FC<Props> = ({
 
     const onSubmit = async (data: FormSchema) => {
         data.description = EditorRef.current.getContent()
-        if (CodeEditorRef.current) {
-            data.starterCode = CodeEditorRef.current.getValue()
-        } else {
-            if (codeStash.user !== "") {
-                data.starterCode = codeStash.user
+        if (cardType === 'code') {
+            if (CodeEditorRef.current) {
+                data.starterCode = CodeEditorRef.current.getValue()
+            } else {
+                if (codeStash.current.user !== "") {
+                    data.starterCode = codeStash.current.user
+                }
             }
-        }
-        if (TestCodeEditorRef.current) {
-            data.testCode = TestCodeEditorRef.current.getValue()
-        } else {
-            if (codeStash.test !== "") {
-                data.testCode = codeStash.test
+            if (TestCodeEditorRef.current) {
+                data.testCode = TestCodeEditorRef.current.getValue()
+            } else {
+                if (codeStash.current.test !== "") {
+                    data.testCode = codeStash.current.test
+                }
             }
         }
 
         postQuery.mutate(data)
     }
 
-    const submitCode = async () => {
-        const code = CodeEditorRef.current.getValue()
-        const req = await fetch('/api/code', {
-            method: 'POST',
-            body: code
-        })
-        const result = await req.json();
-    }
+    const defaultText = form.formState.defaultValues?.description[0] === "<" ? "rich_text" : "basic" 
 
-    
-
-
-    useEffect(() => {
-        codeStash = {
-            user: "",
-            test: ""
-        }
-    }, [])
-
-
-    const probs = {
-        uuid: initialData?.uuid,
-        name: initialData?.name,
-        slug: initialData?.slug,
-        category: initialData?.categoryUuid,
-        description: initialData?.description,
-        starterCode: initialData?.starterCode,
-        link: initialData?.link,
-        grade: initialData?.history || [],
-        submissionCount: initialData?.submissionCount || 0,
-        lastSubmitted: initialData?.lastSubmitted || '',
-        difficulty: initialData?.difficulty,
-    }
 
     return (
         <>
@@ -311,13 +287,75 @@ export const ProblemForm: React.FC<Props> = ({
                                     control={form.control}
                                     name="name"
                                     render={({ field }) => (
-                                        <FormItem className="col-span-5">
+                                        <FormItem className="col-span-6">
                                             <FormLabel className="flex">
                                                 Name
                                             </FormLabel>
                                             <FormControl>
                                                 <Input {...field} />
                                             </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="type"
+                                    render={({ field }) => (
+                                        <FormItem className="col-span-3">
+                                            <div className="flex items-center">
+                                                <FormLabel className="flex items-center">
+                                                    Type{' '}
+                                                </FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger>
+                                                        <div className="ml-2 hover:cursor-pointer">
+                                                            <HelpCircle
+                                                                height="15"
+                                                                width="15"
+                                                                className="text-gray-600 hover:text-gray-200"
+                                                            />
+                                                        </div>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="bg-muted dark:bg-black p-3 text-xs">
+                                                        Create different card types to better
+                                                        suite
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </div>
+                                            <Select
+                                                // disabled={loading}
+                                                onValueChange={field.onChange}
+                                                value={field.value}
+                                                defaultValue={field.value}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue
+                                                            defaultValue={
+                                                                field.value
+                                                            }
+                                                            placeholder="Select a card type"
+                                                        />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {['basic', 'code', 'multi-choice', 'written-answer', 'math'].map(
+                                                        (type) => (
+                                                            <SelectItem
+                                                                key={
+                                                                    type
+                                                                }
+                                                                value={
+                                                                   type 
+                                                                }
+                                                            >
+                                                                {type}
+                                                            </SelectItem>
+                                                        )
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -389,6 +427,22 @@ export const ProblemForm: React.FC<Props> = ({
                                         </FormItem>
                                     )}
                                 />
+
+                                <FormField
+                                    control={form.control}
+                                    name="link"
+                                    render={({ field }) => (
+                                        <FormItem className="col-span-6">
+                                            <FormLabel className="flex">
+                                                Link
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField
                                     control={form.control}
                                     name="difficulty"
@@ -398,28 +452,7 @@ export const ProblemForm: React.FC<Props> = ({
                                         >
                                             <FormLabel className="flex">
                                                 Problem difficulty
-                                                <Popover>
-                                                    <PopoverTrigger>
-                                                        <div className="ml-2 hover:cursor-pointer">
-                                                            <HelpCircle
-                                                                height="15"
-                                                                width="15"
-                                                                className="text-gray-600 hover:text-gray-200"
-                                                            />
-                                                        </div>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="bg-muted dark:bg-black p-3 text-xs">
-                                                        A static page contains
-                                                        html for content that
-                                                        doesn&apos;t change
-                                                        often i.e: an about
-                                                        page, or legal pages.
-                                                        Dynamic pages can
-                                                        contain curated content
-                                                        blocks and feeds from
-                                                        collections.
-                                                    </PopoverContent>
-                                                </Popover>
+ 
                                             </FormLabel>
 
                                             <Select
@@ -474,128 +507,95 @@ export const ProblemForm: React.FC<Props> = ({
                                         </FormItem>
                                     }}
                                 />
-                                <FormField
-                                    control={form.control}
-                                    name="link"
-                                    render={({ field }) => (
-                                        <FormItem className="col-span-5">
-                                            <FormLabel className="flex">
-                                                Link
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                
                             </div>
 
-                            <div className="max-w-[1200px] m-auto mt-10 grid grid-cols-12 gap-5">
+
+
+                            <div className="max-w-[1200px] m-auto mt-10 grid grid-cols-12 gap-10">
                                 
 
-                                <div className=" col-span-6">
-                                    <h3 className="mb-3">Lesson content</h3>
+                                <div className=" col-span-6 bg-slate-800 p-2">
+                                    <h3 className="mb-3 ">Question</h3>
+                                    <Tabs className="w-full" defaultValue={defaultText} >
+                                        <TabsList>
+                                            <TabsTrigger
+                                                className={`data-[state=active]:bg-buttonactive data-[state=active]:text-white`}
+                                                value={`basic`}
+                                            >
+                                                Basic text
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                className={`data-[state=active]:bg-buttonactive data-[state=active]:text-white`}
+                                                value={`rich_text`}
+                                            >
+                                                Rich text
+                                            </TabsTrigger>
 
-                                    <TinyEditor
-                                        reference={EditorRef}
-                                        content={
-                                            form.formState.defaultValues
-                                                ?.description || ''
-                                        }
-                                    // changeHandler={(text) => formik.setFieldValue('marketing_content', text)}
-                                />
+                                        </TabsList>
+
+                                        <TabsContent value={`rich_text`}>
+                                            <TinyEditor
+                                                reference={EditorRef}
+                                                content={
+                                                    form.formState.defaultValues
+                                                        ?.description || ''
+                                                }
+                                            // changeHandler={(text) => formik.setFieldValue('marketing_content', text)}
+                                            />
+                                        </TabsContent>
+                                        <TabsContent value={`basic`}>
+                                            <FormField
+                                                control={form.control}
+                                                name="description"
+                                                render={({ field }) => (
+                                                    <FormItem className="col-span-6 min-h-[300px] ">
+                                                        {/* <FormLabel className="flex">
+                                                            Answer
+                                                        </FormLabel> */}
+                                                        <FormControl>
+                                                            <Textarea className="min-h-[300px]" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            /> 
+                                        </TabsContent>
+                                    </Tabs>
                                 </div>
 
-                                <div className="mt-2 col-span-6">
+                                <div className="col-span-6 bg-slate-800 p-2">
+                                    <h3 className="mb-3 ">Answer</h3>
 
-                                <Tabs className="w-full" defaultValue="user_code" onValueChange={(value) => {
-                                    // When flipping between tabs we lose any code that has been changed
-                                    // without being saved so we stash when switching then restsore.
-                                    // Each editor has an onMount function used to place the text back.
-                                    if (value === 'user_code') {
-                                        codeStash.test = TestCodeEditorRef.current.getValue()
-                                        TestCodeEditorRef.current = null
+                                    {/* CodeEditorRef
+                                    TestCodeEditorRef */}
+                                    {cardType === 'code' &&
+                                        <CodeEditor 
+                                            ref={{
+                                                CodeEditorRef,
+                                                TestCodeEditorRef,
+                                                codeStash
+                                            }} 
+                                            
+                                            form={form}
+                                        />
                                     }
-                                    if (value === 'test_code') {
-                                        codeStash.user = CodeEditorRef.current.getValue()
-                                        CodeEditorRef.current = null
+
+                                    {cardType === 'basic' &&
+                                        <FormField
+                                            control={form.control}
+                                            name="answer"
+                                            render={({ field }) => (
+                                                <FormItem className="mt-[60px] col-span-6">
+                                                    <FormControl>
+                                                        <Textarea className="min-h-[300px]" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                   
                                     }
-
-                                }}>
-                                    <TabsList>
-
-                                        <TabsTrigger
-                                            className={`data-[state=active]:bg-buttonactive data-[state=active]:text-white`}
-                                            value={`user_code`}
-                                        >
-                                            User code
-                                        </TabsTrigger>
-                                        <TabsTrigger
-                                            className={`data-[state=active]:bg-buttonactive data-[state=active]:text-white`}
-                                            value={`test_code`}
-                                        >
-                                            Test code
-                                        </TabsTrigger>
-
-                                    </TabsList>
-
-                                    <TabsContent value={`user_code`}>
-                                        <div>
-                                            <Editor
-                                                value={
-                                                    // codeStash.user ||
-                                                    form.formState
-                                                        .defaultValues
-                                                        ?.starterCode
-                                                }
-                                                onMount={(editor, monaco) => {
-                                                    CodeEditorRef.current = editor
-                                                    if (codeStash.user !== "") {
-                                                        CodeEditorRef.current.setValue(codeStash.user)
-                                                    }
-                                                }}
-                                                theme="vs-dark"
-                                                height="60vh"
-                                                defaultLanguage="javascript"
-                                                defaultValue=""
-                                            />
-                                            <Button className="mt-4" type="button" onClick={submitCode}>Test code</Button>
-                                        </div>
-                                    </TabsContent>
-                                    
-                                    <TabsContent value={`test_code`}>
-                                        <div className="">
-                                            <Editor
-                                                value={
-                                                    form.formState
-                                                        .defaultValues
-                                                        ?.testCode || ''
-                                                }
-                                                onMount={(editor, monaco) => {
-                                                    TestCodeEditorRef.current = editor
-                                                    if (codeStash.test !== "") {
-                                                        TestCodeEditorRef.current.setValue(codeStash.test)
-                                                    }
-                                                }}
-                                                onChange={(editor, monaco) => {
-                                                    // console.log(editor)
-                                                    // console.log(monaco)
-                                                }}
-                                                theme="vs-dark"
-                                                height="60vh"
-                                                defaultLanguage="javascript"
-                                                defaultValue="// some comment"
-                                            />
-                                        </div>
-
-                                    </TabsContent>
-
-
-                                </Tabs>
-
-
-                                <div className="h-[200px]" id="testeditor"></div>
                                 </div>
                             </div>
 
