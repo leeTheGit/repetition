@@ -17,6 +17,7 @@ import { useDebounce } from '@/hooks/use-debounce'
 import { ProblemAPI } from '@repetition/core/problems/response/ProblemDTO'
 import { BreadCrumb } from '@/components/breadCrumb'
 import { useSort } from '@/hooks/use-sort-table'
+import { useFileDownloader } from '@/hooks/use-filedownloader'
 
 export type Category = {
     uuid: string
@@ -33,6 +34,7 @@ interface Props {
 export const Listing = ({courseId} : Props) => {
     const endpoint = `/courses/${courseId}/problems`
     
+    const download = useFileDownloader()
 
     const router = useRouter()
     const [pagination, setPagination] = useState<PaginationState>({
@@ -85,6 +87,7 @@ export const Listing = ({courseId} : Props) => {
             label: category.name,
         }
     })
+
 
     return (
         <>
@@ -146,6 +149,7 @@ export const Listing = ({courseId} : Props) => {
                                 setPagination={setPagination}
                                 sorting={sorting}
                                 setSorting={setTheSort}
+                                exportFunc={() => download(`/api/courses/${courseId}/problems/export?withSubmissions=true`)}
                                 filterColumns={[{
                                     name: "category",
                                     data: () => categoryOptions ? categoryOptions : []

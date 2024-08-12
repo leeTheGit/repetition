@@ -73,15 +73,16 @@ const handler = async (event: EventBridgeEvent<TDetailType, TDetail>, context: C
     }
 
     const testCode = (typeof input.test_code !== "undefined") ? input.test_code : '';
-
     const userId = input.user_id;
     const submissionId = input.submission_id;
     const runCode = input.user_code + ';' + testCode
+    // console.log("runcode", runCode)
     let answer = []
-
     try {
         answer = eval(runCode)
+        console.log("answer", answer)
     } catch(e:any) {
+        console.log('in teh catch', e)
         myLogger.push(JSON.stringify("[ERROR] " + e.message))
         answer = [{
             pass: 'false',

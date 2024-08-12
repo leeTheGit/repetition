@@ -1,5 +1,9 @@
+import {db} from '@repetition/core/lib/db'
+
 import { NextRequest } from 'next/server'
 import Repository from '@repetition/core/submission/Repository'
+import UserProblemRepository from '@repetition/core/userProblem/Repository'
+
 import { not } from '@repetition/core/types'
 import {
     insertSchema,
@@ -13,6 +17,7 @@ import { HttpResponse, apiHandler } from '@/lib'
 import { logger } from '@repetition/core/lib/logger'
 
 const repository = new Repository()
+const userProblemRepository = new UserProblemRepository(db)
 const name = 'Submission'
 
 // export const GET = apiHandler(get, { validator: fetchParams })
@@ -63,6 +68,9 @@ async function post(
         if (not(ok)) {
             return ok.error
         }
+
+
+
 
         return ok.toObject()
     } catch (error) {

@@ -1,4 +1,4 @@
-import { HttpResponse } from "@/lib/httpResponse"
+import { HttpResponse, JSONResponse } from "@/lib/httpResponse"
 import { apiHandler } from "@/lib/apiHandler"
 import {
     getZodErrors,
@@ -10,6 +10,7 @@ import {
 
 export {
     HttpResponse,
+    JSONResponse,
     apiHandler,
     getZodErrors,
     mapResult,

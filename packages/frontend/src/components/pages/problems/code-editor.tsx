@@ -32,7 +32,7 @@ export const CodeEditor = React.forwardRef<{
 
 
     return (
-        <Tabs className="w-full" defaultValue="user_code" onValueChange={(value) => {
+        <Tabs className="flex flex-col grow w-full " defaultValue="user_code" onValueChange={(value) => {
             // When flipping between tabs we lose any code that has been changed
             // without being saved so we stash when switching then restsore.
             // Each editor has an onMount function used to place the text back.
@@ -46,7 +46,7 @@ export const CodeEditor = React.forwardRef<{
             }
 
         }}>
-            <TabsList>
+            <TabsList className="bg-transparent">
 
                 <TabsTrigger
                     className={`data-[state=active]:bg-buttonactive data-[state=active]:text-white`}
@@ -83,7 +83,7 @@ export const CodeEditor = React.forwardRef<{
                         defaultLanguage="javascript"
                         defaultValue=""
                     />
-                    <Button className="mt-4" type="button" onClick={submitCode}>Test code</Button>
+                    {/* <Button className="mt-4" type="button" onClick={submitCode}>Test code</Button> */}
                 </div>
             </TabsContent>
             

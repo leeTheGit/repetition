@@ -93,7 +93,23 @@ function apiHandler(handler: any, options?: Options) {
                         ...headers,
                     }
                 )
-            } else {
+            } 
+            else if (response && 
+                    typeof response === 'object' && 
+                    '_download' in response) {
+                console.log('doing the download')
+                // console.log(response._download)
+                var buffer = Buffer.from(JSON.stringify(response._download));
+                const headers = new Headers();
+                headers.append("Content-Disposition", 'attachment; filename="problems.json"');
+                headers.append("Content-Type", "application/json");
+                return new NextResponse(buffer, {
+                  headers,
+                });
+            
+            }
+            
+            else {
                 if (isError(response)) {
                     let code = 500
                     if (response.status) {

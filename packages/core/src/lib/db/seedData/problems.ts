@@ -1,4 +1,10 @@
 import {Slugify} from '@repetition/core/lib/utils'
+
+import * as problems from './problemData.json'
+
+
+console.log(problems)
+
 // 'arrays-and-hashing': 'dc2238c7-9707-47ad-8b6f-9cf5ac150aec',
 // 'two-pointers': 'a2d0b717-b31e-4bd8-b176-03f523def424',
 // 'sliding-window': '61ad0945-e052-4e83-a431-ad8ea32ee788',
@@ -29,7 +35,9 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-16 01:36:56.928",
-                    grade: 4
+                    grade: 4,
+                    solution: '',
+                    note: '',
                 }
             ]
         },
@@ -45,7 +53,9 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-16 01:17:21.58",
-                    grade: 5
+                    grade: 5,
+                    solution: '',
+                    note: '',
                 }
             ]
         },
@@ -61,7 +71,9 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-16 01:36:40.135",
-                    grade: 4
+                    grade: 4,
+                    solution: '',
+                    note: '',
                 }
             ]
         },
@@ -77,7 +89,9 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-14 01:22:45.184",
-                    grade: 5
+                    grade: 5,
+                    solution: '',
+                    note: '',
                 }
             ]
 
@@ -94,7 +108,9 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-14 01:16:08.765",
-                    grade: 5
+                    grade: 5,
+                    solution: '',
+                    note: '',
                 }
             ]
 
@@ -121,11 +137,15 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-16 03:41:25.025",
-                    grade: 1
+                    grade: 1,
+                    solution: '',
+                    note: '',
                 },
                 {
                     submitted_at: "2024-07-17 01:05:18.781",
-                    grade: 5
+                    grade: 5,
+                    solution: '',
+                    note: '',
                 }
 
             ]
@@ -286,7 +306,9 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-14 01:31:00.038",
-                    grade: 5
+                    grade: 5,
+                    solution: '',
+                    note: '',
                 }
             ]
 
@@ -577,7 +599,9 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-16 01:01:43.184",
-                    grade: 5
+                    grade: 5,
+                    solution: '',
+                    note: '',
                 }
             ]
 
@@ -594,7 +618,9 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-14 07:16:04.119",
-                    grade: 5
+                    grade: 5,
+                    solution: '',
+                    note: '',
                 }
             ]
         },
@@ -610,7 +636,9 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-17 01:28:29.898",
-                    grade: 5
+                    grade: 5,
+                    solution: '',
+                    note: '',
                 }
             ]
 
@@ -627,7 +655,9 @@ const Problems = (categories: CatType, course: string) => {
             submission: [
                 {
                     submitted_at: "2024-07-17 01:39:11.171",
-                    grade: 5
+                    grade: 5,
+                    solution: '',
+                    note: '',
                 }
             ]
 

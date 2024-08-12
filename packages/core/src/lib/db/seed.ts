@@ -135,6 +135,8 @@ export const seed = async () => {
                         problemUuid: p.uuid,
                         grade: sub.grade,
                         submittedAt: new Date(sub.submitted_at),
+                        solution: sub.solution,
+                        note: sub.note
                     }
                     const ins = await db.insert(submission).values(data)
 

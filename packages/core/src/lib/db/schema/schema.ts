@@ -181,7 +181,6 @@ export const submission = pgTable(
         note: text('note'),
         grade: integer('grade').notNull(),
         submittedAt: timestamp('submitted_at', { mode: 'date' }),
-        nextReviewAt: timestamp('next_review_at', { mode: 'date'}),
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
@@ -321,7 +320,6 @@ export const userProblem = pgTable(
         problemUuid: uuid('problem_uuid')
             .notNull()
             .references(() => problem.uuid, { onDelete: 'cascade' }),
-        grade: integer('grade'),
         note: text('note'),
         solution: text('solution'),
         nextReviewAt: timestamp('next_review_at', { mode: 'date'}),

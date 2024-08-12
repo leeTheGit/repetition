@@ -17,7 +17,7 @@ export type ProblemColumn = {
     link: string
     description: string
     category: string
-    grade: number[]
+    grade: {grade:number}[]
     submissionCount: number
     starterCode: string | null
     testCode: string
@@ -97,8 +97,8 @@ export const columns = (courseId: string) => {
                         {row.original.grade.map((s, i) => {
                         
                             let color = "#009722"
-                            if (s < 4) color = "#e6b502" 
-                            if (s < 2) color = "#c90404" 
+                            if (s.grade < 4) color = "#e6b502" 
+                            if (s.grade < 2) color = "#c90404" 
             
                             return <div key={i} className={`bg-[${color}] h-[15px] w-[15px] mr-1 shadow-[0_35px_60px_-15px_rgb(255, 255, 255)]`}>
                                 </div>

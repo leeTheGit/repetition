@@ -10,3 +10,5 @@ export function HttpResponse<T>(data: T | T[], mapper: (res: T) => any) {
 
     return mapper(data);
 }
+
+export const JSONResponse = HttpResponse

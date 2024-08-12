@@ -515,10 +515,11 @@ export const ProblemForm: React.FC<Props> = ({
                             <div className="max-w-[1200px] m-auto mt-10 grid grid-cols-12 gap-10">
                                 
 
-                                <div className=" col-span-6 bg-slate-800 p-2">
+                                <div className="flex flex-col col-span-6">
                                     <h3 className="mb-3 ">Question</h3>
-                                    <Tabs className="w-full" defaultValue={defaultText} >
-                                        <TabsList>
+                                    <div className="flex flex-col grow bg-slate-800 p-2">
+                                    <Tabs className="flex flex-col grow w-full" defaultValue={defaultText} >
+                                        <TabsList className="bg-transparent">
                                             <TabsTrigger
                                                 className={`data-[state=active]:bg-buttonactive data-[state=active]:text-white`}
                                                 value={`basic`}
@@ -534,7 +535,7 @@ export const ProblemForm: React.FC<Props> = ({
 
                                         </TabsList>
 
-                                        <TabsContent value={`rich_text`}>
+                                        <TabsContent className=" grow" value={`rich_text`}>
                                             <TinyEditor
                                                 reference={EditorRef}
                                                 content={
@@ -544,17 +545,17 @@ export const ProblemForm: React.FC<Props> = ({
                                             // changeHandler={(text) => formik.setFieldValue('marketing_content', text)}
                                             />
                                         </TabsContent>
-                                        <TabsContent value={`basic`}>
+                                        <TabsContent className=" grow" value={`basic`}>
                                             <FormField
                                                 control={form.control}
                                                 name="description"
                                                 render={({ field }) => (
-                                                    <FormItem className="col-span-6 min-h-[300px] ">
+                                                    <FormItem className="flex flex-col h-full grow col-span-6">
                                                         {/* <FormLabel className="flex">
                                                             Answer
                                                         </FormLabel> */}
                                                         <FormControl>
-                                                            <Textarea className="min-h-[300px]" {...field} />
+                                                            <Textarea className="grow" {...field} />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -562,10 +563,12 @@ export const ProblemForm: React.FC<Props> = ({
                                             /> 
                                         </TabsContent>
                                     </Tabs>
+                                    </div>
                                 </div>
 
-                                <div className="col-span-6 bg-slate-800 p-2">
+                                <div className="col-span-6">
                                     <h3 className="mb-3 ">Answer</h3>
+                                    <div className="flex flex-col grow bg-slate-800 p-2">
 
                                     {/* CodeEditorRef
                                     TestCodeEditorRef */}
@@ -596,6 +599,7 @@ export const ProblemForm: React.FC<Props> = ({
                                         />
                                    
                                     }
+                                    </div>
                                 </div>
                             </div>
 

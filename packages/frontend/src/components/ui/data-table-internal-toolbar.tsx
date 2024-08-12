@@ -12,6 +12,7 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
 interface Props<TData> {
     table: Table<TData>,
+    exportFunc?: () => void | null,
     searchKey?: string,
     filterColumns?: { 
         name: string, 
@@ -25,6 +26,7 @@ interface Props<TData> {
 
 export function DataTableToolbar<TData>({
   table,
+  exportFunc,
   searchKey,
   filterColumns
 }: Props<TData>) {
@@ -71,7 +73,17 @@ export function DataTableToolbar<TData>({
                 </Button>
                 )}
             </div>
-            <div className="ml-auto">
+
+            <div className="flex ml-auto">
+                {exportFunc && <Button
+                        onClick={exportFunc}
+                        variant="outline"
+                        size="sm"
+                        className="ml-auto mr-2 hidden h-8 lg:flex">
+                            Export
+                    </Button>
+                   
+                } 
                 <DataTableViewOptions table={table} />
             </div>
         </div>

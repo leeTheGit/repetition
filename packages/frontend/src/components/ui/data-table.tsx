@@ -49,7 +49,7 @@ interface DataTableProps<TData, TValue> {
     //     React.SetStateAction<{ desc:boolean, id:string}[]>
     // >
     setSorting?: OnChangeFn<SortingState> 
-
+    exportFunc?: () => void
     childElement?: React.ReactElement
     isPaginated?: boolean
     filterColumns?: {
@@ -75,6 +75,7 @@ export function DataTable<TData, TValue>({
     setPagination,
     sorting = [{desc:true, id:'category'}],
     setSorting,
+    exportFunc,
     isPaginated = true,
     toolbar = true,
 }: DataTableProps<TData, TValue>) {
@@ -135,6 +136,7 @@ export function DataTable<TData, TValue>({
                         table={table}
                         searchKey={searchKey}
                         filterColumns={filterColumns}
+                        exportFunc={exportFunc || undefined}
                     />
                 </div>
             )}
