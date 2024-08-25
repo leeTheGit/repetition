@@ -182,7 +182,7 @@ class Repository extends BaseRepository<
                     "problem"."is_seeded",
                     "category"."name" AS "category",
                     "category"."slug" AS "categorySlug",
-                    ROW_NUMBER() OVER (PARTITION BY problem.uuid ORDER BY submission.created_at DESC) AS "rowNumber",
+                    ROW_NUMBER() OVER (PARTITION BY problem.uuid ORDER BY submission.submitted_at DESC) AS "rowNumber",
                     ROW_NUMBER() OVER (PARTITION BY problem.uuid ORDER BY submission.grade ASC) AS "grade",
                     "submission"."submitted_at" AS "lastSubmitted",
                     "submission"."grade" as "lastGrade"
@@ -231,9 +231,9 @@ class Repository extends BaseRepository<
 
         const query: SQL = sql.join(sqlChunks, sql.raw(' '));
 
-        // const pgDialect = new PgDialect()
-        // const string = pgDialect.sqlToQuery(query)
-        // console.log(string)
+        const pgDialect = new PgDialect()
+        const string = pgDialect.sqlToQuery(query)
+        console.log(string)
 
         const result = await this.db.execute(query)
         if (params?.withSubmissions && params.userId) {
@@ -331,6 +331,7 @@ class Repository extends BaseRepository<
     }
 
     mapToEntity(item: TableType): ModelEntity | ModelError {
+        // console.log(item);
         const itemData = convertCase(item)
         if (itemData.createdAt) {
             itemData.createdAt = new Date(itemData.createdAt)

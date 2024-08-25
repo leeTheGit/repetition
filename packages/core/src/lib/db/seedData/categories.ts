@@ -1,63 +1,23 @@
 import {Slugify} from '@repetition/core/lib/utils'
 
+import * as problems from './problemData.json'
 
 const Categories = (course: string) => {
-    return [
-        {
+    let categories = []
+    let added = new Set()
+    for (let problem of problems) {
+        if (added.has(problem.category)) continue
+        added.add(problem.category)
+        categories.push({
             courseId: course,
-            name: 'Arrays and Hashing',
-            slug: Slugify('Arrays and Hashing'),
-            isSeeded: true,
-        },
-        {
-            courseId: course,
-            name: 'Two Pointers',
-            slug: Slugify('Two Pointers'),
-            isSeeded: true,
-        },
-        {
-            courseId: course,
-            name: 'Sliding Window',
-            slug: Slugify('Sliding Window'),
-            isSeeded: true,
-        },
-        {
-            courseId: course,
-            name: 'Stack',
-            slug: Slugify('Stack'),
-            isSeeded: true,
-        },
-        {
-            courseId: course,
-            name: 'Binary Search',
-            slug: Slugify('Binary Search'),
-            isSeeded: true,
-        },
-        {
-            courseId: course,
-            name: 'Linked List',
-            slug: Slugify('Linked List'),
-            isSeeded: true,
-        },
-        {
-            courseId: course,
-            name: 'Trees',
-            slug: Slugify('Trees'),
-            isSeeded: true,
-        },
-        {
-            courseId: course,
-            name: 'Heap / Priority Queue',
-            slug: Slugify('Heap / Priority Queue'),
-            isSeeded: true,
-        },
-        {
-            courseId: course,
-            name: 'Graphs',
-            slug: Slugify('Graphs'),
-            isSeeded: true,
-        },
-    ]
+            name: problem.category,
+            slug: Slugify(problem.category),
+            isSeeded: true
+        })
+    }
+
+    return categories
+
 }
 
 export default Categories

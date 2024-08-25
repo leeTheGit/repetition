@@ -2,6 +2,7 @@ import { NodePgDatabase, drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 import {Slugify} from '@repetition/core/lib/utils'
 import {
+    assetLog,
     users,
     problem,
     submission,
@@ -109,7 +110,6 @@ export const seed = async () => {
     //     })
     //     .returning()
 
-    console.log('adding categories')
     const categories = await db
         .insert(category)
         .values(Categories(newCourse.uuid))
@@ -122,6 +122,7 @@ export const seed = async () => {
 
     const newProblems = await db
         .insert(problem)
+        //@ts-expect-error
         .values(Problems(categoryObj, newCourse.uuid))
         .returning()
 
@@ -155,6 +156,7 @@ const truncate = async (db: NodePgDatabase<Record<string, never>>) => {
     await db.delete(collection)
     await db.delete(category)
     await db.delete(course)
+    await db.delete(assetLog)
     await db.delete(media)
     await db.delete(emails)
     await db.delete(emailTemplate)
