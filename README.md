@@ -3,14 +3,14 @@
 This repository contains a Serverless Stack (SST) application that utilizes AWS Lambda, DynamoDB and Event Bridge.
 
 This is a Typescript application that uses:
-  [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-  [PNPM](https://pnpm.io/) for dependency management and monorepo
-  [Zod](https://zod.dev/) for input validation
-  [Drizzle](https://orm.drizzle.team/) for Database ORM
-  [React Hook Forms](https://react-hook-form.com/) With Zod for typesafe validated form
-  [Lucia Auth](https://lucia-auth.com/getting-started/) For api token, credential and Oauth authentication
-  [AWS CDK](https://aws.amazon.com/cdk/) For infrastructure
-  [SST](https://sst.dev/) with OpenNext to run Next.js directly on AWS
+- [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+- [PNPM](https://pnpm.io/) for dependency management and monorepo
+- [Zod](https://zod.dev/) for input validation
+- [Drizzle](https://orm.drizzle.team/) for Database ORM
+- [React Hook Forms](https://react-hook-form.com/) With Zod for typesafe validated form
+- [Lucia Auth](https://lucia-auth.com/getting-started/) For api token, credential and Oauth authentication
+- [AWS CDK](https://aws.amazon.com/cdk/) For infrastructure
+- [SST](https://sst.dev/) with OpenNext to run Next.js directly on AWS
 
 ## Prerequisites
 
@@ -39,7 +39,7 @@ Open [http://localtest.me:3000](http://localtest.me:3000) with your browser to s
 
 
 Log in with:
-    user: test@test.com
-    pass: 111111 
+   - user: test@test.com
+   - pass: 111111 
 
-Now click around.
+Now explore
