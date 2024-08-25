@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "db:seed": "tsx src/lib/db/seed.ts",
-    "migrate": "drizzle-kit generate --dialect=postgresql --schema=./src/lib/db/schema/schema.ts && sst shell 'node -r esbuild-register src/lib/db/migrate.ts'",
+    "migrate": "drizzle-kit generate --dialect=postgresql --schema=./src/lib/db/schema/schema.ts && node -r esbuild-register src/lib/db/migrate.ts",
     "migration:generate": "drizzle-kit generate --dialect=postgresql --schema=./src/lib/db/schema/schema.ts",
     "migration:introspect": "drizzle-kit introspect --config=drizzle.config.ts",
     "migration:push": "node -r esbuild-register src/lib/db/migrate.ts",
