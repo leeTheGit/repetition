@@ -21,7 +21,8 @@ import { useLocalStorage} from '@/hooks/use-local-storage'
 
 
 interface Props {
-    data: ProblemColumn;
+    data: ProblemColumn
+    buttonLabel?: string
 } 
 
 const endpoint = 'submission'
@@ -38,7 +39,7 @@ const poll = {
     }
 }
 
-export const Practice = ({data}: Props) => {
+export const Practice = ({data, buttonLabel}: Props) => {
     const [token, setToken] = useLocalStorage("tokenName", "");
     const [localVimMode, setLocalVimMode] = useLocalStorage("vimMode", false) 
     const CodeEditorRef = useRef<any>(null)
@@ -105,44 +106,28 @@ export const Practice = ({data}: Props) => {
 
 
     const submitCode = async () => {
+        const worker = new Worker(new URL('../../../../../functions/src/code-runner.js', import.meta.url));
+          
         setSubmissionId(undefined)
         setRecieved(false)
 
         let code = CodeEditorRef.current?.getValue()
-        const req = await handler({
-            id: 'localtest',
-            version: '2',
-            account:'',
-            time:"3e43",
-            region: "ap-southeast-2",
-            resources: [""],
-            source: "",
-            "detail-type": '',
-            detail: {
-                user_id: '5adfc196-3415-4251-b1d9-8c58ab8bb154',
-                submission_id: '2332',
-                user_code: code, 
-                test_code: data.testCode
-            }
-        }, {
-            callbackWaitsForEmptyEventLoop: false,
-            functionName: '',
-            functionVersion: '',
-            invokedFunctionArn:'',
-            memoryLimitInMB: '',
-            awsRequestId: '',
-            logGroupName: '',
-            logStreamName: '',
-            getRemainingTimeInMillis: () => 2,
-            done: () => {},
-            fail: () => {},
-            succeed: () => {}
-        })
-        if ("result" in req.body) {
-            poll.data.data.answers = JSON.parse( req.body.result.answer )
-            poll.data.data.logs = JSON.parse( req.body.result.logs )
-        }
-        setRecieved(true)
+        setTimeout(() => {
+            worker.terminate()
+        }, 2000)
+
+        worker.postMessage({
+            user_code: code,
+            test_code: data.testCode,
+            user_id: '5adfc196-3415-4251-b1d9-8c58ab8bb154',
+            submission_id: '2332', 
+        });
+        worker.onmessage = ({data}) => {
+            poll.data.data.answers = data
+            console.log("the answer is...", data);
+            setRecieved(true)
+        };
+
         
 
         // setSubmitting(true)
@@ -173,8 +158,9 @@ export const Practice = ({data}: Props) => {
             <Modal
                 isOpen={submitModal}
                 onClose={() => setSubmitModal(false)}
-                className="max-w-[80%]  max-h-full min-h-[80%] dark:bg-[#1e1e1e] "
+                className="w-full max-w-none lg:max-w-[90%] max-h-full min-h-[80%] dark:bg-[#1e1e1e] "
                 escapeKey={false}
+                pointerDownOutside={false}
             >
                 <DialogHeader>
                     <DialogTitle className="text-4xl">{data.name}</DialogTitle>
@@ -182,9 +168,9 @@ export const Practice = ({data}: Props) => {
 
                 <div className="grid grid-cols-2 gap-8">
 
-                    <div className="col-span-1">
+                    <div className="col-span-1 flex">
 
-                        <Tabs className="mt-5 w-full" defaultValue="description" onValueChange={(value) => {
+                        <Tabs className="mt-5 w-full h-full" defaultValue="description" onValueChange={(value) => {
                             console.log(value)
                         }}>
                             <TabsList>
@@ -204,8 +190,8 @@ export const Practice = ({data}: Props) => {
                                 </TabsTrigger>
                             </TabsList>
 
-                            <TabsContent key="description" value="description">
-                                <div className="overflow-scroll">
+                            <TabsContent key="description" value="description" className="h-full">
+                                <div className="overflow-scroll h-full">
                                     <div className="mt-[25px] problem-description overflow-y-auto" dangerouslySetInnerHTML={{ __html: data.description }}>
                                         {/* Description editor */}
                                     </div>
@@ -354,7 +340,7 @@ export const Practice = ({data}: Props) => {
 
             </Modal>
 
-            <Button type="button" onClick={() => setSubmitModal(true)}>Practice</Button>
+            <Button type="button" onClick={() => setSubmitModal(true)}>{buttonLabel ? buttonLabel : "Practice"}</Button>
             
         </>
     )

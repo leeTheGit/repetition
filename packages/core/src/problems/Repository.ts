@@ -1,4 +1,4 @@
-import { DBType } from '@repetition/core/lib/db'
+import type { DBType } from '@repetition/core/lib/db'
 import { problem, category, media } from '@repetition/core/lib/db/schema/schema'
 
 import {
@@ -28,6 +28,8 @@ import BaseRepository from '@repetition/core/baseRepository'
 //     TableType as AssetTable,
 // } from '@repetition/core/asset/AssetRepository'
 import { uuidRegex, mapResult } from '@repetition/core/lib'
+import { Injectable } from '@repetition/core/lib/container'
+
 // import { NodePgDatabase } from 'drizzle-orm/node-postgres'
 // import { logger } from '@repetition/core/lib/logger'
 
@@ -46,6 +48,7 @@ export type CreateTableType = Omit<
 const DEFAULT_LIMIT = 50
 const DEFAULT_OFFSET = 0
 
+@Injectable()
 class Repository extends BaseRepository<
     typeof problem,
     ModelEntity,
@@ -53,9 +56,8 @@ class Repository extends BaseRepository<
 > {
 
     // public mapToEntity = PostgresMapper
-    private db
 
-    constructor(db:DBType) {
+    constructor(private db:DBType) {
         super(problem, 'Problem')
         this.db = db;
     }
@@ -141,6 +143,7 @@ class Repository extends BaseRepository<
                 "test_code",
                 "answer_code",
                 "difficulty",
+                "tags",
                 "type",
                 "course_id",
                 "link",
@@ -167,6 +170,7 @@ class Repository extends BaseRepository<
                     "problem"."test_code",
                     "problem"."answer_code",
                     "problem"."difficulty",
+                    "problem"."tags",
                     "problem"."type",
                     "problem"."course_id",
                     "problem"."link",
@@ -278,6 +282,7 @@ class Repository extends BaseRepository<
         identifier: string,
         params: FetchParams = {}
     ): Promise<ModelEntity | ModelError> {
+        console.log('fetching by uiid in porlbnme')
         var filters = [eq(this.table.slug, identifier)]
         if (identifier.match(uuidRegex)) {
             filters = [eq(this.table.uuid, identifier)]
@@ -286,6 +291,7 @@ class Repository extends BaseRepository<
         if ('course' in params) {
             filters.push(eq(this.table.courseId, params.course))
         }
+        console.log("the database", this.db)
 
         const query = this.db.query['problem'].findFirst({
             where: and(...filters),
@@ -293,6 +299,7 @@ class Repository extends BaseRepository<
 
         // console.log(query.toSQL())
         const data = await query
+        console.log(data)
         if (!data) {
             return {
                 error: `${this.tableName} not found`,

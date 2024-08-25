@@ -41,11 +41,10 @@ const handler = async (event: EventBridgeEvent<TDetailType, TDetail>, context: C
     console.log('[RUNNER] handler')
     myLogger = []
 
-    // console.log(event);
     if (event.id !== 'localtest') {
-        //@ts-ignore
+        //@ts-expect-error
         if (!process.stdout._orig_write) {
-            //@ts-ignore
+            //@ts-expect-error
             process.stdout._orig_write = process.stdout.write;
         }
         process.stdout.write = (data, ...optionalParams) => {
@@ -54,7 +53,7 @@ const handler = async (event: EventBridgeEvent<TDetailType, TDetail>, context: C
                 print.push(...optionalParams)
             }
             myLogger.push(JSON.stringify(util.format.apply(this, print)));
-            //@ts-ignore
+            //@ts-expect-error
             return process.stdout._orig_write(util.format.apply(this, print) + '\n');
         }
     }
@@ -76,13 +75,10 @@ const handler = async (event: EventBridgeEvent<TDetailType, TDetail>, context: C
     const userId = input.user_id;
     const submissionId = input.submission_id;
     const runCode = input.user_code + ';' + testCode
-    // console.log("runcode", runCode)
     let answer = []
     try {
         answer = eval(runCode)
-        console.log("answer", answer)
     } catch(e:any) {
-        console.log('in teh catch', e)
         myLogger.push(JSON.stringify("[ERROR] " + e.message))
         answer = [{
             pass: 'false',

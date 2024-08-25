@@ -32,6 +32,7 @@ import {
     FormMessage,
     
 } from '@/components/ui/form'
+import { CommaSeparatedInput } from '@/components/form/comma-seperated-input'
 
 import { Checkbox } from "@/components/ui/checkbox"
 
@@ -62,6 +63,7 @@ import Link from 'next/link'
 import { Practice } from './practice'
 import {  ProblemAPI } from '@repetition/core/problems/response/ProblemDTO'
 import { Textarea } from '@/components/ui/textarea'
+import TagsList from '@/components/form/tags-list'
 
 interface Props {
     initialData: ProblemAPI | null
@@ -84,6 +86,7 @@ let vimSetting:any;
 //     user: "",
 //     test: ""
 // }
+
 
 export const ProblemForm: React.FC<Props> = ({
     initialData,
@@ -126,11 +129,12 @@ export const ProblemForm: React.FC<Props> = ({
             link: initialData?.link || '', 
             type: initialData?.type || 'basic',
             status: initialData?.status || 'draft',
+            tags: initialData?.tags || ''
         }
         return data
     }
 
-    const form = useForm<FormSchema>({
+    const form = useForm<FormSchema & {tags: string}>({
         resolver: zodResolver(apiInsertSchema),
         defaultValues: mapToForm(initialData),
     })
@@ -179,9 +183,24 @@ export const ProblemForm: React.FC<Props> = ({
         },
     })
 
+    const deleteTag = (tag: string) => {
+        console.log('deleting', tag)
+        const allTagString = form.getValues("tags")
+        console.log(allTagString, "all tags strinbg")
+        const all = allTagString.split(',')
+        console.log("all", all)
+        let allTags = all.filter((t:string) => t !== tag)
+        console.log("alltagsio", allTags)
+        console.log("allTags", allTags)
+        let tagString = allTags.join(',')
+        console.log(tagString, " after delete")
+        form.setValue('tags', tagString)
+    }
 
     const onSubmit = async (data: FormSchema) => {
-        data.description = EditorRef.current.getContent()
+        if (EditorRef.current) {
+            data.description = EditorRef.current.getContent()
+        }
         if (cardType === 'code') {
             if (CodeEditorRef.current) {
                 data.starterCode = CodeEditorRef.current.getValue()
@@ -202,6 +221,7 @@ export const ProblemForm: React.FC<Props> = ({
         postQuery.mutate(data)
     }
 
+    // check if description is using basic text or rich text
     const defaultText = form.formState.defaultValues?.description[0] === "<" ? "rich_text" : "basic" 
 
 
@@ -274,7 +294,7 @@ export const ProblemForm: React.FC<Props> = ({
 
 
             
-            <div className={` w-full justify-center`}>
+            <div className={`pb-28 w-full justify-center`}>
                 <div className="">
                     <Form {...form}>
                         <form
@@ -292,7 +312,7 @@ export const ProblemForm: React.FC<Props> = ({
                                                 Name
                                             </FormLabel>
                                             <FormControl>
-                                                <Input {...field} />
+                                                <Input {...field} autoFocus />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -488,7 +508,7 @@ export const ProblemForm: React.FC<Props> = ({
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
+                                {/* <FormField
                                     control={form.control}
                                     name="status"
                                     
@@ -505,6 +525,44 @@ export const ProblemForm: React.FC<Props> = ({
                                             </div>
                                             <FormMessage />
                                         </FormItem>
+                                    }}
+                                /> */}
+                                <FormField
+                                    control={form.control}
+                                    name="tags"
+                                    render={({ field }) => { 
+                                        const onBlur = (text: string) => {
+                                            let mergedTags = field.value ? field.value.split(',') : []
+                                            let current = text.split(',')
+
+                                            mergedTags.push.apply(mergedTags, current)
+                                            mergedTags = mergedTags.map((c:string) => c.trim().toLowerCase())
+                                            let tagSet = new Set(mergedTags)
+                                            let tagValues = tagSet.values()
+                                            let tags = []
+                                            for (let i =0; i < tagSet.size; i++) {
+                                                tags.push(tagValues.next().value);
+                                            }
+                                            form.setValue('tags', tags.join(','))
+                                            return true
+                                        }
+                                        return (
+                                            <FormItem className="col-span-3">
+                                                <FormLabel className="flex">
+                                                    Tags
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <CommaSeparatedInput {...field} onBlur2={onBlur} />
+                                                </FormControl>
+                                                {field.value && 
+                                                <TagsList 
+                                                    tags={field.value.split(',')} 
+                                                    handleDelete={(tag) => deleteTag(tag)}
+                                                    />
+                                                }
+                                                <FormMessage />
+                                            </FormItem>
+                                        )
                                     }}
                                 />
                                 
@@ -574,7 +632,8 @@ export const ProblemForm: React.FC<Props> = ({
                                     TestCodeEditorRef */}
                                     {cardType === 'code' &&
                                         <CodeEditor 
-                                            ref={{
+                                        ref={{
+                                                //@ts-expect-error
                                                 CodeEditorRef,
                                                 TestCodeEditorRef,
                                                 codeStash
@@ -608,7 +667,11 @@ export const ProblemForm: React.FC<Props> = ({
                                     {action}
                                 </Button>
 
-                                {initialData && <Practice data={initialData} />}
+                                {initialData && 
+                                    <div className="ml-auto">
+                                        <Practice data={initialData} buttonLabel="Preview card" />
+                                    </div>
+                                }
                             </div>
                         </form>
                     </Form>

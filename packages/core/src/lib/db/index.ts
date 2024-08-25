@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
-import { Resource } from 'sst'
+// import { Resource } from 'sst'
 
 import { Client } from 'pg'
 import { Pool } from 'pg'

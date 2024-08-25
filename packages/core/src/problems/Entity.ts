@@ -69,6 +69,9 @@ export class ProblemEntity extends Entity<EntitySchema> {
         return this.props.name
     }
     
+    get tags() {
+        return null
+    } 
     get link() {
         return this.props.link
     }

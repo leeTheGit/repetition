@@ -282,7 +282,7 @@ export const problem = pgTable(
         answerCode: text('answer_code'),
         difficulty: integer('difficulty').notNull(),
         type: problemType('type').notNull().default('basic'),
-        // tags: text('tags'),
+        tags: text('tags'),
         link: text('link'),
         status: varchar('status', { length: 50 }).notNull().default('draft'),
         isDeleted: boolean('is_deleted').default(false),
@@ -300,7 +300,7 @@ export const problem = pgTable(
         categoryIndex: index('fk_problem_category_idx').on(table.categoryUuid),
         topicIndex: index('fk_problem_topic_idx').on(table.topicId),
         imageIndex: index('fk_problem_image_idx').on(table.imageUuid),
-        // tagsIndex: index('tags_search_index').using('gin', table.tags)
+        tagsIndex: index('tags_search_index').using('gin', table.tags)
     })
 )
 

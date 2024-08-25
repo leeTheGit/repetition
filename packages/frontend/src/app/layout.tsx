@@ -18,15 +18,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-
+  console.log('in the layout of the layout fsttu')
 
   return (
-    <html lang="en">
+    // Use of suppressHydrationWarning is due to the ThemeProvider
+    // causing a hydration error when server side rendering
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} dark:bg-slate-900`}>
       <ModalProvider />
       <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

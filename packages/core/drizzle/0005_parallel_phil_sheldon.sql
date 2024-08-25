@@ -1,0 +1,1 @@
+ALTER TABLE "problem" ADD COLUMN "tags" text;

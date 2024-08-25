@@ -29,67 +29,54 @@ const MainNav = ({
         {
             href: `/dashboard`,
             label: 'Overview',
-            active: pathname === `/${params.storeId}`,
+            active: pathname === `/dashboard`,
         },
         {
-            label: 'Content',
-            children: [
-                {
-                    label: 'Problems',
-                    description: 'View problems',
-                    href: `/problems`,
-                    active: pathname.includes(`/problems`),
-                },
-                {
-                    label: 'Courses',
-                    description: 'Manage courses',
-                    href: `/courses`,
-                    active: pathname.includes(`/courses`),
-                },
-                {
-                    label: 'Topics',
-                    description: 'Divide your course into different topics',
-                    href: `/topics`,
-                    active: pathname.includes(`/topics`),
-                },
-                {
-                    label: 'Collections',
-                    description: 'Add your content to feeds you curate',
-                    href: `/collections`,
-                    active: pathname.includes(`/collections`),
-                },
-                {
-                    label: 'Categories',
-                    description: 'Group problems into categories',
-                    href: `/categories`,
-                    active: pathname.includes(`/categories`),
-                },
-            ],
-            active: !!pathname.match(
-                /(\/problems|\/collections|\/categories)/
-            ),
-            // active: pathname.includes(`/content`),
+            href: `/courses`,
+            label: 'View all courses',
+            active: pathname === `/courses`,
+ 
         },
-        {
-            label: 'Profile',
-            href: `/profile`,
-            active: pathname.includes(`/profile`),
-
-            // href: `/${params.storeId}/users`,
-            // children: [
-            //     {
-            //         label: 'Profile',
-            //         description: 'Manage your profile.',
-            //         href: `/${params.storeId}/users`,
-            //     },
-            //     {
-            //         label: 'Roles and permissions',
-            //         description:
-            //             'Create and manage user roles and permissions for admin',
-            //         href: `/${params.storeId}/users/roles`,
-            //     },
-            // ],
-        },
+        // {
+        //     label: 'Content',
+        //     children: [
+        //         // {
+        //         //     label: 'Problems',
+        //         //     description: 'View problems',
+        //         //     href: `/problems`,
+        //         //     active: pathname.includes(`/problems`),
+        //         // },
+        //         {
+        //             label: 'Courses',
+        //             description: 'Manage courses',
+        //             href: `/courses`,
+        //             active: pathname.includes(`/courses`),
+        //         },
+        //         // {
+        //         //     label: 'Topics',
+        //         //     description: 'Divide your course into different topics',
+        //         //     href: `/topics`,
+        //         //     active: pathname.includes(`/topics`),
+        //         // },
+        //         // {
+        //         //     label: 'Collections',
+        //         //     description: 'Add your content to feeds you curate',
+        //         //     href: `/collections`,
+        //         //     active: pathname.includes(`/collections`),
+        //         // },
+        //         // {
+        //         //     label: 'Categories',
+        //         //     description: 'Group problems into categories',
+        //         //     href: `/categories`,
+        //         //     active: pathname.includes(`/categories`),
+        //         // },
+        //     ],
+        //     active: !!pathname.match(
+        //         /(\/problems|\/collections|\/categories)/
+        //     ),
+        //     // active: pathname.includes(`/content`),
+        // },
+ 
         {
             // href: `/${params.storeId}/settings`,
             label: 'Settings',

@@ -6,15 +6,17 @@ import { type ThemeProviderProps } from "next-themes/dist/types"
  
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
-    const [isMounted, setMounted] = React.useState(false);
+    // const [isMounted, setMounted] = React.useState(false);
 
-    React.useEffect(() => {
-        setMounted(true);
-    }, []);
+    // React.useEffect(() => {
+    //     console.log('in the theme provider')
+    //     setMounted(true);
+    // }, []);
 
-    if (!isMounted) {
-        return null;
-    }
+    // if (!isMounted) {
+    //     return null;
+    // }
+
 
     return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 

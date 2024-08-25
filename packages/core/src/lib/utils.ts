@@ -1,6 +1,7 @@
 import sluggish from "slugify";
 import winston from "winston";
 import { v4 as uuidv4 } from "uuid";
+import "reflect-metadata";
 
 
 export const getZodErrors = (input: any): string => {
@@ -52,3 +53,5 @@ export function randomNumbers(length: number = 10) {
 export function createUuid() {
   return uuidv4();
 }
+
+

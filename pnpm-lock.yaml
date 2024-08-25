@@ -10,7 +10,7 @@ importers:
     dependencies:
       sst:
         specifier: ion
-        version: 3.0.37
+        version: 3.0.66
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.14.10)(typescript@5.5.3)
@@ -84,12 +84,15 @@ importers:
       pg:
         specifier: ^8.12.0
         version: 8.12.0
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
       slugify:
         specifier: ^1.6.6
         version: 1.6.6
       sst:
         specifier: ion
-        version: 0.1.4
+        version: 3.0.66
       uuid:
         specifier: ^10.0.0
         version: 10.0.0
@@ -267,7 +270,7 @@ importers:
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       sst:
         specifier: ion
-        version: 0.1.4
+        version: 3.0.66
       table:
         specifier: ^6.8.2
         version: 6.8.2
@@ -3201,9 +3204,6 @@ packages:
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
-  '@tsconfig/node20@20.1.4':
-    resolution: {integrity: sha512-sqgsT69YFeLWf5NtJ4Xq/xAF8p4ZQHlmGW74Nu2tD4+g5fAsposc4ZfaaPixVu4y01BEiDCWLRDCvDM5JOsRxg==}
-
   '@tybys/wasm-util@0.8.3':
     resolution: {integrity: sha512-Z96T/L6dUFFxgFJ+pQtkPpne9q7i6kIPYCFnQBHSgSPV9idTsKfIhCss0h5iM9irweZCatkrdeP8yi5uM1eX6Q==}
 
@@ -5558,6 +5558,9 @@ packages:
     resolution: {integrity: sha512-Hx/BGIbwj+Des3+xy5uAtAbdCyqK9y9wbBcDFDYanLS9JnMqf7OeF87HQwUimE87OEc72mr6tkKUKMBBL+hF9Q==}
     engines: {node: '>= 4'}
 
+  reflect-metadata@0.2.2:
+    resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}
+
   reflect.getprototypeof@1.0.6:
     resolution: {integrity: sha512-fmfw4XgoDke3kdI6h4xcUz1dG8uaiv5q9gcEwLS4Pnth2kxT+GZ7YehS1JTMGBQmtV7Y4GFGbs2re2NqhdozUg==}
     engines: {node: '>= 0.4'}
@@ -5740,45 +5743,34 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  sst-darwin-arm64@0.1.4:
-    resolution: {integrity: sha512-nRkBN5OjruQMzoYGSUF7/uD5EuPIy2/j3i49GGl0e+EWDQo3BUzBZjpEwc6l34vp1PrIa+KcoIV6cXjTHcJS9w==}
+  sst-darwin-arm64@3.0.66:
+    resolution: {integrity: sha512-BPgtxficR3QYT1GR83J1zTqRMQNFitNQ7BJabrXcteSic8YjtR5Y/CCdQhhCyey2zFuo41NtKZMIcR+CeQ6dGg==}
     cpu: [arm64]
     os: [darwin]
 
-  sst-darwin-x64@0.1.4:
-    resolution: {integrity: sha512-KbaGVNAJi9l/WvVHL4s88Xo5HPNh/KWqk7NKXI/56/HV+VUdL4KMzHyqg9QtJPTiPAb8nFp91/VLZtNcJcbTUA==}
+  sst-darwin-x64@3.0.66:
+    resolution: {integrity: sha512-G6ZV9a8k+LAr6j5Zh33GejN1vFOvB8bjh0P2XuUx4zECec188vRs0Y46NtU3ydjMzy18JTdLsV/j3FkaWrQKvg==}
     cpu: [x64]
     os: [darwin]
 
-  sst-linux-arm64@0.1.4:
-    resolution: {integrity: sha512-hq5kkyOb+TgDJxq9Seuvqg4xMrtPRIJHkNdZQvKrgDFJWWhFgCrTrU68ZJhS/a2pC1zNCZSy3LKE/ir+CC0wrQ==}
+  sst-linux-arm64@3.0.66:
+    resolution: {integrity: sha512-FQpZgQKTONxKo+7lHIn5tGBO7u1mvx9FQ7zCFKRnAS9RtsbEfIpvIjLcrbpdnAS44HQmQETpk0dnGfKKN0jqQA==}
     cpu: [arm64]
     os: [linux]
 
-  sst-linux-x64@0.1.4:
-    resolution: {integrity: sha512-tuLW4sU+9Qv2kFYgByBnqYap8yh52NbE2k6/wbteFMcBicECfcBTYbomHIEct756+IesZYnysTQVSA6GEh9TmA==}
+  sst-linux-x64@3.0.66:
+    resolution: {integrity: sha512-6q+P2UprKa/q1pQ2tGDmDyjfwHdKMyvshmVd+kMaktpj6q7Z91e97G+Nqtb8ef52tje/503BXKQ1GUWnzT33Ng==}
     cpu: [x64]
     os: [linux]
 
-  sst-linux-x86@0.1.4:
-    resolution: {integrity: sha512-Ht7ml9sgt+vhw0Q7jar1WsYWnVdqsjIZr+pYA69MsN9ZzkcGtW4IZwD2aPs+iEH3EZHxZYeck6oy5e5nPTESPw==}
+  sst-linux-x86@3.0.66:
+    resolution: {integrity: sha512-0D0F/VHmjwUrFS6GRevET9/GqKy+jp/C6hwAzEkR83noijCiwPiD0c1eHZAdMskeO9bLfvwA1OI0yEhmJku65Q==}
     cpu: [x86]
     os: [linux]
 
-  sst@0.1.4:
-    resolution: {integrity: sha512-bJJz364mIXlCFY9BiRjyXs3C/kOv1H+HObeKXgy5AvxdQA/qOZJW8EoQsXwg/jN3XLZg+ykXa0EAWgMyeo2RbQ==}
+  sst@3.0.66:
+    resolution: {integrity: sha512-KWaNjXUT2iSibqYWpnd28fnOHqsS1y9FfsnYnOPGshub4EPAnTTjFc9e4biBAMzojnTEZx/TQEE2YUsBEjuicA==}
     hasBin: true
-    peerDependencies:
-      hono: 4.x
-      valibot: 0.30.x
-    peerDependenciesMeta:
-      hono:
-        optional: true
-      valibot:
-        optional: true
-
-  sst@3.0.37:
-    resolution: {integrity: sha512-FgZIvBMEtGKO2UtS47YryfDAoK+4IPAYJYftDRjCM2Dmxh+0HHocCAXW/A2ZpNOK36y9hT9w+Naycq2OhtLCNg==}
     peerDependencies:
       hono: 4.x
       valibot: 0.30.x
@@ -10344,8 +10336,6 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
-  '@tsconfig/node20@20.1.4': {}
-
   '@tybys/wasm-util@0.8.3':
     dependencies:
       tslib: 2.6.3
@@ -11441,7 +11431,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.9.0(eslint@8.57.0)
       eslint-plugin-react: 7.34.3(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
@@ -11465,7 +11455,7 @@ snapshots:
       enhanced-resolve: 5.17.0
       eslint: 8.57.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.14.0
@@ -11487,7 +11477,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -12952,6 +12942,8 @@ snapshots:
       tiny-invariant: 1.3.3
       tslib: 2.6.3
 
+  reflect-metadata@0.2.2: {}
+
   reflect.getprototypeof@1.0.6:
     dependencies:
       call-bind: 1.0.7
@@ -13185,43 +13177,33 @@ snapshots:
       safer-buffer: 2.1.2
       tweetnacl: 0.14.5
 
-  sst-darwin-arm64@0.1.4:
+  sst-darwin-arm64@3.0.66:
     optional: true
 
-  sst-darwin-x64@0.1.4:
+  sst-darwin-x64@3.0.66:
     optional: true
 
-  sst-linux-arm64@0.1.4:
+  sst-linux-arm64@3.0.66:
     optional: true
 
-  sst-linux-x64@0.1.4:
+  sst-linux-x64@3.0.66:
     optional: true
 
-  sst-linux-x86@0.1.4:
+  sst-linux-x86@3.0.66:
     optional: true
 
-  sst@0.1.4:
+  sst@3.0.66:
     dependencies:
       '@aws-sdk/client-lambda': 3.478.0
       aws4fetch: 1.0.18
       jose: 5.2.3
       openid-client: 5.6.4
     optionalDependencies:
-      sst-darwin-arm64: 0.1.4
-      sst-darwin-x64: 0.1.4
-      sst-linux-arm64: 0.1.4
-      sst-linux-x64: 0.1.4
-      sst-linux-x86: 0.1.4
-    transitivePeerDependencies:
-      - aws-crt
-
-  sst@3.0.37:
-    dependencies:
-      '@aws-sdk/client-lambda': 3.478.0
-      '@tsconfig/node20': 20.1.4
-      aws4fetch: 1.0.18
-      jose: 5.2.3
-      openid-client: 5.6.4
+      sst-darwin-arm64: 3.0.66
+      sst-darwin-x64: 3.0.66
+      sst-linux-arm64: 3.0.66
+      sst-linux-x64: 3.0.66
+      sst-linux-x86: 3.0.66
     transitivePeerDependencies:
       - aws-crt
 

@@ -8,6 +8,7 @@ interface ModalProps {
     children?: React.ReactNode
     className?: string,
     escapeKey?: boolean
+    pointerDownOutside?: boolean
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -15,7 +16,8 @@ export const Modal: React.FC<ModalProps> = ({
     onClose,
     children,
     className,
-    escapeKey = true
+    escapeKey = true,
+    pointerDownOutside = true
 }) => {
     const onChange = (open: boolean) => {
         if (!open) {
@@ -29,6 +31,9 @@ export const Modal: React.FC<ModalProps> = ({
                 className={className}
                 onEscapeKeyDown={(e)=>{
                     if (!escapeKey) e.preventDefault()
+                }}
+                onPointerDownOutside={(e)=> {
+                    if (!pointerDownOutside) e.preventDefault()
                 }}
                 >
                 {children}

@@ -141,8 +141,8 @@ export function DataTable<TData, TValue>({
                 </div>
             )}
 
-            <div className="rounded-md border">
-                <Table className="dark:bg-elcyentable">
+            <div className="rounded-md">
+                <Table className="">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow
@@ -172,9 +172,12 @@ export function DataTable<TData, TValue>({
 
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => {
+                            table.getRowModel().rows.map((row, i) => {
+                                // box-shadow: 0px 0px 30px 3px rgba(0,0,0,0.8);
+
+                                const shaddow = i%3 ? "shadow-[0_0_30px_3px_rgba(0,0,0,0.4)]" : "shadow-[1px_10px_19px_-8px_rgba(0,0,0,0.5)]"
                                 const selectedClass = row.getIsSelected()
-                                    ? 'bg-[#f1f5f9]'
+                                    ? 'bg-red-500'
                                     : ''
                                 return (
                                     <React.Fragment key={row.id}>
@@ -184,18 +187,19 @@ export function DataTable<TData, TValue>({
                                                 row.getIsSelected() &&
                                                 'selected'
                                             }
+                                            
+                                            // 1px 10px 19px -8px rgba(0,0,0,0.8)
                                             className={
                                                 containsArchiveColumn &&
                                                 //@ts-ignore
                                                 row.original.isArchived === true
                                                     ? `opacity-50 blur-[.7px] hover:blur-none`
-                                                    : `${selectedClass}`
+                                                    : `${selectedClass} border-0 ${shaddow} `
                                             }
                                             onClick={(e) => {
                                                 if (
                                                     //@ts-ignore
-                                                    e.target.tagName.toLowerCase() ===
-                                                    'td'
+                                                    e.target.tagName.toLowerCase() === 'td'
                                                 ) {
                                                     row.toggleExpanded()
                                                 }

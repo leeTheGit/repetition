@@ -6,6 +6,10 @@ import { HttpResponse, apiHandler, getZodErrors } from '@/lib'
 import { fetchResponse } from '@repetition/core/problems/response/ProblemDTO'
 import { uuidRegex } from '@repetition/core/lib'
 import { logger } from '@repetition/core/lib/logger'
+import { Container } from '@repetition/core/lib/container'
+
+// const app = new Container().init([Repository]);
+// const repository = app.get(Repository);
 
 const repository = new Repository(db)
 const name = 'Problem'
@@ -19,6 +23,7 @@ async function get(
     { params }: { params: { entityId: string, problemId: string } },
     ctx: any
 ) {
+    console.log('getting a problem yo')
     let input
     try {
         if (!params.entityId) {
@@ -38,10 +43,13 @@ async function get(
             }
         }
 
+        console.log(input)
+
         var Entity = await repository.fetchByUuid(input.data.problemId, {
             course: input.data.entityId,
             organisationUuid: ctx.user.organisationUuid,
         })
+        console.log(Entity)
         if (isError(Entity)) {
             return Entity
         }
@@ -61,6 +69,7 @@ async function update(
     ctx: any
 ) {
     try {
+        
         const Entity = await repository.update(params.problemId, ctx.data)
 
         if (isError(Entity)) {
