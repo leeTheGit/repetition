@@ -46,7 +46,6 @@
     "esbuild-register": "^3.5.0",
     "eslint": "^8",
     "tsx": "^4.16.2",
-    "typescript": "^5",
-    "vitest": "^1.6.0"
+    "typescript": "^5"
   }
 }

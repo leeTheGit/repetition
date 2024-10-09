@@ -10,17 +10,18 @@
     "db:seed": "pnpm -F=core db:seed",
     "migrate": "pnpm -F=core migrate",
     "deploy:lambda": "pnpm -F=infra deploy:lambda",
-    "deploy:all": "pnpm -F=infra deploy"
+    "deploy:all": "pnpm -F=infra deploy",
+    "test": "vitest"
   },
   "devDependencies": {
     "@types/node": "^20",
     "tsx": "^4.16.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.2"
   },
   "dependencies": {
     "sst": "ion",
     "ts-node": "^10.9.2",
-    "vitest": "^1.6.0",
     "zod": "^3.23.8"
   }
 }

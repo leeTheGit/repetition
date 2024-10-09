@@ -18,7 +18,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  console.log('in the layout of the layout fsttu')
 
   return (
     // Use of suppressHydrationWarning is due to the ThemeProvider

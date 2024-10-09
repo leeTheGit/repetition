@@ -23,6 +23,7 @@ const useSort = (startingSort: ColumnSort = defaultSort) => {
 
     const sortBy = searchParams.get('sortby')
     const direction = searchParams.get('desc')
+    
     if (sortBy) {
         sorting = [{
             id: sortBy,

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "test": "vitest"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -32,7 +33,9 @@
     "@tanstack/react-query": "^5.50.1",
     "@tanstack/react-query-next-experimental": "^5.50.1",
     "@tanstack/react-table": "^8.19.2",
+    "@testing-library/react": "^16.0.1",
     "@tinymce/tinymce-react": "^5.1.1",
+    "@vitejs/plugin-react": "^4.3.2",
     "add": "^2.0.6",
     "arctic": "^1.9.1",
     "class-variance-authority": "^0.7.0",
@@ -61,26 +64,31 @@
     "tailwindcss-animate": "^1.0.7",
     "tinymce": "^7.2.1",
     "uuid": "^10.0.0",
+    "vite": "^5.4.8",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.43.1",
     "@tanstack/react-query-devtools": "^5.45.1",
+    "@testing-library/jest-dom": "^6.5.0",
     "@types/node": "^20",
     "@types/pg": "^8.11.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/uuid": "^9.0.8",
     "@types/webpack-env": "^1.18.5",
+    "@vitest/ui": "2.1.2",
     "cypress": "^13.13.0",
     "esbuild": "^0.20.2",
     "esbuild-register": "^3.5.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
+    "jsdom": "^25.0.1",
+    "msw": "^2.4.9",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.16.2",
     "typescript": "^5",
-    "vitest": "^1.6.0"
+    "vitest": "^2.1.2"
   }
 }

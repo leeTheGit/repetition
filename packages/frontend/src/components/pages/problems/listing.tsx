@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ColumnFiltersState, PaginationState,  } from '@tanstack/react-table'
 import { Plus } from 'lucide-react'
@@ -32,8 +32,8 @@ interface Props {
 
 
 export const Listing = ({courseId} : Props) => {
-    const endpoint = `/courses/${courseId}/problems`
-    
+    const endpoint = `courses/${courseId}/problems`
+    console.log("BBBBBBBBBBBBBBBBBB", endpoint) 
     const download = useFileDownloader()
 
     const router = useRouter()
@@ -43,12 +43,13 @@ export const Listing = ({courseId} : Props) => {
     })
     
     const {sorting, setTheSort} = useSort({desc: true, id: 'last_practiced'})
-
-
+    // const sorting = [{desc:true, id: 'last_practiced'}]
+    // const setTheSort = () => {}
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+    console.log("sorting", sorting)
 
     const categories = useFetchQuery<Category[]>('categories', )
-
+    console.log("categories", categories.isSuccess)
     const entities = useFetchQuery<ProblemAPI[]>(
         endpoint,
         {
@@ -61,7 +62,8 @@ export const Listing = ({courseId} : Props) => {
             }
         }
     )
-
+    console.log('ENTITIES', entities.isSuccess)
+    console.log('ENTITIES', entities.error)
     const entityColumns =
         !entities.error &&
         entities.data?.data.map((entity: ProblemAPI) => {
@@ -88,6 +90,12 @@ export const Listing = ({courseId} : Props) => {
         }
     })
 
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const plug = await fetch('/api/courses/b84bbb71-6e38-491d-91f2-61c464dd9c63')
+    //     }
+        
+    // })
 
     return (
         <>
@@ -128,7 +136,7 @@ export const Listing = ({courseId} : Props) => {
             <Separator />
 
             <div className="w-full justify-center">
-                <div className="flex m-auto max-w-[1200px]">
+                <div className="flex m-auto max-w-[1200px]" data-testid="problem-list">
 
                             {entities.error && (
                                 <p>PC Load Letter. Request failed :(</p>

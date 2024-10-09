@@ -14,3 +14,5 @@ https://www.bcu.ac.uk/exams-and-revision/best-ways-to-revise/spaced-repetition
 https://medium.com/@yashbudukh/building-a-remote-code-execution-system-9e55c5b248d6
 https://www.reddit.com/r/aws/comments/prhocr/can_arbitrary_code_be_safely_run_in_aws_lambda/
 https://stackoverflow.com/questions/62826010/running-untrusted-python-code-in-aws-lambda-using-exec-or-eval
+
+https://judge0.com/

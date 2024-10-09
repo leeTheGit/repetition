@@ -1,7 +1,10 @@
-// middleware.js
 import { NextResponse, NextRequest } from 'next/server'
+import { stackMiddleware } from "@/middleware/stackMiddleware";
+// import { withAuthorization } from "@/middleware/withAuthorization";
+import { defaultMiddleware } from "@/middleware/default";
+import { withHeaders } from "@/middleware/withHeaders";
 
-const PLATFORM_DOMAIN = process.env.PLATFORM_DOMAIN || ''
+// const PLATFORM_DOMAIN = process.env.PLATFORM_DOMAIN || ''
 
 export const config = {
     matcher: [
@@ -16,18 +19,5 @@ export const config = {
     ],
 }
 
-export default async function middleware(req: NextRequest) {
-    console.log('[MIDDLEWARE]: Start')
-    const url = req.nextUrl
-    const hostname = req.headers.get('host')
-    // console.log("[MIDDLEWARE]", url);
-    // console.log('[MIDDLEWARE]: method', req.method)
-    if (!hostname) {
-        return new Response(null, { status: 404 })
-    }
-
-
-
-    // console.log('[MIDDLEWARE]: Redirecting to pure root..', path)
-    return NextResponse.next()
-}
+export default stackMiddleware([defaultMiddleware, withHeaders]);
+// https://reacthustle.com/blog/how-to-chain-multiple-middleware-functions-in-nextjs

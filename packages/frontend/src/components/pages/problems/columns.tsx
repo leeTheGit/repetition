@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Submit } from './submit'
 import { Practice } from './practice'
 import {deltaToNow} from '@repetition/core/lib/dates'
+// import {deltaToNow} from '../../../../../core/src/lib/dates'
 import { ArrowUpDown, Link as LinkIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -32,7 +33,7 @@ export const columns = (courseId: string) => {
             header: () => <div className="text-left">Name</div>,
             cell: ({ row }) => {
                 return (
-                    <div className="flex">
+                    <div className="flex" data-testid="problem-name">
                         <Link
                             href={`/courses/${courseId}/problems/${row.original.slug}`}
                             className="text-base hover:underline"

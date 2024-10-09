@@ -40,13 +40,14 @@ export const useFetchQuery = <T>(
         }
 
         let filterString = '?' + filters.join('&')
-
+        // console.log('running fetch', `http://localhost:3001/api/${resource}${filterString}`)
         const res = await fetch(`/api/${resource}${filterString}`)
         if (!res.ok) {
             throw new Error(`Failed to get ${resource}`)
         }
 
         const data = await res.json()
+        console.log('DAATAT', data)
         return data
     }
     let qKey = [resource, pagination, columnFilters, queryParams]
