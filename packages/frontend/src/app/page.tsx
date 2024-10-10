@@ -6,7 +6,6 @@ import Image from 'next/image'
 export default function Component() {
 
 
-  console.log('in the page  of the page fsttu')
  
 
 

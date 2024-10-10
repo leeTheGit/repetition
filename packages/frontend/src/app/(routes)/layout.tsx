@@ -7,6 +7,7 @@ import MainNav from '@/components/main-nav'
 import Navbar from '@/components/Navbar'
 import { ModeToggle } from '@/components/theme-toggle'
 import { UserProfileButton } from '@/components/auth/user-profile-button'
+import { MSWProvider } from '@/providers/msw-provider'
 
 
 export default async function DashboardLayout({
@@ -25,24 +26,28 @@ export default async function DashboardLayout({
 
     return (
     <SessionProvider session={session}>
+        
+        {/* Used for mocking api endpoints in dev */}
+        <MSWProvider>
 
-        <TanstackQueryClient>
+            <TanstackQueryClient>
 
-            <Navbar>
-                <MainNav className="mx-6" />
-                {/* <Onboarding
-                    storeId={params.storeId}
-                    isNew={found.isNewStore}
-                /> */}
-                <div className=" flex items-center space-x-4">
-                    {/* <StoreSwitcher items={objectStores} /> */}
-                    <ModeToggle />
-                    <UserProfileButton  />
-                </div>
-            </Navbar>
+                <Navbar>
+                    <MainNav className="mx-6" />
+                    {/* <Onboarding
+                        storeId={params.storeId}
+                        isNew={found.isNewStore}
+                    /> */}
+                    <div className=" flex items-center space-x-4">
+                        {/* <StoreSwitcher items={objectStores} /> */}
+                        <ModeToggle />
+                        <UserProfileButton  />
+                    </div>
+                </Navbar>
 
-            {children}
-        </TanstackQueryClient>
+                {children}
+            </TanstackQueryClient>
+        </MSWProvider>
 
         
         </SessionProvider>

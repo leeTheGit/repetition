@@ -126,9 +126,14 @@ class Repository extends BaseRepository<
             delete params.offset
         }
 
+
+        // TODO: TESTING ONLY
+        if (!params.userId) {
+            params.userId = "5adfc196-3415-4253-b1d9-8c58ab8bb154"
+        }
         // this value is validated by Zod but should be validated again
         const order = params.order || "asc"
-
+        
         const sqlChunks: SQL[] = [];
         sqlChunks.push(sql`
             SELECT

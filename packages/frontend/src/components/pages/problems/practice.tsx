@@ -55,25 +55,26 @@ export const Practice = ({data, buttonLabel}: Props) => {
     })
 
 
-    const get = async (submissionId?: string) => {
-        if (!submissionId) {
-            return false
-        }
+    // const get = async (submissionId?: string) => {
+    //     if (!submissionId) {
+    //         return false
+    //     }
 
-        const res:any = await fetch(`/api/code?submissionId=${submissionId}`, {
-            method: 'GET',
-        })
-        if (!res.ok) {
-            throw new Error(`Failed to get ${name}`)
-        }
+    //     const res:any = await fetch(`/api/code?submissionId=${submissionId}`, {
+    //         method: 'GET',
+    //     })
+    //     if (!res.ok) {
+    //         throw new Error(`Failed to get ${name}`)
+    //     }
 
-        const data = await res.json()
-        return data
-    }
+    //     const data = await res.json()
+    //     return data
+    // }
 
     const submissions = useFetchQuery<SubmissionAPI[]>(
         'submission',
         {
+            enabled: false,
             pagination,
         }
     )

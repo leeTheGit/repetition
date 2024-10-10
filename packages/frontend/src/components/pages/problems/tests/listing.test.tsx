@@ -16,6 +16,7 @@ vi.mock("next/navigation", () => {
                 }
             )}
         }),
+
         useRouter: vi.fn( () => {
             return { push: vi.fn()} 
         }),
@@ -44,7 +45,8 @@ describe('The problems listing', () => {
         const {listing} = await renderProblemListing("b84bbb71-6e38-491d-91f2-61c464dd9c63")
         expect( listing ).toBeInTheDocument();
         await waitFor( async () => {
-            const nameContainer = await screen.findByTestId('problem-name')
+            // screen.debug()
+            const nameContainer = await screen.findAllByTestId('problem-name')
             // expect(screen.getByText('The self-taught UI/UX designer roadmap (2021)')).toBeInTheDocument();
             // expect(screen.getByText('homarp')).toBeInTheDocument();
         });
