@@ -16,3 +16,7 @@ https://www.reddit.com/r/aws/comments/prhocr/can_arbitrary_code_be_safely_run_in
 https://stackoverflow.com/questions/62826010/running-untrusted-python-code-in-aws-lambda-using-exec-or-eval
 
 https://judge0.com/
+
+
+# graphql
+https://www.youtube.com/watch?v=buhHZksGM84&ab_channel=MirumeeLabs

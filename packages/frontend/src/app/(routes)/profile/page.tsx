@@ -5,7 +5,7 @@ import { getUserAuth } from '@repetition/frontend/lib/auth/utils'
 
 const repository = new Repository()
 
-const _ = async ({
+const Page = async ({
     params,
 }: {
     params: { entityId: string; storeId: string }
@@ -40,4 +40,4 @@ const _ = async ({
     )
 }
 
-export default _
+export default Page

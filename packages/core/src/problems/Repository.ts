@@ -287,7 +287,6 @@ class Repository extends BaseRepository<
         identifier: string,
         params: FetchParams = {}
     ): Promise<ModelEntity | ModelError> {
-        console.log('fetching by uiid in porlbnme')
         var filters = [eq(this.table.slug, identifier)]
         if (identifier.match(uuidRegex)) {
             filters = [eq(this.table.uuid, identifier)]

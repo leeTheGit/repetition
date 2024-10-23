@@ -90,9 +90,14 @@ const validToken = async (
     return { session }
 }
 
-export const validateRequest = cache(validReq)
+let validateRequest = null
+let validateToken = null
+if ( typeof cache == 'function' ) { 
+    validateRequest = cache(validReq)
+    validateToken = cache(validToken)
+} else {
+    validateRequest = validReq;
+    validateToken = validToken;
+}
 
-// export const validateRequest = validReq;
-
-export const validateToken = cache(validToken)
-// export const validateToken = validToken;
+export { validateRequest, validateToken }

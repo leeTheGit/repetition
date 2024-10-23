@@ -11,14 +11,12 @@ export const handlers = [
         return HttpResponse.json(categories)
     }),
     http.get('/api/courses/:id/problems', ({params, request}) => {
-        console.log(params.id)
             // Construct a URL instance out of the intercepted request.
         const url = new URL(request.url)
  
         // Read the "id" URL query parameter using the "URLSearchParams" API.
         // Given "/product?id=1", "productId" will equal "1".
         const limit = url.searchParams.get('limit')
-        console.log(limit)
 
         console.log(`Captured a "GET /api/courses/${params.id}/problems`)
         return HttpResponse.json(problems)
@@ -27,5 +25,14 @@ export const handlers = [
         console.log('Captured a "GET /submissions" request')
         return HttpResponse.json([])
     }),
+
+    http.patch('/api/users/:id', () => {
+        console.log('Captured a "PATCH /user/:id" request')
+
+        return HttpResponse.json({
+            "status": "success",
+            "data" : "User updated"
+        })
+    })
 
 ]

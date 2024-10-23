@@ -10,8 +10,7 @@ export abstract class BaseCourseEntity<T> extends Entity<T> {
     protected relations: {
         courseImage?: AssetEntity
     } = {}
-    protected metadata: {
-    } = {}
+    protected metadata: {} = {}
 
     public constructor(props: T, id?: string) {
         super(props, id)

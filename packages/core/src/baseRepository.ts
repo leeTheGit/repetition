@@ -1,12 +1,13 @@
 
-import { db } from "@repetition/core/lib/db";
+import { db } from "@/lib/db";
 import { isError, ModelError } from "@repetition/core/types";
 import { PgTable, TableConfig } from "drizzle-orm/pg-core";
 import { and, eq } from "drizzle-orm";
+import { PgColumn } from 'drizzle-orm/pg-core'
 
 abstract class BaseRepository<
-  TableType extends PgTable<TableConfig>,
-  ModelEntity extends { toObject: () => any, isNew: () => boolean},
+  TableType extends PgTable<TableConfig> & {uuid?: PgColumn},
+  ModelEntity extends { toObject: () => any, uuid?: string, isNew: () => boolean},
   SelectTableType,
 > {
   protected table: TableType;
@@ -47,12 +48,14 @@ abstract class BaseRepository<
         }
     } else {
         try {
-            saved = await db
-                .update(this.table)
-                .set(data)
-                //@ts-ignore
-                .where(eq(this.table.uuid, entity.uuid))
-                .returning()
+            const uuid: PgColumn | undefined = this.table.uuid 
+            if (uuid) {
+              saved = await db
+                  .update(this.table)
+                  .set(data)
+                  .where(eq(uuid, entity.uuid))
+                  .returning()
+            }
         } catch (e: any) {
             console.log('error', e)
             return {
@@ -72,6 +75,7 @@ abstract class BaseRepository<
 
 
   async update<T>(id: string, data: Partial<T>): Promise<string | ModelError> {
+    var updated
     if (Object.keys(data).length === 0) {
       return {
         error: `Nothing to update`,
@@ -83,13 +87,16 @@ abstract class BaseRepository<
         error: `Table does not have an Id column`,
       };
     }
-    var updated = await db
-      .update(this.table)
-      .set({ ...data, updatedAt: new Date() })
-      //@ts-ignore
-      .where(eq(this.table.uuid, id));
 
-    if (updated.rowCount === 0) {
+    const uuid: PgColumn | undefined = this.table.uuid 
+    if (uuid) {
+      updated = await db
+        .update(this.table)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(uuid, id));
+    }
+
+    if (updated?.rowCount === 0) {
       return {
         error: `${this.tableName} not updated`,
       };
@@ -105,14 +112,19 @@ abstract class BaseRepository<
       };
     }
 
+    let delQuery
     try {
-      let delQuery = db
-        .delete(this.table)
-        //@ts-ignore
-        .where(and(eq(this.table.uuid, id)));
+
+      const uuid: PgColumn | undefined = this.table.uuid 
+      if (uuid) {
+        delQuery = db
+          .delete(this.table)
+          .where(and(eq(uuid, id)));
+      }
 
       let del = await delQuery
-      if (del.rowCount === 0) {
+      
+      if (del?.rowCount === 0) {
         return {
           error: `${this.tableName} not deleted`,
         };

@@ -19,10 +19,12 @@ export class UserEntity extends Entity<EntitySchema> {
     toObject(): EntitySchema & { profileImage?: AssetEntitySchema | null } & {
         profileImage?: AssetEntitySchema | null
     } {
+        // remove the hashedPassword from the props
+        const {hashedPassword, ...props} = this.props
         return {
-            ...this.props,
+            ...props,
             profileImage: this.relations.profileImage?.toObject() || null,
-        }
+        } 
     }
 
     static fromValues(

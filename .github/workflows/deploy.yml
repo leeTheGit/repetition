@@ -59,8 +59,8 @@ jobs:
               run: echo "AWS_S3_UPLOAD_BUCKET=$AWS_S3_UPLOAD_BUCKET"
 
             - name: Install SST
-              run: curl -fsSL https://ion.sst.dev/install | bash
-
+              run: curl -fsSL https://ion.sst.dev/install | VERSION=3.2.19 bash
+              
             - name: Install dependencies
               run: |
                   npm install -g pnpm

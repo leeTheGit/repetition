@@ -47,7 +47,6 @@ export const useFetchQuery = <T>(
         }
 
         const data = await res.json()
-        console.log('DAATAT', data)
         return data
     }
     let qKey = [resource, pagination, columnFilters, queryParams]

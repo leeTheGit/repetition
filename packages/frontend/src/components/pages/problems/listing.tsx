@@ -33,7 +33,6 @@ interface Props {
 
 export const Listing = ({courseId} : Props) => {
     const endpoint = `courses/${courseId}/problems`
-    console.log("BBBBBBBBBBBBBBBBBB", endpoint) 
     const download = useFileDownloader()
 
     const router = useRouter()
@@ -43,13 +42,10 @@ export const Listing = ({courseId} : Props) => {
     })
     
     const {sorting, setTheSort} = useSort({desc: true, id: 'last_practiced'})
-    // const sorting = [{desc:true, id: 'last_practiced'}]
-    // const setTheSort = () => {}
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-    console.log("sorting", sorting)
 
     const categories = useFetchQuery<Category[]>('categories', )
-    console.log("categories", categories.isSuccess)
+    
     const entities = useFetchQuery<ProblemAPI[]>(
         endpoint,
         {
@@ -62,8 +58,7 @@ export const Listing = ({courseId} : Props) => {
             }
         }
     )
-    console.log('ENTITIES', entities.isSuccess)
-    console.log('ENTITIES', entities.error)
+    
     const entityColumns =
         !entities.error &&
         entities.data?.data.map((entity: ProblemAPI) => {

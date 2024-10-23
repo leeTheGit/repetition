@@ -34,7 +34,11 @@ export const entitySchema = createSelectSchema(users).merge(
     z.object({ data: z.any().nullable().optional() })
 )
 
-export type EntitySchema = z.infer<typeof entitySchema>
+export type ESchema = z.infer<typeof entitySchema>
+type MakeOptional<T, Key extends keyof T> = Omit<T, Key> & Partial<T>;
+export type EntitySchema = MakeOptional<ESchema, 'hashedPassword'>
+
+
 
 export const insertSchema = createInsertSchema(users)
     .omit({

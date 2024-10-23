@@ -2,7 +2,7 @@
 import { Lucia } from 'lucia'
 import { GitHub, Google } from "arctic";
 // import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
-import { DrizzlePostgreSQLAdapter } from './postgresql'
+import { DrizzlePostgreSQLAdapter } from '@repetition/core/lib/auth/postgresql'
 import { db } from '@repetition/core/lib/db'
 import { sessionTable, users } from '@repetition/core/lib/db/schema/schema'
 import {mediaTable, userTable, orgTable} from '@repetition/core/lib/db/schema/authSchema'

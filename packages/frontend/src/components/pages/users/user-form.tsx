@@ -96,7 +96,7 @@ export const UserForm: React.FC<Props> = ({
             return create<FormSchema>(
                 data,
                 method,
-                `/${endpoint}/${catId}`
+                `${endpoint}/${catId}`
             )
         },
         onSuccess: (response) => {
@@ -319,7 +319,7 @@ export const UserForm: React.FC<Props> = ({
                                 />
                             </div>
                             <div className="flex space-x-4">
-                                <Button className="ml-auto" type="submit">
+                                <Button className="ml-auto" type="submit" data-testid="submit">
                                     {action}
                                 </Button>
 

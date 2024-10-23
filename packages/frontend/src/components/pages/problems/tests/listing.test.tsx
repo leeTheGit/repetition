@@ -37,16 +37,32 @@ describe('The problems listing', () => {
 
         return {
             listing: await screen.findByTestId('problem-list'),
+            getProblemNames() {
+                return screen.getAllByTestId('problem-name').map((c) => {
+                    return c.textContent
+                })
+                // return getAllByTestId('name').map((u) => u.textContent)
+                // container.map((name) => name.textContent)
+                // const {getAllByTestId} = within(container)
+                // return getAllByTestId('name').map((u) => u.textContent)
+            } 
         }
     }
 
 
     it('Renders problems list', async () => {
-        const {listing} = await renderProblemListing("b84bbb71-6e38-491d-91f2-61c464dd9c63")
+        const {listing, getProblemNames} = await renderProblemListing("b84bbb71-6e38-491d-91f2-61c464dd9c63")
         expect( listing ).toBeInTheDocument();
         await waitFor( async () => {
+            expect(getProblemNames()).toEqual([
+                'Valid Palindrome',
+                'Number of Islands',
+                'Invert Binary Tree',
+                'String Encode and Decode'
+              ])
             // screen.debug()
-            const nameContainer = await screen.findAllByTestId('problem-name')
+
+            // const nameContainer = await screen.findAllByTestId('problem-name')
             // expect(screen.getByText('The self-taught UI/UX designer roadmap (2021)')).toBeInTheDocument();
             // expect(screen.getByText('homarp')).toBeInTheDocument();
         });

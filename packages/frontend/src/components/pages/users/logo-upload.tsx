@@ -21,6 +21,7 @@ const LogoUpload = ({ logo, type, onOpen, onDelete }: Props) => {
         <>
             {!logo && (
                 <div
+                    data-testid="avatar-upload"
                     onClick={onOpen}
                     className={`${className} h-[200px] w-[200px] border solid flex flex-col items-center justify-center hover:cursor-pointer `}
                 >

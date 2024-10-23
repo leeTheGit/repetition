@@ -33,8 +33,9 @@ export const columns = (courseId: string) => {
             header: () => <div className="text-left">Name</div>,
             cell: ({ row }) => {
                 return (
-                    <div className="flex" data-testid="problem-name">
+                    <div className="flex">
                         <Link
+                            data-testid="problem-name"
                             href={`/courses/${courseId}/problems/${row.original.slug}`}
                             className="text-base hover:underline"
                         >
