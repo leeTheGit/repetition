@@ -1,24 +1,26 @@
 
-import { db } from "@/lib/db";
+import { db, DBType } from "@/lib/db";
 import { isError, ModelError } from "@repetition/core/types";
-import { PgTable, TableConfig } from "drizzle-orm/pg-core";
+import { PgTable } from "drizzle-orm/pg-core";
 import { and, eq } from "drizzle-orm";
 import { PgColumn } from 'drizzle-orm/pg-core'
 
 abstract class BaseRepository<
-  TableType extends PgTable<TableConfig> & {uuid?: PgColumn},
+  TableType extends PgTable & {uuid?: PgColumn},
   ModelEntity extends { toObject: () => any, uuid?: string, isNew: () => boolean},
   SelectTableType,
 > {
   protected table: TableType;
   protected tableName: string;
+  protected db:DBType 
 
-  constructor(table: TableType, tableName: string) {
+  constructor(table: TableType, tableName: string, injectDb?:DBType) {
     this.table = table;
     this.tableName = tableName;
+    this.db = injectDb || db
   }
 
-  async create(values:any): Promise<ModelEntity | ModelError> {
+  async create<T extends typeof this.table["$inferInsert"]>(values:T): Promise<ModelEntity | ModelError> {
     try {
       const [created] = await db.insert(this.table).values(values).returning();
       if (!created) {
@@ -29,10 +31,8 @@ abstract class BaseRepository<
 
       return this.mapToEntity(created as SelectTableType);
     } catch (e: any) {
-      
-      return {
-        error: `Error creating ${this.tableName}`,
-      };
+      console.log("catch", e)
+      return await this.handleConstraints(e); 
     }
   }
 

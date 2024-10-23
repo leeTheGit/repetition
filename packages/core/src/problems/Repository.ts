@@ -55,11 +55,8 @@ class Repository extends BaseRepository<
     TableType
 > {
 
-    // public mapToEntity = PostgresMapper
-
-    constructor(private db:DBType) {
-        super(problem, 'Problem')
-        this.db = db;
+    constructor(protected db:DBType) {
+        super(problem, 'Problem', db)
     }
 
 
