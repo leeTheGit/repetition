@@ -6,6 +6,22 @@ import { type Cookie } from 'lucia'
 import { validateRequest, validateToken } from './validate'
 import { UsernameAndPassword, authenticationSchema } from '@repetition/core/lib/db/schema/authSchema'
 
+export type AuthUser = {
+    id: string
+    email?: string
+    username?: string
+    organisationUuid: string
+
+}
+export type OrgUser = {
+    organisationUuid: string
+    type: string
+    name: string
+}
+
+export type sessionUser = AuthUser | OrgUser
+
+
 
 export type AuthSession = {
     session: {

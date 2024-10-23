@@ -4,6 +4,12 @@ import { v4 as uuidv4 } from "uuid";
 import "reflect-metadata";
 
 
+export function formattedError(result:any) {
+  if (!result.success) {
+      return Response.json(getZodErrors(result), {status:400})
+  }
+}
+
 export const getZodErrors = (input: any): string => {
   // https://stackoverflow.com/questions/57438198/typescript-element-implicitly-has-an-any-type-because-expression-of-type-st
   const errors: Record<string, any> = input.error.flatten().fieldErrors;
@@ -55,3 +61,13 @@ export function createUuid() {
 }
 
 
+// import { QueryClient } from "@tanstack/query-core";
+// import { cache } from "react";
+
+// let getQueryClient: () => QueryClient;
+// if (process.env.NODE_ENV === "production") {
+//   getQueryClient = cache(() => new QueryClient());
+// } else {
+//   getQueryClient = () => new QueryClient();
+// }
+// export default getQueryClient;

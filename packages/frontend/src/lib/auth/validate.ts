@@ -7,6 +7,9 @@ import AuthTokenRepository from '@repetition/core/auth/Repository'
 import { isError } from '@repetition/core/types'
 import { logger } from '@repetition/core/lib/logger'
 
+
+type Signup = { user: User; session: Session } | { user: null; session: null }
+
 const validReq = async (): Promise<
     { user: User; session: Session } | { user: null; session: null }
 > => {
@@ -90,8 +93,11 @@ const validToken = async (
     return { session }
 }
 
-let validateRequest = null
-let validateToken = null
+let validateRequest: () => Promise<Signup>
+let validateToken: (domain:string) => Promise<{ session: TokenSession } | { session: null }>
+
+// let validateRequest = null
+// let validateToken = null
 if ( typeof cache == 'function' ) { 
     validateRequest = cache(validReq)
     validateToken = cache(validToken)
