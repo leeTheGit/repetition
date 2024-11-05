@@ -84,7 +84,8 @@ export const users = pgTable(
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         emailIndex: uniqueIndex('email_idx').on(table.email),
@@ -131,8 +132,11 @@ export const organisation = pgTable('organisation', {
             onDelete: 'set null',
         }
     ),
-    createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { mode: 'date' }),
+    createdAt: timestamp('created_at', { mode: 'date' })
+        .notNull()
+        .defaultNow(),
+    updatedAt: timestamp('updated_at', { mode: 'date' })
+        .$onUpdate(() => new Date()),
 })
 
 
@@ -152,7 +156,8 @@ export const category = pgTable(
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         courseUuid: index('fk_course_category_idx').on(table.courseId),
@@ -184,7 +189,8 @@ export const submission = pgTable(
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         userIndex: index('fk_user_schedule_idx').on(table.userUuid),
@@ -216,7 +222,8 @@ export const course = pgTable(
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         slugIndex: uniqueIndex('course_slug_idx').on(
@@ -250,7 +257,8 @@ export const topic = pgTable(
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         courseUuid: index('fk_course_topic_idx').on(table.courseId),
@@ -291,7 +299,8 @@ export const problem = pgTable(
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         slugIndex: uniqueIndex('product_slug_idx').on(
@@ -328,7 +337,7 @@ export const userProblem = pgTable(
             .defaultNow(),
         updatedAt: timestamp('updated_at', { mode: 'date' })
             .notNull()
-            .defaultNow(),
+            .$onUpdate(() => new Date()),
 
     },
     (table) => ({
@@ -360,7 +369,8 @@ export const collection = pgTable(
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         slugIndex: uniqueIndex('collection_slug_idx').on(
@@ -440,7 +450,8 @@ export const media = pgTable(
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         organisationIndex: index('fk_media_organisation_idx').on(
@@ -509,7 +520,7 @@ export const plans = pgTable('plans', {
     status: boolean('status').default(true).notNull(),
     isDeleted: boolean('is_deleted').default(false).notNull(),
     createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { mode: 'date' }),
+    updatedAt: timestamp('updated_at', { mode: 'date' }).$onUpdate(() => new Date()),
 })
 
 export const planSettings = pgTable('plan_settings', {
@@ -525,7 +536,8 @@ export const planSettings = pgTable('plan_settings', {
     storeCount: integer('storeCount').default(1).notNull(),
     productCount: integer('productCount').default(20),
     assetCount: integer('assetCount').default(100),
-    updatedAt: timestamp('updated_at', { mode: 'date' }),
+    updatedAt: timestamp('updated_at', { mode: 'date' })
+        .$onUpdate(() => new Date()),
 })
 
 
@@ -566,7 +578,8 @@ export const emailTemplate = pgTable(
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         slugIndex: uniqueIndex('email_slug_idx').on(
@@ -636,7 +649,7 @@ export const useage = pgTable('useage', {
         .references(() => organisation.uuid, { onDelete: 'cascade' }),
     assetCount: integer('asset_count').default(0),
     assetStorageSize: integer('asset_storage_size').default(0),
-    updatedAt: timestamp('updated_at', { mode: 'date' }),
+    updatedAt: timestamp('updated_at', { mode: 'date' }).$onUpdate(() => new Date()),
 })
 
 export const sessionTable = pgTable('session', {
@@ -697,7 +710,8 @@ export const permissions = pgTable(
         createdAt: timestamp('created_at', { mode: 'date' })
             .notNull()
             .defaultNow(),
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         slugIndex: uniqueIndex('permissions_slug_idx').on(
@@ -729,7 +743,8 @@ export const roles = pgTable(
             .notNull()
             .defaultNow(),
 
-        updatedAt: timestamp('updated_at', { mode: 'date' }),
+        updatedAt: timestamp('updated_at', { mode: 'date' })
+            .$onUpdate(() => new Date()),
     },
     (table) => ({
         slugIndex: uniqueIndex('roles_slug_idx').on(

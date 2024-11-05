@@ -1,5 +1,5 @@
 
-import { db, DBType } from "@/lib/db";
+import { db, DBType } from "@repetition/core/lib/db";
 import { isError, ModelError } from "@repetition/core/types";
 import { PgTable } from "drizzle-orm/pg-core";
 import { and, eq } from "drizzle-orm";
@@ -74,7 +74,7 @@ abstract class BaseRepository<
 
 
 
-  async update<T>(id: string, data: Partial<T>): Promise<string | ModelError> {
+  async update(id: string, data: Partial<keyof typeof this.table>): Promise<string | ModelError> {
     var updated
     if (Object.keys(data).length === 0) {
       return {
@@ -92,7 +92,7 @@ abstract class BaseRepository<
     if (uuid) {
       updated = await db
         .update(this.table)
-        .set({ ...data, updatedAt: new Date() })
+        .set(data)
         .where(eq(uuid, id));
     }
 
