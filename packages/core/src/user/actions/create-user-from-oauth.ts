@@ -1,9 +1,11 @@
 import UserRepository from '@repetition/core/user/Repository'
 import AccountRepository from '@repetition/core/auth/account/Repository'
 import { isError, ModelError } from '@repetition/core/types';
+import { accountTypeEnum } from '@repetition/core/lib/db/schema/schema'
 
 const userRepository = new UserRepository
 const accountRepository = new AccountRepository
+type AccountType = typeof accountTypeEnum[number]
 
 export interface GitHubUser {
     id: string;
@@ -12,7 +14,7 @@ export interface GitHubUser {
     email: string;
   }
 
-export const CreateUserFromOauth = async (type: string, githubUser: GitHubUser): Promise<{id: string} | ModelError>  => {
+export const CreateUserFromOauth = async (type: AccountType, githubUser: GitHubUser): Promise<{id: string} | ModelError>  => {
     let existingUser = null;
 
     if (githubUser.email) {

@@ -21,15 +21,16 @@ export const imageDelete = async (params: Props) => {
     }
 
     const del = async () => {
-        const Delete = await repository.update(params.entityId, {
-            profileImageId: null,
-        })
-        if (isError(Delete)) {
-            return {
-                error: 'Image not deleted',
-                status: 400,
-            }
-        }
+        // const Delete = await repository.update(params.entityId, {
+        //     firstname: "bruiser"
+        //     // profileImageId: "asdfs",
+        // })
+        // if (isError(Delete)) {
+        //     return {
+        //         error: 'Image not deleted',
+        //         status: 400,
+        //     }
+        // }
         return {
             success: true,
         }

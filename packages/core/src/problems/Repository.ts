@@ -28,7 +28,7 @@ import BaseRepository from '@repetition/core/baseRepository'
 //     TableType as AssetTable,
 // } from '@repetition/core/asset/AssetRepository'
 import { uuidRegex, mapResult } from '@repetition/core/lib'
-import { Injectable } from '@repetition/core/lib/container'
+// import { Injectable } from '@repetition/core/lib/container'
 
 // import { NodePgDatabase } from 'drizzle-orm/node-postgres'
 // import { logger } from '@repetition/core/lib/logger'
@@ -48,7 +48,7 @@ export type CreateTableType = Omit<
 const DEFAULT_LIMIT = 50
 const DEFAULT_OFFSET = 0
 
-@Injectable()
+// @Injectable()
 class Repository extends BaseRepository<
     typeof problem,
     ModelEntity,

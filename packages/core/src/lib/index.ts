@@ -1,4 +1,7 @@
-import { HttpResponse, Respond } from "@/lib/httpResponse"
+import { 
+    HttpResponse, 
+    Respond 
+} from "@repetition/core/lib/httpResponse"
 import {
     getZodErrors,
     mapResult, 

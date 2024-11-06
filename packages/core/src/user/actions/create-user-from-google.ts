@@ -1,9 +1,11 @@
 import UserRepository from '@repetition/core/user/Repository'
 import AccountRepository from '@repetition/core/auth/account/Repository'
 import { isError, ModelError } from '@repetition/core/types';
-
+import { accountTypeEnum } from '@repetition/core/lib/db/schema/schema'
 const userRepository = new UserRepository
 const accountRepository = new AccountRepository
+
+type AccountType = typeof accountTypeEnum[number]
 
 export interface GoogleUser {
     sub: string;
@@ -17,7 +19,7 @@ export interface GoogleUser {
   }
 
 
-export const CreateUserFromGoogle = async (type: string, googleUser: GoogleUser): Promise<{id: string} | ModelError>  => {
+export const CreateUserFromGoogle = async (type: AccountType, googleUser: GoogleUser): Promise<{id: string} | ModelError>  => {
 
    let existingUser = await userRepository.fetchByEmail(googleUser.email);
 
