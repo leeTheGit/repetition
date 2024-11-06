@@ -81,14 +81,14 @@ async function Delete(
     { params }: { params: { entityId: string } }
 ) {
     try {
-        // const del = await repository.delete(params.entityId)
+        const del = await repository.delete(params.entityId)
 
-        // if (isError(del)) {
-        //     logger.info(`[ERROR] [${name.toUpperCase()}_DELETE]`, del)
-        //     return { error: del.error }
-        // }
+        if (isError(del)) {
+            logger.info(`[ERROR] [${name.toUpperCase()}_DELETE]`, del)
+            return { error: del.error }
+        }
 
-        // return `${name} deleted`
+        return `${name} deleted`
     } catch (error) {
         logger.info(`[ERROR] [${name.toUpperCase()}_DELETE]`, error)
         return {

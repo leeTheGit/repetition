@@ -1,4 +1,7 @@
 # today
+code editor for problems fix
+api/assets/route  attach saved asset to asset table
+
 
 # github style activity chart
 https://codepen.io/jamesbarnett/pen/kBOpRr

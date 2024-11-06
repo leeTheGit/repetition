@@ -13,7 +13,7 @@ interface Props {
 export const CodeEditor = React.forwardRef<{
     CodeEditorRef:HTMLInputElement, 
     TestCodeEditorRef:HTMLInputElement
-    codeStach:{user:string, test:string}
+    codeStash:{user:string, test:string}
     
 } | null, Props>((props, ref) => {
     const form = props.form

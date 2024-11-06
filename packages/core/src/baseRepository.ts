@@ -105,7 +105,7 @@ abstract class BaseRepository<
     return `${this.tableName} updated`;
   }
 
-  async delete(courseId: string, id: string): Promise<string | ModelError> {
+  async delete(id: string): Promise<string | ModelError> {
     if (!("uuid" in this.table)) {
       return {
         error: `Table does not have an Id column`,

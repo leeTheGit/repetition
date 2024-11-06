@@ -72,7 +72,7 @@ async function Delete(
     { params }: { params: { entityId: string; categoryId: string } }
 ) {
     try {
-        const del = await repository.delete(params.entityId, params.categoryId)
+        const del = await repository.delete(params.categoryId)
 
         if (isError(del)) {
             logger.info(`[ERROR] [${name.toUpperCase()}_DELETE]`, del)

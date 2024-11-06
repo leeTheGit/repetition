@@ -54,7 +54,7 @@ import {
 import { Switch } from '@/components/ui/switch'
 // import { Textarea } from '@/components/ui/textarea'
 import TinyEditor from '@/components/TinyEditor'
-import { CodeEditor } from '@/components/pages/problems/code-editor'
+// import { CodeEditor } from '@/components/pages/problems/code-editor'
 import { Input } from '@/components/ui/input'
 import { AlertModal } from '@/components/modals/alert-modal'
 import { BreadCrumb } from '@/components/breadCrumb'
@@ -630,7 +630,7 @@ export const ProblemForm: React.FC<Props> = ({
 
                                     {/* CodeEditorRef
                                     TestCodeEditorRef */}
-                                    {cardType === 'code' &&
+                                    {/* {cardType === 'code' &&
                                         <CodeEditor 
                                         ref={{
                                                 //@ts-expect-error
@@ -642,7 +642,7 @@ export const ProblemForm: React.FC<Props> = ({
                                             form={form}
                                         />
                                     }
-
+ */}
                                     {cardType === 'basic' &&
                                         <FormField
                                             control={form.control}

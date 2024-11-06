@@ -145,20 +145,20 @@ async function post(
                 try {
                     let entityId = null
 
-                    if (ctx.data.entity === 'user') {
-                        if (ctx.data.entityAttribute) {
-                            await userRepository.update(EntityUuid, {
-                                [ctx.data.entityAttribute]: Asset.uuid,
-                            })
-                        }
-                    }
-                    if (ctx.data.entity === 'course') {
-                        if (ctx.data.entityAttribute) {
-                            await courseRepository.update(EntityUuid, {
-                                [ctx.data.entityAttribute]: Asset.uuid,
-                            })
-                        }
-                    }
+                    // if (ctx.data.entity === 'user') {
+                    //     if (ctx.data.entityAttribute) {
+                    //         await userRepository.update(EntityUuid, {
+                    //             [ctx.data.entityAttribute]: Asset.uuid,
+                    //         })
+                    //     }
+                    // }
+                    // if (ctx.data.entity === 'course') {
+                    //     if (ctx.data.entityAttribute) {
+                    //         await courseRepository.update(EntityUuid, {
+                    //             [ctx.data.entityAttribute]: Asset.uuid,
+                    //         })
+                    //     }
+                    // }
 
                     if (ctx.data.entity === 'problem') {
                         if (
